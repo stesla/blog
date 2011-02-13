@@ -1,0 +1,19 @@
+--- 
+wordpress_id: 73
+layout: post
+title: The 51st State
+wordpress_url: http://blog.alieniloquent.com/2006/08/15/the-51st-state/
+---
+So I was browsing a company's website today, and out of curiosity I clicked on their map to show where all their locations are.  I was expecting to see lots of little dots representing their offices, but what I saw was so much more.
+
+This company has gotten the scoop on <em>all</em> of the major news services.  It has a <a href="http://www.alieniloquent.com/images/lower51.gif">map</a> of the contiguous 51 states.
+
+<img alt="the Northwest" src="http://www.alieniloquent.com/images/northwest.gif" />
+
+Here you can see a cutout of the Northwest area of the country.  If you look closely you'll see the new borders between East and West Idaho and East and West Montana.  Rumor has it that Idaho has split over whether or not to put a potato on the back of their commemorative quarter, and nobody knows what's up with Montana.
+
+<img alt="Florida" src="http://www.alieniloquent.com/images/floridabama.gif" />
+
+This other section shows the fifty-third, and newest state: Floridabama.  Nobody's quite sure why they formed.  They don't even have their own constitution.  Almost all of the land has been sold to development companies to build retirement communities and casinos.  That's right: retirement casinos.
+
+<small>Note: I did <em>not</em> make these images.  I have altered them to protect the innocent, but I really did find this while surfing.</small>

@@ -1,0 +1,13 @@
+--- 
+wordpress_id: 139
+layout: post
+title: Changes
+wordpress_url: http://blog.alieniloquent.com/?p=139
+---
+I'm back!
+
+My Spring got swallowed up by the tail-end of my last semester at <a href="http://www.unomaha.edu">UNO</a>. Now it's Summer and I'm living in San Francisco.
+
+That's right, I'm in San Francisco. I was planning on moving out here mid-July, but circumstances conspired such that I moved out here a week ago. I already have an <a href="http://www.youtube.com/watch?v=t3s4YLqOF74">apartment</a>, and I'm getting settled in. I was hoping to get around and visit more of my friends in Omaha before I left, but hey, I'll be visiting.
+
+I am going to be blogging here again now that my brain isn't getting drained (filled?) by school. My wife and I are also starting another <a href="http://blog.procacious.com">blog</a> to talk about general life stuff.

@@ -1,0 +1,15 @@
+--- 
+wordpress_id: 40
+layout: post
+title: Waiting For the Build
+wordpress_url: http://www.alieniloquent.com/2006/01/20/waiting-for-the-build/
+---
+So we've been moving over to new computers at work and also upgrading our compiler and changing virus protection and all that jazz that makes work fun and enjoyable.  One problem we ran into was that our slow build (that runs more tests) was breaking while our fast build wasn't.  Okay, sure, but what was weird was that it was breaking checking source out from Subversion.
+
+I tackled (along with Brian) this problem today.  We had a lot of waiting to do.  So, naturally, we took advantage of our new magnetic whiteboard to produce this:
+
+<img alt="Pacman on a whiteboard with magnets and marker" src="http://blog.alieniloquent.com/images/pacman.jpg" />
+
+Enjoy.
+
+<em>Edited:</em> resized image so it looked decent.

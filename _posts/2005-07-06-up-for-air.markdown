@@ -1,0 +1,13 @@
+--- 
+wordpress_id: 5
+layout: post
+title: Up For Air
+wordpress_url: http://www.alieniloquent.com/2005/07/06/up-for-air/
+---
+It's been over a month since I last posted.  There have been a couple of times I've considered writing something, but I've been to tired or busy to do it.  Between work and school I've been pretty drained, and what little energy I've had left has been directed toward reading and housework.
+
+I just reread all of the Harry Potter books.  I, of course, did this in anticipation of the <a href="http://www.amazon.com/exec/obidos/tg/detail/-/0439784549">next one</a> which comes out a week from Saturday.  It only took me about two weeks to get through all five, and now I'm primed and ready to jump into book six.
+
+The other notable book that I've read recently is <a href="http://www.xprogramming.com">Ron Jeffries'</a> book, <a href="http://www.amazon.com/exec/obidos/ASIN/0735619492">Extreme Programming Adventures in C#</a>.  It is absolutely fantastic.  I had glanced over it a number of times at the book store as I don't normally buy C# books, but when Ron was last out at our shop he offered me a copy from his personal stock, and I couldn't turn him down (if i'd ever bothered to look close enough at the spine to see he'd written it, I'd've already bought it).  I have learned a lot from the book, and so has <a href="http://excastle.com/blog/archive/2005/07/01/1865.aspx">Joe</a> since I made him read it.
+
+I hope to start writing more frequently, but I'm not going to make any promises.  Work has been really intense lately (in a good way), and I haven't been opening up my powerbook much at all when I get home.  I've got a few weeks before classes start up again, so hopefully I'll find some time.

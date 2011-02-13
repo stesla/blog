@@ -1,0 +1,11 @@
+--- 
+wordpress_id: 64
+layout: post
+title: A Lapse
+wordpress_url: http://www.alieniloquent.com/?p=64
+---
+Oops.
+
+My domain was due to expire on July 4th, 2006.  Silly me, I got all caught up in the holiday and forgot to do that.  So, that's where my site (and email) have been the last couple of days.
+
+All better now.

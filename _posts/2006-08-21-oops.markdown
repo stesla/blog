@@ -1,0 +1,11 @@
+--- 
+wordpress_id: 77
+layout: post
+title: Oops
+wordpress_url: http://blog.alieniloquent.com/2006/08/21/oops/
+---
+So I'm in my web directory, doing some stuff, and I notice the twiddle backup files that Emacs leaves when I edit remotely.  They bug me.  So I did the following command to remove them.
+
+<pre class="code">find . -name *.~?~ -print -o -exec rm {} \;</pre>
+
+Some of you probably think that's just greek.  But others are cringing just as I did when I saw it remove all of the files in my directory.  Sooooo, the other parts of the site are broken until tonight when I can fix them.
