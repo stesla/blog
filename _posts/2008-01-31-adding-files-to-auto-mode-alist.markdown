@@ -10,7 +10,7 @@ At first it was annoying. I'd open a LaTeX file and it wouldn't change to <code>
 
 Yesterday I finally took the time to find the trouble, shoot it, and replace it with better code. In my <code>.emacs</code> I had this:
 
-<pre class="code">
+{% highlight text %}
 (setq auto-mode-alist
       (append
         '(("\\.dtd$" . xml-mode)
@@ -19,19 +19,19 @@ Yesterday I finally took the time to find the trouble, shoot it, and replace it 
           ("bash_profile$" . sh-mode)
           ("bashrc$" . sh-mode))
         auto-mode-alist))
-</pre>
+{% endhighlight %}
 
 I've seen that same code all over the internet, and it used to work just fine. But for some reason, now it does something to my <code>auto-mode-alist</code> and makes Emacs hate it for some reason. So I do some research. The recommended way to put stuff in an alist like that is <code>ADD-TO-LIST</code>.  
 
 So the above code becomes this:
 
-<pre class="code">
+{% highlight text %}
 (mapcar (lambda (mapping) (add-to-list 'auto-mode-alist mapping))
         '(("\\.dtd$" . xml-mode)
           ("\\.xml$" . xml-mode)
           ("\\.yml$" . conf-mode)
           ("bash_profile$" . sh-mode)
           ("bashrc$" . sh-mode)))
-</pre>
+{% endhighlight %}
 
 Putting that code in fixed my problems, and now all of my modes load correctly.

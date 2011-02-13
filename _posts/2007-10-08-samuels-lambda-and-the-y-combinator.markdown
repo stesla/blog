@@ -12,7 +12,7 @@ My test for this was that I could calculate the factorial using the most venerab
 
 For my example of recursion, I'll show you the factorial.  What sort of discussion of recursion would this be if I didn't?
 
-<pre class="code">let
+{% highlight text %}let
   val y = fn f =>
       (fn g => g g) (fn g => f (fn x => g g x))
   val fac = fn f =>
@@ -21,12 +21,12 @@ For my example of recursion, I'll show you the factorial.  What sort of discussi
                else multiply n (f (subtract n 1))
 in y fac 5
 end
-</pre>
+{% endhighlight %}
 
 When run at the SML/NJ prompt:
 
-<pre class="code">- SLParser.evalPrintFile("examples/factorial.sl");
+{% highlight text %}- SLParser.evalPrintFile("examples/factorial.sl");
 120
-val it = () : unit</pre>
+val it = () : unit{% endhighlight %}
 
 It helps that I'm working with a functional language to start with.  That makes implementing things such as closures and <code>let</code> nearly trivial.  I'm going to add static type checking (sans-inferencing like ML after which the syntax has been modeled) and then I'll be done with SL.  It has been a fun little exercise.

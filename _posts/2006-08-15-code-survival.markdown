@@ -6,7 +6,7 @@ wordpress_url: http://blog.alieniloquent.com/2006/08/15/code-survival/
 ---
 While <a href="http://blog.briankohrs.com/">Brian</a> and I were pairing today, we also found an offensive bit of code.
 
-<pre class="code">property P: Pointer read FP;</pre>
+{% highlight text %}property P: Pointer read FP;{% endhighlight %}
 
 This was a <em>public</em> property on a class.  It had no meaningful name, and was of the least-specific type in the system.  (I'm prefer dynamic languages, but if you're <em>going</em> to use a type system, <em>use</em> it.)
 

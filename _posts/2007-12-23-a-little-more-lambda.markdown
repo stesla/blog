@@ -13,22 +13,22 @@ And this is false:
 <p class="code">fn x y. y</p>
 
 That makes the identity function the if then else construct:
-<pre class="code">
+{% highlight text %}
 > (fn p. p) (fn x y. x) a b;
 a
 > (fn p. p) (fn x y. y) a b;
 b
-</pre>
+{% endhighlight %}
 
 And similarly you can get a logical and:
-<pre class="code">
+{% highlight text %}
 > (fn p. p) ((fn p q. p q p) (fn x y. x) (fn x y. x)) a b;
 a
 > (fn p. p) ((fn p q. p q p) (fn x y. x) (fn x y. y)) a b;
 b
 > (fn p. p) ((fn p q. p q p) (fn x y. y) (fn x y. x)) a b;
 b
-</pre>
+{% endhighlight %}
 
 Fiddling around with these church booleans revealed several bugs in my code, which I've fixed.  I've additionally added a new node to the parse tree to represent the () grouping that is typed into the code so that when it is formatted for display it looks better.
 

@@ -7,7 +7,7 @@ dt { font-weight: bold; }
 em { font-style: italic; }
 p { line-height: 1.5em; }
 
-.code { font-family: monospace; font-size: 90%; margin-bottom: 1em; background: #e3e3e3; overflow: auto; padding: 5px; }
+.highlight, .code { font-family: monospace; font-size: 90%; margin-bottom: 1em; background: #e3e3e3; overflow: auto; padding: 5px; }
 
 /* Styles for the navigation at the top */
 #title { border-bottom: 1px solid black; font-size: 300%; text-align: right; }

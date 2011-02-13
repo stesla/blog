@@ -10,7 +10,7 @@ The strategy that I'll be using is to write a DLL in C++ that will allow the Del
 
 So, to start off, let's make the Visual Studio project for the DLL.  I'm using Visual Studio 2005 for this, and I'll use the C++ CLR template entitled "Class Library."  I'll give it a name "Example" and hit go.  This makes most of the files that you need.  Delete the class that it creates ("Class1") and make a new one like this:
 
-<pre class="code">
+{% highlight text %}
 // Example.h
 
 #include &lt;vcclr.h&gt;
@@ -36,24 +36,24 @@ namespace Example {
   gcroot&lt;String ^&gt; _name;
  };
 }
-</pre>
+{% endhighlight %}
 
 A couple things to note about the above code.  The <code>Example1</code> class is an <em>unmanaged</em> class, but the <code>_name</code> field is a managed object.  The <code>gcroot</code> class takes care of telling the garbage collector about the managed string object.
 
 Next, we need to export some DLL functions so that we can call them from Delphi:
 
-<pre class="code">
+{% highlight text %}
 // Exports.h
 #define DLLAPI extern "C" __declspec(dllexport)
 <br />
 DLLAPI void * Example1Create(const char * name);
 DLLAPI void Example1Delete(void * example);
 DLLAPI void Example1ShowName(void * example);
-</pre>
+{% endhighlight %}
 
 The important thing to notice here is the <code>DLLAPI</code> define.  You need to put it before each function you want to export.  We have to extern the functions as C-style functions so that their names don't get mangled in the symbol table.
 
-<pre class="code">
+{% highlight text %}
 // Exports.cpp
 #include "stdafx.h"
 #include "Example.h"
@@ -77,7 +77,7 @@ DLLAPI void Example1ShowName(void * example)
 {
  E1(example)->ShowName();
 }
-</pre>
+{% endhighlight %}
 
 Note the macro defined to do the cast.  We only have to do the cast in one place right now, but as you expose more methods on the object, you'll have to cast for every one.  The macro makes it easier.
 

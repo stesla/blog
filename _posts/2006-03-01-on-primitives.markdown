@@ -8,10 +8,10 @@ Blaine has a <a href="http://www.blainebuxton.com/weblog/2006/02/string-how-i-lo
 
 In Delphi, there's a similarly abused syntax trick.  It looks like this:
 
-<pre class="code">
+{% highlight text %}
 type TMyEnum = (meOne, meTwo, meThree);
 const MyEnumStrings: array[TMyEnum] of string = ('First', 'Second', 'Third');
-</pre>
+{% endhighlight %}
 
 Then, wherever you want to get a string associated with one of the enum tokens, you can just index into that constant array <em>using the enum value</em>.
 

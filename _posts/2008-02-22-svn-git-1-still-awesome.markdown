@@ -10,25 +10,25 @@ So using this system you're either at the office, so you can use SVN, or you're 
 
 These steps assume that you've made a Git branch using the following command:
 
-<pre class="code">$ git branch home</pre>
+{% highlight text %}$ git branch home{% endhighlight %}
 
 <h4>Taking your work home: SVN -> Git</h4>
 Make sure your SVN working copy is as up to date as you want it. Ideally, commit any changes. But, if you're in the middle of a change set, that's fine.
 
-<pre class="code">$ git commit -a -m "Merging in changes from SVN since last commit"
+{% highlight text %}$ git commit -a -m "Merging in changes from SVN since last commit"
 $ git checkout home
-$ git merge master</pre>
+$ git merge master{% endhighlight %}
 
 Now you're ready to use Git to continue making your changes while you're away from the office.
 
 <h4>Getting back to work: Git -> SVN</h4>
-<pre class="code">Make sure your Git changes are all committed to the <code>home</code> branch.
+{% highlight text %}Make sure your Git changes are all committed to the <code>home</code> branch.
 $ git checkout master
-$ svn up</pre>
+$ svn up{% endhighlight %}
 
 Resolve any conflicts from SVN.
 
-<pre class="code">$ git merge home</pre>
+{% highlight text %}$ git merge home{% endhighlight %}
 
 Resolve any conflicts from Git.
 

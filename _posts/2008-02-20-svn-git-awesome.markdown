@@ -12,18 +12,18 @@ The key feature of Git that makes it well suited for use alongside SVN is that i
 
 At the top level of your SVN working copy:
 
-<pre class="code">$ git init
+{% highlight text %}$ git init
 $ echo .svn &gt; .gitignore
 $ git add *
 $ git add .gitignore
-$ git commit -m "Initial commit"</pre>
+$ git commit -m "Initial commit"{% endhighlight %}
 
 Now we just need to teach SVN to ignore the Git stuff. So open up your <code>~/.subversion/config</code> file and find the <code>[miscellany]</code> section. You should see a commented out setting for <code>global-ignores</code>. Uncomment it and add <code>.git*</code> to it like this:
 
-<pre class="code">[miscellany]
+{% highlight text %}[miscellany]
 ### Set global-ignores to a set of whitespace-delimited globs
 ### which Subversion will ignore in its 'status' output, and
 ### while importing or adding files and directories.
-global-ignores = *.o *.lo *.la \#*\# .*.rej *.rej .*~ *~ .\#* .DS_Store .git*</pre>
+global-ignores = *.o *.lo *.la \#*\# .*.rej *.rej .*~ *~ .\#* .DS_Store .git*{% endhighlight %}
 
 And voila! When you're able to connect to your SVN repo, you can use SVN. But when you're offline and still want the ability to use version control to incrementally save your changes, you can use Git. They're working on the same files, so they play together very nicely.

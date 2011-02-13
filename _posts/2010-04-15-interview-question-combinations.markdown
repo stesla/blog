@@ -14,39 +14,39 @@ A few simplifying assumptions can be made. Since these are combinations, order d
 
 So with those two assumptions in mind, I stubbed out my function.
 
-<pre class="code">
+{% highlight text %}
 combinations :: Int -> Int -> [[Int]]
 combinations len max = undefined
-</pre>
+{% endhighlight %}
 
 I had gotten three-quarters of the way toward a working implementation during my interview, so I was already leaning toward a recursive solution here. But, when I keyed in what I'd come up with earlier, it wasn't working right. I was getting things like <code>[2,2]</code> which should just not show up. I also could not do something like <code>combinations 3 3</code> and get anything back. I clearly had some boundary issues. So, I decided to actually write out the sets I was expecting and see if I saw any patterns.
 
-<pre class="code">
+{% highlight text %}
 combinations 0 3 => [[]]
 combinations 1 3 => [[1],[2],[3]]
 combinations 2 3 => [[2,1],[3,1],[3,2]]
 combinations 3 3 => [[3,2,1]]
 combinations 4 3 => [[]]
-</pre>
+{% endhighlight %}
 
 The most obvious thing is that there's a clear relationship between the length of the combination and the number of combinations available, which is pretty basic combinatorics. There's only one way to choose 3 items from a set of 3 items. But looking at this, I'm trying to conceive of some way to devise a recursive algorithm to produce those lists. So I rewrite the output to show how I would expect those to get built recursively.
 
-<pre class="code">
+{% highlight text %}
 combinations 0 3 => [[]]
 combinations 1 3 => [1:[]] ++ [2:[]] ++ [3:[]]
 combinations 2 3 => [2:[1]] ++ [3:[1], 3:[2]]
 combinations 3 3 => [3:[2,1]]
 combinations 4 3 => [[]]
-</pre>
+{% endhighlight %}
 
 Now it might be apparent why I chose the ordering constraint I did. It makes it easy to build these lists with conses. The most imporant observation to make from this data is what numbers actually get selected to be consed. At each level of recursion we're selecting only the numbers between <code>len</code> and <code>max</code> to be added onto lists, and then we recurse with all the numbers <em>less than</em> those.
 
 Here is the final implementation:
 
-<pre class="code">
+{% highlight text %}
 combinations 0 _ = [[]]
 combinations len max = foldr reduce [] [len..max]
   where reduce x ys = recurse x ++ ys
         recurse x = prepend x (combinations (len - 1) (x - 1))
         prepend x = map (\xs -> x:xs)
-</pre>
+{% endhighlight %}

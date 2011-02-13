@@ -12,7 +12,7 @@ With a solution in hand, I started to look and see if there was anything I could
 
 The following source code from their samples page:
 
-<pre class="code">
+{% highlight text %}
 \begin{figure}[H]
   \begin{center}
     \unitlength=4pt
@@ -34,7 +34,7 @@ The following source code from their samples page:
   \end{center}
   \caption{La complétion de l'automate.}
 \end{figure}
-</pre>
+{% endhighlight %}
 
 Generates this graph (which I have scaled down):
 

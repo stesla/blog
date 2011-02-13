@@ -6,7 +6,7 @@ wordpress_url: http://blog.alieniloquent.com/2007/01/01/calling-into-the-c-dll-f
 ---
 Before I get to the meat of this post, I want to make some ammendments and edits to the code from the last one.  Today I was wrangling around and began to recall more of my C++, initializers in particular, so I've updated the <code>Example1</code> class to use them.
 
-<pre class="code">
+{% highlight text %}
 public class Example1
 {
 public:
@@ -16,11 +16,11 @@ public:
 private:
   gcroot&lt;String ^&gt; _name;
 };
-</pre>
+{% endhighlight %}
 
 I also realize that I forgot to show the implementation side of that class, so here it is:
 
-<pre class="code">
+{% highlight text %}
 // Example.cpp
 #include "stdafx.h"
 #include "Example.h"
@@ -31,13 +31,13 @@ void Example::Example1::ShowName()
 {
   MessageBox::Show(_name);
 }
-</pre>
+{% endhighlight %}
 
 So there's our DLL.  Now, let's use it from Delphi!  I'm using Turbo Delphi for Win32 to do this.  Go to File &gt; New &gt; "VCL Forms Application" and make your project.  Make sure that it outputs to the same directory that the DLL does (or make the DLL output to the same directory this project does, which is what I do) for ease of edit-compile-run cycling.
 
 I'm going to drop a <code>TEdit</code> and a <code>TButton</code> on the main form and hook it up so that when we click the button it creates an <code>Example1</code>, shows it, and then deletes it.  Here is the implementation section from the main unit in the delphi program:
 
-<pre class="code">
+{% highlight text %}
 function Example1Create(AName: PChar): Pointer; 
   cdecl; external 'Example';
 procedure Example1Delete(AExample: Pointer);
@@ -56,22 +56,22 @@ begin
     Example1Delete(Example);
   end;
 end;
-</pre>
+{% endhighlight %}
 
 The button handler is straight-forward and normal.  The only interesting thing there is to see how the calls from the DLL get used.  The lifetime management works just like anything else, you just aren't going to use <code>FreeAndNil</code> like you would for most things.
 
 The interesting part is at the top where we import from the DLL, let's look at one of those lines again:
 
-<pre class="code">
+{% highlight text %}
 function Example1Create(AName: PChar): Pointer; 
   cdecl; external 'Example';
-</pre>
+{% endhighlight %}
 
 Now this corresponds to the following line from <code>Exports.h</code>:
 
-<pre class="code">
+{% highlight text %}
 DLLAPI void * Example1Create(const char * name);
-</pre>
+{% endhighlight %}
 
 Since it has a return type that is not void, it becomes a function (the others became procedures).  The <code>void *</code> becomes <code>Pointer</code>, and the <code>const char * name</code> becomes <code>PChar</code> in Delphi.  So what's the rest of that garbage?  The <code>cdecl</code> flag is there to tell the compiler what calling convention to use.  If you just create the DLL in Visual Studio, it defaults to using <code>cdecl</code>.  You can also use something like <code>stdcall</code>, but it's not necessary here.  The other part just tells Delphi which DLL to look for this external function in.
 

@@ -8,14 +8,14 @@ So Brian and I are refactoring some code.  One of the things we want to do is ge
 
 Before our refactor:
 
-<pre class="code">Assert.Equals(1, object.Detail, &quot;Details don't match&quot;)</pre>
+{% highlight text %}Assert.Equals(1, object.Detail, &quot;Details don't match&quot;){% endhighlight %}
 
 After our refactor: 
 
-<pre class="code">Assert.Equals(object.hasDetail(1), &quot;Details don't match&quot;)</pre>
+{% highlight text %}Assert.Equals(object.hasDetail(1), &quot;Details don't match&quot;){% endhighlight %}
 
 That is a perfectly valid test...syntactically.  However it results in the following error message:
 
-<pre class="code">&quot;True&quot; does not equal &quot;Details don't match&quot;</pre>
+{% highlight text %}&quot;True&quot; does not equal &quot;Details don't match&quot;{% endhighlight %}
 
 Now, those error messages are there for a reason: for us to ignore them.  Brian and I spent at least five minutes scratching our head and stepping through the test before we noticed the Equals.  Sure enough, had we bothered to read the message, it would've been only 30 seconds to our green bar.

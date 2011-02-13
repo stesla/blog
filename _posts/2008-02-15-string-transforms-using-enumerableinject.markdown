@@ -8,35 +8,35 @@ I love functional programming, and I love <a href="http://www.ruby-lang.org">Rub
 
 One of the most mysterious methods on <code>Enumerable</code> is <code>Enumerable#inject</code>.  The example that's always given is this:
 
-<pre class="code">
+{% highlight text %}
 irb> [1, 2, 3, 4].inject(0) {|sum, i| sum + i}
 10
-</pre>
+{% endhighlight %}
 
 That's fine, and usually makes sense. But when you try to branch out into more esoteric uses of inject, it can get confusing. So I'm going to give an example of accomplishing something useful with inject that you hopefully find useful.
 
 I always find myself doing a sequence of substitutions on a string. For example, when I implement a <a href="http://tools.ietf.org/html/rfc854">Telnet</a> client, I like to normalize the line endings I'm sending so that they're sane. I accomplish that by translating "\r\n" to "\n", then translating "\r" to "\n", then translating "\n" to "\r\n". It's a simple thing to do, and I could do it like this:
 
-<pre class="code">
+{% highlight text %}
 string.gsub("\r\n", "\n").gsub("\r", "\n").gsub("\n", "\r\n")
-</pre>
+{% endhighlight %}
 
 But that's not very extensible. I'd like to apply this idea of a sequence of substitutions in an abstract way so that I can do dynamically. And while I could do something with <code>Object#send</code>, that's like cheating. This is where inject comes to the rescue.
 
-<pre class="code">
+{% highlight text %}
 def normalize_line_endings(string)
   transforms = [proc {|s| s.gsub("\r\n", "\n")},
                 proc {|s| s.gsub("\r", "\n")},
                 proc {|s| s.gsub("\n", "\r\n")}]
   transforms.inject(string) {|s, transform| transform.call(s)}
 end
-</pre>
+{% endhighlight %}
 
 <code>Kernel#proc</code> (or <code>Kernel#lambda</code> if you prefer) is Ruby's way of making higher-order functions. It returns a block which you can then call with an argument. In the above code, I make an array of transforms that take a string and return a string. The call to inject at the end is where the magic happens. It calls the first transform with <code>string</code> which was provided as the argument to inject. Then it calls the second transform with the result of the first, and it calls the third transform with the result of the second. That list could be as big as you want. It could even be dynamically generated.
 
 That's nice, but it's still a a little verbose. I like to hide my use of <code>Kernel#proc</code> behind a declarative interface when I'm doing this sort of thing with it. So here's how we can rewrite the method.
 
-<pre class="code">
+{% highlight text %}
 def transform(string, specifications = [])
   transforms = specifications.collect do |spec|
     proc {|s| s.gsub(spec[:from], spec[:to])}
@@ -49,11 +49,11 @@ def normalize_line_endings(string)
                      {:from => "\r", :to => "\n"},
                      {:from => "\n", :to => "\r\n"}])
 end
-</pre>
+{% endhighlight %}
 
 Of course, at that point, we don't really need to create the procs. We can just use inject right on the specifications array, so the final code I came up with for this was:
 
-<pre class="code">
+{% highlight text %}
 def transform(string, specifications = [])
   specifications.inject(string) do |s, spec|
     s.gsub(spec[:from], spec[:to])
@@ -65,6 +65,6 @@ def normalize_line_endings(string)
                      {:from => "\r", :to => "\n"},
                      {:from => "\n", :to => "\r\n"}])
 end
-</pre>
+{% endhighlight %}
 
 Now that can be used with any list of transformations. Those transformations can be dynamically generated, and it's a very clean implementation. That is the power of <code>Enumerable#inject</code>.

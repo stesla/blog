@@ -6,24 +6,24 @@ wordpress_url: http://blog.alieniloquent.com/2007/10/09/remember-ml-yacc-makes-e
 ---
 So I got my language <a href="http://blog.alieniloquent.com/2007/10/08/samuels-lambda-and-the-y-combinator/">working</a>.  But there are still some things I want to add to it.  One thing that was bothering me was that both this code:
 
-<pre class="code">fn x =&gt; x</pre>
+{% highlight text %}fn x =&gt; x{% endhighlight %}
 
 and this code:
 
-<pre class="code">x =&gt; x</pre>
+{% highlight text %}x =&gt; x{% endhighlight %}
 
 parsed to the <em>same thing</em>.
 
 I banged my head against this.  My grammar had the production right:
 
-<pre class="code">expr : ...
+{% highlight text %}expr : ...
      | FN ident RARROW expr (T.FnDef (ident,expr))
-     ...</pre>
+     ...{% endhighlight %}
 
 and my lexer produced the tokens just fine:
 
-<pre class="code">&lt;INITIAL&gt; "fn" =&gt; (Tokens.FN(!pos, !pos));
-&lt;INITIAL&gt; "=>" =&gt; (Tokens.RARROW(!pos, !pos));</pre>
+{% highlight text %}&lt;INITIAL&gt; "fn" =&gt; (Tokens.FN(!pos, !pos));
+&lt;INITIAL&gt; "=>" =&gt; (Tokens.RARROW(!pos, !pos));{% endhighlight %}
 
 So, I was confused.  I downloaded the source for <a href="http://smlnj.org">SML/NJ</a> in hopes that their grammar and lexer would shed insight on what I was (obviously) doing wrong.  But, inasmuch as SL is like SML, the grammar and lexer were the same.
 

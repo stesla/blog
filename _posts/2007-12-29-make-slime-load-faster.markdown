@@ -12,35 +12,35 @@ SBCL allows you to specify an image, or as they call it a core, by passing the <
 
 So first, go into your SLIME directory and copy <code>swank-loader.lisp</code> to <code>swank-loader-original.lisp</code>. Then make <code>swank-loader.lisp</code> look like this (changing <code>slime-dir</code> to be wherever your SLIME is, of course):
 
-<pre class="code">
+{% highlight text %}
 (if (not (find-package 'swank-loader))
     ;; Edit SLIME-DIR to be where you have SLIME installed.
     (let ((slime-dir (merge-pathnames ".elisp/slime/" (user-homedir-pathname))))
       (load (merge-pathnames "swank-loader-original" slime-dir))))
-</pre>
+{% endhighlight %}
 
 Then, make a file called <code>bootstrap.lisp</code><code> with the following content:
 
-<pre class="code">
+{% highlight text %}
 ;; Load Swank
 (load (merge-pathnames ".elisp/slime/swank-loader" (user-homedir-pathname)))
 
 ;; Save image
 (sb-ext:save-lisp-and-die "sbcl-with-slime.core")
-</pre>
+{% endhighlight %}
 
 And run this command:
 
-<pre class="code">
+{% highlight text %}
 $ sbcl --load bootstrap.lisp
-</pre>
+{% endhighlight %}
 
 Then copy </code><code>sbcl-with-slime.core</code> somewhere safe, I put mine in with my slime code to keep it all together.  Then you just have to add the following to your <code>.emacs</code><code>:
 
-<pre class="code">
+{% highlight text %}
 (let* ((slime-dir (concat elisp-dir "/slime"))
        (core-file (concat slime-dir "/sbcl-with-slime.core")))
   (setq inferior-lisp-program (concat "sbcl --core " core-file)))
-</pre>
+{% endhighlight %}
 
 Then you can </code><code>M-x slime</code> and it will be super fast.

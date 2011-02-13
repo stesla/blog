@@ -10,7 +10,7 @@ Initially the class only knew how to answer questions of membership: is a byte i
 
 So I wrote this:
 
-<pre class="code">
+{% highlight text %}
 - (NSData *) dataValue
 {
   NSMutableData *result = [NSMutableData data];
@@ -21,7 +21,7 @@ So I wrote this:
   }
   return result;
 }
-</pre>
+{% endhighlight %}
 
 I had unit tests that proved it worked, and they all passed, so I checked in.  All was good in the world.
 
@@ -45,13 +45,13 @@ So, to bring this back to my bug.  The <code>unsigned</code> type is actually an
 
 The line of code where I do this:
 
-<pre class="code">[data appendBytes: &amp;i length: 1]</pre>
+{% highlight text %}[data appendBytes: &amp;i length: 1]{% endhighlight %}
 
 Is a clever little trick I've used to avoid having to actually declare a one-byte array when I want to append just one byte.  It works great if <code>i</code> is actually an <code>uint8_t</code>.  It also works great if <code>i</code> is an <code>unsigned</code> and stored in little-endian format, since the first byte happens to be the byte I'm interested in.  However, on a big-endian processor, that will reference the most significant byte of the number instead, and since <code>i</code> never gets any bigger than <code>UINT8_MAX</code> (which is 11111111 in binary), that byte will always be zero.
 
 So now the code looks like this:
 
-<pre class="code">
+{% highlight text %}
 - (NSData *) dataValue
 {
   NSMutableData *result = [NSMutableData data];
@@ -66,7 +66,7 @@ So now the code looks like this:
   }
   return result;
 }
-</pre>
+{% endhighlight %}
 
 The compiler knows to do the <em>correct</em> conversion between the 32-bit and 8-bit types when assigning from one to another, so the new code now works on both of my machines.
 

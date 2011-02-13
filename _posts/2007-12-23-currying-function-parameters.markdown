@@ -14,22 +14,22 @@ Becomes this:
 
 Adding the code do this was nearly trivial, and all in the parser. First I wrote a function that given a list of variables and an expression for the body, would be able to construct the parse tree for a curried function:
 
-<pre class="code">
+{% highlight text %}
 let curry ids body =
   List.fold_right (fun id expr -&gt; Abstraction(id, expr)) ids body
-</pre>
+{% endhighlight %}
 
 Then I took the existing production for recognizing expressions:
 
-<pre class="code">
+{% highlight text %}
 expr:
   aexprs {apply $1}
 | FN VAR PERIOD expr {Abstraction ($2, $4)}
 ;
-</pre>
+{% endhighlight %}
 
 And turned it into this:
-<pre class="code">
+{% highlight text %}
 expr:
   aexprs {apply $1}
 | FN ids PERIOD expr {curry $2 $4}
@@ -39,7 +39,7 @@ ids:
   VAR {[$1]}
 | VAR ids {$1::$2}
 ;
-</pre>
+{% endhighlight %}
 
 That <code>ids</code> production is using the OCaml <code>::</code> operator which performs the cons operation. So as I recurse on the right, I'm building up a list and consing each new id onto it all the way up.
 

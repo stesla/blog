@@ -8,7 +8,7 @@ So we know how to create a DLL in C++ that exposes .NET code to the Win32 world.
 
 Since this is just an example, we're going to do something really simple.  We'll make an object that runs for a number of cycles and calls our event handler each cycle after sleeping for a little bit.  Here's the code for <code>Clock</code>:
 
-<pre class="code">
+{% highlight text %}
 // Example.h
 public ref class Clock
 {
@@ -34,19 +34,19 @@ void Example::Clock::Run(int cycles)
     _progressCallback->Execute(i, cycles);
   }
 }
-</pre>
+{% endhighlight %}
 
 Now the first thing to notice there is the <code>ref</code> keyword.  This is how you let the compiler know this is a managed class.  Next, you're all probably wondering what <code>ProgressCallback</code> is.  That is the class that takes care of all the magic behind simulating method pointers from Delphi.
 
 A brief aside to talk about just what method pointers are.  In C and C++ you can declare a pointer type like this:
 
-<pre class="code">
+{% highlight text %}
 typedef int (* CALLBACK)(int x, int y);
-</pre>
+{% endhighlight %}
 
 Then you can use that type like this:
 
-<pre class="code">
+{% highlight text %}
 int Apply(CALLBACK cb, int x, int y)
 {
   return cb == NULL ? 0 : cb(x, y);
@@ -58,23 +58,23 @@ int Multiply(int x, int y)
 }
 <br />
 Apply(Multiply, 6, 7); // returns 42
-</pre>
+{% endhighlight %}
 
 You can do the exact same thing in Delphi like this:
 
-<pre class="code">
+{% highlight text %}
 type TCallback = function(X, Y: Integer): Integer;
-</pre>
+{% endhighlight %}
 
 But Delphi also offers another kind of function pointer called a method pointer.  You declare it like this:
 
-<pre class="code">
+{% highlight text %}
 type TMethodCallback = function(X, Y: Integer): Integer of object;
-</pre>
+{% endhighlight %}
 
 Those two words <code>of object</code> make all the difference.  What this does is it lets you use a pointer to a method on a specific instance of an object.  When you call that method the <code>Self</code> pointer is set to the correct value so that you can access the state on the object.  It is really powerful.  This is typically how progress bars are driven in VCL applications.  You just do something like this:
 
-<pre class="code">
+{% highlight text %}
 type TProgressEvent = procedure(ACurrent, AMax: Integer) of object;
 <br />
 // ...
@@ -92,7 +92,7 @@ begin
   FThingWithProgressEvent.OnProgress := Progress;
 // ... Initialize more things ...
 end;
-</pre>
+{% endhighlight %}
 
 And then that method can do something such as adjust a progress bar or log to a file.  It's really slick.
 
@@ -100,7 +100,7 @@ Well, we want to display a progress bar in our Delphi GUI that moves as our <cod
 
 So now that we have the basic strategy in mind.  Let me show you the code that encapsulates this method pointer idea:
 
-<pre class="code">
+{% highlight text %}
 // Example.h
 public ref class ProcedureOfObject
 {
@@ -144,13 +144,13 @@ void Example::ProgressCallback::Execute(int current, int max)
     return;
   ((Example::PROGRESSEVENT) ProcedurePointer)(this->ObjectPointer, current, max);
 }
-</pre>
+{% endhighlight %}
 
 Note that I store the pointers as <code>IntPtr</code> references.  This is the type that all of the methods on <code>System::Runtime::InteropServices::Marshal</code> return pointers as.  So, it's useful to make your fields that way.  You can always call <code>ToPointer()</code> on it.
 
 Now, the last bit that we need is to export stuff in the DLL.  But you'll notice that all of the classes I've made so far have been managed classes.  We can't send a pointer to a managed object out of the DLL, but we can send a pointer to an unmanaged object that has a reference to our managed object.  So we make this wrapper:
 
-<pre class="code">
+{% highlight text %}
 // Example.h
 public class ClockWrapper
 {
@@ -168,11 +168,11 @@ public:
 private:
   gcroot&lt;Clock ^&gt; _clock;
 };
-</pre>
+{% endhighlight %}
 
 So all that's left is to export the DLL functions like before.  Just to keep them separate I'll make another delete method, even though it's identical in every way except the name.
 
-<pre class="code">
+{% highlight text %}
 // Exports.h
 DLLAPI void * ClockCreate();
 DLLAPI void ClockDelete(void * clock);
@@ -201,11 +201,11 @@ DLLAPI void ClockSetProgressCallback(void * clock, void * object, PROGRESSEVENT 
 {
   C(clock)->SetProgressCallback(object, callback);
 }
-</pre>
+{% endhighlight %}
 
 Then on the Delphi side:
 
-<pre class="code">
+{% highlight text %}
 // interface
 type TForm1 = class(TForm)
   edtCycles: TEdit;
@@ -255,7 +255,7 @@ begin
   ProgressBar1.Max := AMax;
   ProgressBar1.Position := ACurrent;
 end;
-</pre>
+{% endhighlight %}
 
 Some things to note.  First off, the <code>Progress</code> method on <code>TForm1</code> is <code>private</code>, and yet I call it from <code>ProgressCallback</code>.  This is because of how scoping works in Delphi.  Any code in the same unit as a <code>private</code> or <code>protected</code> method can call that method.  In Delphi 2005, the keywords <code>strict private</code> and <code>strict protected</code> were introduced to prevent this ability, but in this case we actually <em>want</em> the behavior because we don't want to expose that event to anybody else.
 

@@ -17,7 +17,7 @@ That said, I'd love to hear what the author suggests as alternative syntaxes for
 
 I do want to call him out on his hate of the condition initializer. That new syntax, along with multiple return values allows programmers to replace C code like this:
 
-<pre class="code">int result = someCall();
+{% highlight text %}int result = someCall();
 if result < 0 {
   /* Handle Error */
 } else {
@@ -30,15 +30,15 @@ if (result = someCall()) < 0 {
   /* Handle Error */
 } else {
   /* Do something with result */
-}</pre>
+}{% endhighlight %}
 
 With Go code like this:
 
-</pre><pre class="code">if result, err := someCall(); if err != nil {
+{% highlight text %}if result, err := someCall(); if err != nil {
   /* Handle Error */
 } else {
   /* Do something with result */
-}</pre>
+}{% endhighlight %}
 
 Notably, in the Go code, both <code>result</code> and <code>err</code> are scoped to just inside the if statement. They don't clutter the surrounding block. I'll talk more about this pattern in the part about exceptions.
 
@@ -56,21 +56,21 @@ Don't get the wrong idea. I think exceptions are useful. I use them in languages
 
 Here is an example:
 
-<pre class="code">func magic() (result int, err io.Error) {
+{% highlight text %}func magic() (result int, err io.Error) {
   if err = moreMagic(); err != nil {
     /* Calculate result */
   }
   return;
-}</pre>
+}{% endhighlight %}
 
 This allows the error from <code>moreMagic</code> to propagate up without reserving an out-of-band result value. It provides no more syntactic overhead than explicit exceptions in Java (and arguably less).
 
 The argument was made that people can fail to check return codes. People can be just as stupid in languages with exceptions. I've lost count how many times I've seen this in Java:
 
-<pre class="code">try {
+{% highlight text %}try {
   /* Do something that might blow up */
 } catch {
-}</pre>
+}{% endhighlight %}
 
 The catch block is empty on purpose. People do that. They catch <em>all</em> exceptions and then <em>do nothing</em> with them <em>on purpose</em>. You can be an idiot in any language.
 

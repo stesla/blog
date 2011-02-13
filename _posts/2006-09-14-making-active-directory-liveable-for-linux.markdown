@@ -10,10 +10,10 @@ However, we have had a few problems.  The thing is that every so often, our Linu
 
 It turns out that adding one line to the <code>[global]</code> section of my <code>smb.conf</code> file is what is needed to solve the problem.  See, the Windows boxes check in with the Active Directory controller once a day to update their machine ID.  My server was not doing this.  I've found, over time, that there are a lot of options for making Samba play well in a Windows network that aren't really defaulted like they should be.  Below is what I added to make it update like the others.
 
-<pre class="code">machine password timeout = 86400 # one day</pre>
+{% highlight text %}machine password timeout = 86400 # one day{% endhighlight %}
 
 Another interesting thing, was that despite my not telling it to, Samba was advertising the machine as a domain controller.  So I had to add the line below to disable that (despite the docs saying I shouldn't have to).
 
-<pre class="code">domain master = no</pre>
+{% highlight text %}domain master = no{% endhighlight %}
 
 In addition to the rest of the configuration for Samba to work with Active Directory, and I think we may finally have it working all the way.

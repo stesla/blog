@@ -8,7 +8,7 @@ There's this feature of <a href="http://macromates.com/">TextMate</a> that a lot
 
 This sort of feature isn't anything new. Emacs has had this feature for a long time. You just add this snippet to your to your <code>init.el</code>: 
 
-<pre class="code">(emacs-server)</pre>
+{% highlight text %}(emacs-server){% endhighlight %}
 
 Then you can use <code>emacsclient</code> to send files to it the same way. However, on my mac this wasn't working. The trick, it seems, is making sure you use the <em>correct</em> emacsclient.
 
@@ -16,7 +16,7 @@ About a year ago, <a href="http://emacs-app.sourceforge.net/">Emacs.app</a> was 
 
 You can write a little shell script, we'll call it <code>eopen</code>:
 
-<pre class="code">#!/bin/sh
+{% highlight text %}#!/bin/sh
 
 # Send the file to our running Emacs and bring it to the foreground.
 /Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n "${1}" \
@@ -26,17 +26,17 @@ You can write a little shell script, we'll call it <code>eopen</code>:
 # If that failed, then open a new emacs visiting the file.
 if [ $? -ne 0 ]; then
   EOPEN_DIR="${PWD}" EOPEN_FILE="${1}" open -a Emacs
-fi</pre>
+fi{% endhighlight %}
 
 Now, you'll notice that in the failure case, my script sets some environment variables and just opens Emacs. Those environment variables aren't anything special. In fact, unless you add some code to your <code>init.el</code> all you'll get is a fresh Emacs open to whatever default buffer you usually see.
 
 So, add the following to your <code>init.el</code>:
 
-<pre class="code">(let ((dir (getenv "EOPEN_DIR"))
+{% highlight text %}(let ((dir (getenv "EOPEN_DIR"))
       (file (getenv "EOPEN_FILE")))
   (if dir
       (cd dir))
   (if file
-      (find-file file)))</pre>
+      (find-file file))){% endhighlight %}
 
 Then, when you have those environment variables set (such as in the shell script), emacs will open up a buffer on the file or directory passed in as an argument to the script. This hack is there so that you can use eopen to open non-existent files in addition to existent files (<code>open</code> complains if the file does not exist). Subsequent calls to the script can just use <code>emacsclient</code>.

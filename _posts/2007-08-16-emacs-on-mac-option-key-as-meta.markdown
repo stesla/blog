@@ -10,19 +10,21 @@ As long as I can remember, my command key mapped to the meta key in Emacs.  This
 
 I used to have this in my <code>.emacs</code>, although I never really noticed it:
 
-<pre class="code">
-</pre><pre>(when stesla-mac-p
-  (setq mac-command-key-is-meta nil))</pre>
+{% highlight text %}
+(when stesla-mac-p
+  (setq mac-command-key-is-meta nil))
+{% endhighlight %}
 
 
 A week ago when I wanted to finally fix this and make my command key do something other than be meta and make my option key be my meta key, I began to baffle as to why it wasn't that way already.  See, Google told me that the code I had in my <code>.emacs</code> should have done what I want.
 
 Well, it turns out that it <em>used</em> to be how to do it.  Emacs is cooler now, and lets you specify the behavior of all three special keys.  So now what have is this:
 
-<pre class="code">
-</pre><pre>(when stesla-mac-p
+{% highlight text %}
+(when stesla-mac-p
   (setq mac-command-modifier nil)
-  (setq mac-option-modifier 'meta))</pre>
+  (setq mac-option-modifier 'meta))
+{% endhighlight %}
 
 
 This makes Emacs not recognize the command key as a modifier at all and use the option key as meta, which is how I like it.

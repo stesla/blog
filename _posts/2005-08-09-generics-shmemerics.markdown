@@ -10,7 +10,7 @@ wordpress_url: http://www.alieniloquent.com/?p=22
 
 <blockquote>A note on naming conventions. We recommend that you use pithy (single character if possible) yet evocative names for formal type parameters. It’s best to avoid lower 3 case characters in those names, making it easy to distinguish formal type parameters from ordinary classes and interfaces. Many container types use E, for element, as in the examples above.</blockquote>
 
-<pre class="code">
+{% highlight text %}
 public interface List&lt;E&gt;
 {
   void add(E x); 
@@ -22,7 +22,7 @@ public interface Iterator&lt;E&gt;
   E next(); 
   boolean hasNext(); 
 }
-</pre>
+{% endhighlight %}
 
 <p>In the comments over on Blaine's blog, this guy named Issac (who's mission it appears to be to disagree with everything Blaine says) said:</p>
 
@@ -32,13 +32,13 @@ public interface Iterator&lt;E&gt;
 
 <p>The cognitive dissonance only becomes worse when you want to make a class generic on more than one axis.  When you have something like:</p>
 
-<pre class="code">
+{% highlight text %}
 public interface Matrix&lt;E, F&gt;
 {
   add(E x, F y);
   //... more methods in E and F ...
 }
-</pre>
+{% endhighlight %}
 
 <p>When does it stop?  How are we supposed to make "evocative" names when we only have one letter to choose from?  Sure, we can take the class name we would've used and use the first letter, but then we are limited to only 26 names.  It might very well get confusing when we use E to mean Element in one place but use it to mean Enumerator in another.</p>
 

@@ -10,10 +10,10 @@ The code that I was using <code>htons</code> in was my SOCKS5 implementation.  F
 
 Some of you may be guessing what I was calling <code>htons</code> on already: the port to be serialized.  Here are the two offending lines of code:
 
-<pre class="code">
+{% highlight text %}
 [buffer append:(0xFF00 & htons(port)) >> 8];
 [buffer append:(0x00FF & htons(port))];
-</pre>
+{% endhighlight %}
 
 That <code>buffer</code> was then, in turn, written out across the socket to the server (or inspected by unit tests).  But, since I was extracting each byte individually the byte-order didn't matter since <code>0xFF00</code> will be in the same byte order as <code>port</code> every time.
 

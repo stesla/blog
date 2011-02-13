@@ -32,10 +32,10 @@ is the same as:
 
 So for a more complicated example from the REPL:
 
-<pre class="code">
+{% highlight text %}
 > (fn f. fn x. f x) (fn y. y) z;
 z
-</pre>
+{% endhighlight %}
 
 The first part declares a function which binds <code>f</code> and returns a function which binds <code>x</code> and returns the application of <code>f</code> to <code>x</code>. We pass to that the identity function <code>(fn y. y)</code> and the variable <code>z</code>. That all reduces to just <code>z</code>.
 

@@ -8,17 +8,17 @@ The product that my company sells is very data intense.  The data is stored in a
 
 In previous versions of the software most of this was done in Delphi code.  However, now that we run on a database that has good SQL support, we realized we could just run queries to get 99% of what we wanted done.  To take this a step further, we could just write a SQL script that does all the work and not have to recompile any code for the schema updater to do the right thing.
 
-<pre class="code">
+{% highlight text %}
 [2.1]
 ALTER TABLE ...
-<br />
+
 [2.2]
 DROP TABLE ...
 CREATE TABLE ...
-<br />
+
 [2.7]
 INSERT INTO ...
-</pre>
+{% endhighlight %}
 
 You get the idea.  The program would then check the database to see if it was on the latest version and it would run any relevant SQL snippets on it in order to bring it up to date.  For each section it ran it would increment the version of the data to that version, run the SQL, and move on.  Of course, after it runs the last one that brings the data up to the last version.  Neato, right?  If only it were that simple.
 

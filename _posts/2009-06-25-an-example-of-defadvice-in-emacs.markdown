@@ -12,7 +12,7 @@ For example, some people like to have a window pane that shows them the file str
 
 One of my co-workers wanted his nav to show up on the right-hand side. So I started by typing <code>C-h k nav RET</code> and that brought up the help for the function <code>nav</code> which puts the navigation buffer on the screen.
 
-<pre class="code">(defun nav ()
+{% highlight text %}(defun nav ()
   "Run nav-mode in a narrow window on the left side."
   (interactive)
   (if (nav-is-open)
@@ -25,7 +25,7 @@ One of my co-workers wanted his nav to show up on the right-hand side. So I star
     (set-window-dedicated-p (selected-window) t)
     (nav-mode)
     (when nav-resize-frame-p
-      (nav-resize-frame))))</pre>
+      (nav-resize-frame)))){% endhighlight %}
 
 A quick terminology note. In Emacs-speak, operating-system windows are called <em>frames</em>. A frame can be split into multiple <em>windows</em>.
 
@@ -35,7 +35,7 @@ So, all we need to do is delete the line I bolded above and it should work. Beca
 
 However, I do not want to duplicate all the rest of that code. Emacs has an awesome facility to assist me, and it's called <code>defadvice</code>.
 
-<pre class="code">;;;;;;;; To launch nav on left side: M-x nav RET
+{% highlight text %};;;;;;;; To launch nav on left side: M-x nav RET
 ;;;;;;;; To launch nav on right side: C-u M-x nav RET
 (defadvice other-window (around other-window-nop))
 (defadvice nav (around prefix-nav)
@@ -44,7 +44,7 @@ However, I do not want to duplicate all the rest of that code. Emacs has an awes
   (unwind-protect
       ad-do-it
     (ad-deactivate-regexp "other-window-nop")))
-(ad-activate-regexp "prefix-nav")</pre>
+(ad-activate-regexp "prefix-nav"){% endhighlight %}
 
 This is essentially <a href="http://en.wikipedia.org/wiki/Monkey_patch">monkey-patching</a> by another name. When I activate this advice it gets called instead of the function it's advising, then at the point I call <code>ad-do-it</code>, the original function (and any previously defined advice) gets called. In the above code, I have two pieces of advice. One simply turns <code>other-window</code> into a no-op, and the other turns that on and off, but only if you use the universal prefix.
 

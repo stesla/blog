@@ -12,9 +12,9 @@ The only thing I don't like about this, though, is that if you're developing a G
 
 So I came up with a solution.  It's really nothing that fancy, but I thought I'd share.  I make a Cocoa Shell Tool target, and I name it something like <code>stub</code>.  I make a C file and name it <code>stub-main.m</code>.  In that file I put the following three lines:
 
-<pre class="code">int main(int argc, char *argv[]) {
+{% highlight text %}int main(int argc, char *argv[]) {
   return 0;
-}</pre>
+}{% endhighlight %}
 
 Then I add all of the application source files that my tests are going to need to link to and make sure it all compiles.  I just use that as the bundle loader for my tests, and it's all good.  No GUI popping up. 
 

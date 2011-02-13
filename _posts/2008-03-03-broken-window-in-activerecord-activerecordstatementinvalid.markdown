@@ -10,7 +10,7 @@ One of the projects I work on for my employer is an import process that takes a 
 
 When the database connection disappears, the database driver throws an exception. <code>ActiveRecord::Base</code> catches that exception and does this:
 
-<pre class="code"># Find this in Rails 2.0.2
+{% highlight text %}# Find this in Rails 2.0.2
 # active_record/connection_adapter/abstract_adapter.rb:121
 
 rescue Exception => e
@@ -21,13 +21,13 @@ rescue Exception => e
   message = "#{e.class.name}: #{e.message}: #{sql}"
   log_info(message, name, 0)
   raise ActiveRecord::StatementInvalid, message
-end</pre>
+end{% endhighlight %}
 
 This is the exception handler that catches all exceptions raised during a query run by ActiveRecord. As you can see, it snags the class name, and the exception message off of the exception, and then throws the object away, reraising with <code>ActiveRecord::StatementInvalid</code>. So, if your database driver has hundreds of error codes which are provided in order for you to tell specifically what error occurred, such as <code>Mysql::Error</code>, you lost them.
 
 So ActiveRecord provides <em>one</em> exception that covers everything from primary key violations to database connection errors, and the only way to distinguish them is by inspecting the message. Surely, that can't be true, right? I dig further and find this:
 
-<pre class="code"># Find this in Rails 2.0.2
+{% highlight text %}# Find this in Rails 2.0.2
 # active_record/connection_adapters/mysql_adapter.rb:244
 #
 # Note: I snipped the error message because it is very long
@@ -39,7 +39,7 @@ rescue ActiveRecord::StatementInvalid => exception
     raise
   end
 end
-</pre>
+{% endhighlight %}
 
 That is just completely unacceptable. I can find it in my heart to forgive the abstract adapter for doing something that throws away implementation-specific information, but the Mysql adapter should remedy that. It willingly lets it's exception information be cast aside and goes about inspecting what the abstract adapter had the decency to keep around.
 

@@ -10,8 +10,8 @@ Well, the store-front is going to be a <a href="http://www.rubyonrails.com">Rail
 
 The first four tests were easy.  Really short strings, but they worked out most of the kinks.  But, I wanted something that would boost my confidence further.  So I wrote the following test which ended up being quite patriotic.
 
-<pre class="code">
-</pre><pre>def test_constitution_preamble
+{% highlight text %}
+def test_constitution_preamble
   plaintext =&lt;&lt;-EOT
     We the people of the United States, in order to form a more perfect union,
     establish justice, insure domestic tranquility, provide for the common
@@ -29,4 +29,5 @@ The first four tests were easy.  Really short strings, but they worked out most 
     OJUXI6JMEBSG6IDPOJSGC2LOEBQW4ZBAMVZXIYLCNRUXG2BAORUGS4ZAINXW443UNF2HK5DJ
     N5XAUIBAEAQCAIDGN5ZCA5DIMUQFK3TJORSWIICTORQXIZLTEBXWMICBNVSXE2LDMEXAU===).join
   assert_equal(encoded, Base32.encode(plaintext))
-end</pre>
+end
+{% endhighlight %}
