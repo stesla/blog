@@ -27,11 +27,11 @@ I'd share. I make a Cocoa Shell Tool target, and I name it something like
 `stub`. I make a C file and name it `stub-main.m`. In that file I put the
 following three lines:
 
-{% highlight text %}int main(int argc, char *argv[]) {
-
-return 0;
-
-}{% endhighlight %}
+{% highlight text %}
+int main(int argc, char *argv[]) {
+  return 0;
+}
+{% endhighlight %}
 
 Then I add all of the application source files that my tests are going to need
 to link to and make sure it all compiles. I just use that as the bundle loader
@@ -41,8 +41,7 @@ For an example of how to do this, you can look at the source for [OCFit][3].
 
    [1]: http://www.sente.ch/software/ocunit/
 
-   [2]: http://developer.apple.com/documentation/DeveloperTools/Conceptual/Uni
-tTesting/Articles/CreatingTests.html#//apple_ref/doc/uid/TP40002171-BBCBGHCJ
+   [2]: http://developer.apple.com/documentation/DeveloperTools/Conceptual/UnitTesting/Articles/CreatingTests.html#//apple_ref/doc/uid/TP40002171-BBCBGHCJ
 
    [3]: http://ocfit.tigris.org/
 

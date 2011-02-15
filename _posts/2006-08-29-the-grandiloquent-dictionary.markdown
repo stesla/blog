@@ -10,8 +10,7 @@ dictionaries, and that's why I picked it for my domain. I finally found this
 website, the [Grandiloquent Dictionary][1], and it has my word in it.
 
 alieniloquent
-
-    Speaking discursively or straying from one's point.
+: Speaking discursively or straying from one's point.
 
 So for those of you who were wondering, there you go.
 

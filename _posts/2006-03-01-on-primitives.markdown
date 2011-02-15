@@ -65,8 +65,7 @@ and it leads to spaghetti code that is hard to refactor.
 We must resist the temptation and make supple, agile code. That means we must
 make classes.
 
-   [1]: http://www.blainebuxton.com/weblog/2006/02/string-how-i-loathe-
-thee.html
+   [1]: http://www.blainebuxton.com/weblog/2006/02/string-how-i-loathe-thee.html
 
    [2]: http://www.amazon.com/gp/product/0321213351/
 

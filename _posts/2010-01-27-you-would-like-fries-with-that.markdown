@@ -9,12 +9,12 @@ hard][1]. He makes several good points, but the one that sticks out most in my
 mind is the following:
 
 > Every software engineer has a low opinion of the way we develop software.
-Even the term "software engineering," Rosenberg writes, is a statement of
-hope, not fact. He quotes the 1968 NATO [Software Engineering Conference][2]
-that coined the term: "We undoubtedly produce software by backward
-techniques." "We build systems like the Wright brothers built airplanes--build
-the whole thing, push it off the cliff, let it crash, and start over again."
-Certainly statements that could still be made forty years later.
+> Even the term "software engineering," Rosenberg writes, is a statement of
+> hope, not fact. He quotes the 1968 NATO [Software Engineering Conference][2]
+> that coined the term: "We undoubtedly produce software by backward
+> techniques." "We build systems like the Wright brothers built airplanes--build
+> the whole thing, push it off the cliff, let it crash, and start over again."
+> Certainly statements that could still be made forty years later.
 
 That is so true, especially when it comes to the programming languages we use.
 Most of the languages with widespread use in industry today are essentially

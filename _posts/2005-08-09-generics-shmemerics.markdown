@@ -15,10 +15,10 @@ Over on [Blaine Buxton's blog][1] he posted about [Java generics][2] and the
 _recommended_ naming for the generic types:
 
 > A note on naming conventions. We recommend that you use pithy (single
-character if possible) yet evocative names for formal type parameters. It’s
-best to avoid lower 3 case characters in those names, making it easy to
-distinguish formal type parameters from ordinary classes and interfaces. Many
-container types use E, for element, as in the examples above.
+> character if possible) yet evocative names for formal type parameters. It’s
+> best to avoid lower 3 case characters in those names, making it easy to
+> distinguish formal type parameters from ordinary classes and interfaces. Many
+> container types use E, for element, as in the examples above.
 
 {% highlight text %}
 
@@ -49,8 +49,8 @@ In the comments over on Blaine's blog, this guy named Issac (who's mission it
 appears to be to disagree with everything Blaine says) said:
 
 > Everyone knows better than to use single letter names for classes and
-interfaces - so when we see a single letter name, we can be confident the
-parameter is not a class or an interface but is a formal type parameter.
+> interfaces - so when we see a single letter name, we can be confident the
+> parameter is not a class or an interface but is a formal type parameter.
 
 Isaac clearly have a very narrow definition of "everyone" or a very narrow
 sample of code to draw from. I see terrible naming in every language and it

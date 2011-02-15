@@ -12,6 +12,5 @@ downtown Benson.
 
    [1]: http://www.sperari.com/archives/2005/08/05/house-house-house/
 
-   [2]: http://maps.google.com/maps?q=5844+Corby+St,+Omaha,+68104&spn=0.032290
-,0.057974&hl=en
+   [2]: http://maps.google.com/maps?q=5844+Corby+St,+Omaha,+68104&spn=0.032290,0.057974&hl=en
 

@@ -53,8 +53,7 @@ higher revenue. However, this algorithm should perform fairly well.
 
    [2]: http://odynug.kicks-ass.org
 
-   [3]: http://github.com/stesla/odynug/blob/3d3d75cc4d70b189c625579ce841de3ce
-7ada68b/pet_paradise/README
+   [3]: http://github.com/stesla/odynug/blob/3d3d75cc4d70b189c625579ce841de3ce7ada68b/pet_paradise/README
 
    [4]: http://en.wikipedia.org/wiki/Interval_graph
 

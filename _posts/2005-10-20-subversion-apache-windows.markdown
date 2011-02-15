@@ -54,8 +54,7 @@ wee hours backing up my nearly empty repository.
 
 More soon about moving the source over. It's very exciting.
 
-   [1]: http://blog.briankohrs.com/2005/09/20/guide-to-installing-the-
-subverison-http-module-on-windows/
+   [1]: http://blog.briankohrs.com/2005/09/20/guide-to-installing-the-subverison-http-module-on-windows/
 
    [2]: http://www.deadbeef.com/index.php/2004/03/29/mod_auth_sspi
 

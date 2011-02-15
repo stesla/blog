@@ -26,13 +26,13 @@ keystrokes on the left and text on the right. In many cases it will be an ANSI
 escape sequence to send to the terminal, in some cases it will be a special
 action. Here's what you want to set things to.
 
-  * `page down = send string to shell: \033[6~`
+* `page down = send string to shell: \033[6~`
 
-  * `page up = send string to shell: \033[5~`
+* `page up = send string to shell: \033[5~`
 
-  * `shift page down = scroll to next page in buffer`
+* `shift page down = scroll to next page in buffer`
 
-  * `shift page up = scroll to previous page in buffer`
+* `shift page up = scroll to previous page in buffer`
 
 That effectively just swaps the keys, so that you still have the ability to
 scroll your Terminal buffer with the keyboard.

@@ -10,19 +10,19 @@ what readers I do have to see what people would like to hear me talk about.
 
 Here are some topics that I've thought about doing:
 
-  * Things about programming they don't teach you in college
+* Things about programming they don't teach you in college
 
-  * Agile methods
+* Agile methods
 
-  * Test-first design
+* Test-first design
 
-  * Refactoring
+* Refactoring
 
-  * Cocoa programming
+* Cocoa programming
 
-  * Ruby programming
+* Ruby programming
 
-  * Lisp programming
+* Lisp programming
 
 There's no particular order to those, as I find them all very interesting.
 It's possible that I could end up doing a mishmash of all of them.

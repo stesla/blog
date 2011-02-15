@@ -10,11 +10,9 @@ it's impact on the author's development process.
 I particularly liked one of the author's comments in the comment thread:
 
 > Velocity is a measurement that comes out of development, not an input that
-goes into it.
-
+>goes into it.
 >
-
-> \[Uncle Bob\] said . . . that when you are trying to measure something, it’s
-counter-productive to put pressure on it.
+> \[Uncle Bob\] said . . . that when you are trying to measure something, it's
+> counter-productive to put pressure on it.
 
    [1]: http://blog.objectmentor.com/articles/2008/03/05/turn-back-the-dial

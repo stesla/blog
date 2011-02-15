@@ -14,6 +14,5 @@ business. So my talk will be at the [Panera][2] at [132nd and Maple][3].
 
    [2]: http://www.panerabread.com/
 
-   [3]: http://maps.google.com/maps?q=13410%20W%20Maple%20Rd&ie=UTF-8&oe=UTF-8
-&client=firefox-a&rls=org.mozilla:en-US:official&sa=N&tab=wl
+   [3]: http://maps.google.com/maps?q=13410%20W%20Maple%20Rd&ie=UTF-8&oe=UTF-8&client=firefox-a&rls=org.mozilla:en-US:official&sa=N&tab=wl
 

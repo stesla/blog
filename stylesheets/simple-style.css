@@ -6,6 +6,7 @@ dd { margin-bottom: 1em; padding-left: 1em; line-height: 1.5em; }
 dt { font-weight: bold; }
 em { font-style: italic; }
 p { line-height: 1.5em; }
+strong { font-weight: bold }
 
 .highlight, .code { font-family: monospace; font-size: 90%; margin-bottom: 1em; background: #e3e3e3; overflow: auto; padding: 5px; }
 

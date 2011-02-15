@@ -30,9 +30,7 @@ effectively brainless but that still lets me make pretty things, is awesome.
 
 I'll be sure to get Erica to post pictures of my afghan when it's done.
 
-   [1]: http://www.sperari.com/archives/2006/02/21/mein-hut-der-hat-drei-
-ecken/
+   [1]: http://www.sperari.com/archives/2006/02/21/mein-hut-der-hat-drei-ecken/
 
-   [2]: http://www.sperari.com/archives/2006/03/03/goals-and-humongous-pom-
-pons/
+   [2]: http://www.sperari.com/archives/2006/03/03/goals-and-humongous-pom-pons/
 

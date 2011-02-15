@@ -23,6 +23,5 @@ big win over going into crunch mode to hit a date.
 
 But I'm a developer, what do I know about managing projects, right?
 
-   [1]: http://jamesgolick.com/2008/2/18/the-crunch-mode-paradox-turning-
-superstars-average
+   [1]: http://jamesgolick.com/2008/2/18/the-crunch-mode-paradox-turning-superstars-average
 

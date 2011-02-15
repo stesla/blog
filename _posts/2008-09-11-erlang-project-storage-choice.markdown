@@ -14,8 +14,7 @@ it is a very powerful tool and can be used to do more that just version
 software. I think CouchDB is cool, and at some point, I'll probably do a
 project with it. But, for this project, it's not what I want.
 
-   [1]: http://blog.alieniloquent.com/2008/09/08/erlang-project-
-stories/#comment-45637
+   [1]: http://blog.alieniloquent.com/2008/09/08/erlang-project-stories/#comment-45637
 
    [2]: http://couchdb.org/
 
