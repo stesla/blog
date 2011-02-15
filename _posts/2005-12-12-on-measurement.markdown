@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 38
 title: On Measurement
 wordpress_url: http://www.alieniloquent.com/?p=38
---- |+
+---
 So my boss walks into the room and slaps a print-out on the wall with some
 tape. It says:
 

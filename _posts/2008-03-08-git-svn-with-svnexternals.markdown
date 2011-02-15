@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 127
 title: <code>git-svn</code> with <code>svn:externals</code>
 wordpress_url: http://blog.alieniloquent.com/2008/03/08/git-svn-with-svnexternals/
---- |+
+---
 I've really fallen [head][1] over [heels][2] in love with Git. But my original
 solution was really a hack. There is a better way to do it. In fact, it's so
 much better, it comes with Git.

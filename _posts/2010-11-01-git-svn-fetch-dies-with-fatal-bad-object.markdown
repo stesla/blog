@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 282
 title: "git svn fetch dies with \"fatal: bad object\""
 wordpress_url: http://blog.alieniloquent.com/?p=282
---- |+
+---
 At the day job, I use git-svn to interface with the SVN repository my team
 uses to manage its code. For the last several months that's been going on
 painlessly. For the last couple of weeks I haven't been doing anything in the

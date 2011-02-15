@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 33
 title: Ruby Talk
 wordpress_url: http://www.alieniloquent.com/?p=33
---- |+
+---
 I know, I know. It's been a while since I last blogged (9 days, and longer
 since it was anything of content). I've been busy! Every so often I think to
 myself "Do I want to blog about what I'm doing, or just do it." Between work,

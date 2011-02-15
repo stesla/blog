@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 28
 title: Rails Talk
 wordpress_url: http://www.alieniloquent.com/2005/09/13/rails-talk/
---- |+
+---
 I gave a talk about [Ruby on Rails][1] at the [Omaha Smalltalk User Group][2]
 tonight. It went rather well. I've posted my [slides][3] for anybody that
 would like them.

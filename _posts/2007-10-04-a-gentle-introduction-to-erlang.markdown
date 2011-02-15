@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 107
 title: A Gentle Introduction to Erlang
 wordpress_url: http://blog.alieniloquent.com/2007/10/04/a-gentle-introduction-to-erlang/
---- |+
+---
 I gave a talk at [ODYNUG][1] on Tuesday about one of my favorite dynamic
 languages: Erlang. It went pretty well, I think. Unlike my Lisp talk from last
 year, I don't think I caused too many heads to explode.

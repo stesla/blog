@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 46
 title: Missed a day already
 wordpress_url: http://www.alieniloquent.com/2006/03/01/missed-a-day-already/
---- |+
+---
 I set a goal for myself to blog every day, and I don't even manage to do three
 days in a row. That's embarrassing.
 

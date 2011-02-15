@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 136
 title: Still Not Dead
 wordpress_url: http://blog.alieniloquent.com/?p=136
---- |+
+---
 So, the October ODYNUG meeting came and went, and it was great. My talk went
 well, despite my not having written my blogging tool.
 

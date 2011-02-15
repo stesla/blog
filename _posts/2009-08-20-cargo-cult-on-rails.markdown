@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 175
 title: Cargo Cult on Rails
 wordpress_url: http://blog.alieniloquent.com/?p=175
---- |+
+---
 I've been coding in Ruby for a long time, and I love the language. It has all
 the object-oriented power of Smalltalk, the functional power of Lisp, and the
 concision of Perl. It is so powerful that it enables programmers to devise

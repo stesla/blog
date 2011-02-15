@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 74
 title: Code Survival
 wordpress_url: http://blog.alieniloquent.com/2006/08/15/code-survival/
---- |+
+---
 While [Brian][1] and I were pairing today, we also found an offensive bit of
 code.
 

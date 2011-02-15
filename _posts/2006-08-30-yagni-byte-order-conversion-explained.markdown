@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 87
 title: "YAGNI: byte-order conversion explained"
 wordpress_url: http://blog.alieniloquent.com/2006/08/30/yagni-byte-order-conversion-explained/
---- |+
+---
 In my [previous post][1] I talked about this problem I ran into with byte-
 ordering and tests failing. Brian and Joe both felt that I left them hanging
 by going into all the technical details of what my problem was and not going

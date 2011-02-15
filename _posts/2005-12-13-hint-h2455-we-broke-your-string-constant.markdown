@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 39
 title: "Delphi Hint H2455: We Broke Your String Constant"
 wordpress_url: http://www.alieniloquent.com/?p=39
---- |+
+---
 So, Brian and I are going along writing code that was _supposed_ to be _easy_.
 Then we run into a problem. Some of the super secure encryption we do to
 obfuscate some constants in our code wasn't working right -- in .NET. It

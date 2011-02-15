@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 98
 title: They Had Really Long Names
 wordpress_url: http://blog.alieniloquent.com/2007/03/25/they-had-really-long-names/
---- |+
+---
 Two years ago when my employer adopted Extreme Programming, we began to write
 automated tests for our code. My memory is fuzzy at this point, but as I
 recall we wanted to be able to write tests and keep the source files anywhere

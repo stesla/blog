@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 57
 title: Grills and Receptacles, part Deux
 wordpress_url: http://www.alieniloquent.com/2006/03/12/grills-and-receptacles-part-deux/
---- |+
+---
 Two weekends in a row this has been the topic du jour. It's like grilling and
 electrical work go together. Like chocolate and mint, or swearing and hockey.
 

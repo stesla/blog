@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 142
 title: An example of <code>defadvice</code> in Emacs
 wordpress_url: http://blog.alieniloquent.com/?p=142
---- |+
+---
 For decades there's been a [war][1] between zealous users of various editors.
 The truth is, though, that it is completely unfair to compare editors such as
 vi, Textmate, or BBedit with Emacs. Why is it unfair? Emacs isn't an editor,

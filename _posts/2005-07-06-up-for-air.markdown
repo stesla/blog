@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 5
 title: Up For Air
 wordpress_url: http://www.alieniloquent.com/2005/07/06/up-for-air/
---- |+
+---
 It's been over a month since I last posted. There have been a couple of times
 I've considered writing something, but I've been to tired or busy to do it.
 Between work and school I've been pretty drained, and what little energy I've

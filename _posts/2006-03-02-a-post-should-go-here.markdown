@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 48
 title: A Post Should Go Here
 wordpress_url: http://www.alieniloquent.com/2006/03/02/a-post-should-go-here/
---- |+
+---
 It's not until I set the goal to write a blog post every day that I realized I
 don't always have a topic to write about. Were I to have a topic, this post
 would have been about it. Instead, you get this placeholder post where I talk

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 216
 title: Fixing My Markup
 wordpress_url: http://blog.alieniloquent.com/?p=216
---- |+
+---
 Several years ago when I created the current design for this blog, I made a
 rather unfortunate choice of markup for my code snippets. I decided to enclose
 them in `<div>` tags like this:

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 22
 title: Generics shmemerics
 wordpress_url: http://www.alieniloquent.com/?p=22
---- |+
+---
 It's no secret that the next version of Java will have generics, as will the
 next version of C#. This is nothing incredibly new. C++ has had templates
 since the dawn of time and they've always made code unreadable and needlessly

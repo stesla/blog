@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 52
 title: A To Do List
 wordpress_url: http://www.alieniloquent.com/2006/03/07/a-to-do-list/
---- |+
+---
 This will be the first of two posts today, as I forgot to post yesterday.
 Following in Erica's [footsteps][1], here is my to do list.
 

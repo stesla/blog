@@ -1,10 +1,10 @@
---- 
+---
 layout: post
 wordpress_id: 250
 title: "Newsflash: Go is Experimental"
 excerpt: "Go is <em>incomplete</em> and <em>experimental</em>. Even recently it went through a fundamental syntax change (making semi-colons optional virtually everywhere). The Go authors are very willing to listen to suggestions that are backed up with code. So, what I have to say to the author is: nut up or shut up."
 wordpress_url: http://blog.alieniloquent.com/?p=250
---- |+
+---
 Saw a [rant][1] today about [Go][2]. I was genuinely impressed with the amount
 of piss and vinegar the author managed to conjure up over this. He's more
 upset about this language than I am excited about it, and I wrote a

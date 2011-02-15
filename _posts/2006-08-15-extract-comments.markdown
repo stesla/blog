@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 75
 title: Extract Comments
 wordpress_url: http://blog.alieniloquent.com/2006/08/15/extract-comments/
---- |+
+---
 So [Brian][1] and I were pairing today, and we were refactoring some legacy
 code.  The method we were looking at was over 200 lines long, and it had
 comments sprinkled throughout to make it semi-readable.

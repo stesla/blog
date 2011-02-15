@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 59
 title: DVDs and World of Warcraft
 wordpress_url: http://www.alieniloquent.com/2006/03/17/dvds-and-world-of-warcraft/
---- |+
+---
 That is what I've been doing the last few days. I've been watching DVDs and
 playing WoW, and clearly not blogging. What's more, I've had a few ideas for
 blog posts (although, I can't remember exactly what they were now). Ah, well,

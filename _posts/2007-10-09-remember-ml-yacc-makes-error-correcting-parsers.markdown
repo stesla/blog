@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 109
 title: Remember ML-Yacc makes error-correcting parsers
 wordpress_url: http://blog.alieniloquent.com/2007/10/09/remember-ml-yacc-makes-error-correcting-parsers/
---- |+
+---
 So I got my language [working][1]. But there are still some things I want to
 add to it. One thing that was bothering me was that both this code:
 

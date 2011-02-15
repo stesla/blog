@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 85
 title: "YAGNI: byte-order conversion"
 wordpress_url: http://blog.alieniloquent.com/2006/08/29/yagni-byte-order-conversion/
---- |+
+---
 So I have this project, and it compiles for the Mac on both PPC and i386
 architectures. Naturally, I have unit tests for this project.
 

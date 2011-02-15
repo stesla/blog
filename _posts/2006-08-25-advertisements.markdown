@@ -1,4 +1,4 @@
---- 
+---
 layout: post
 wordpress_id: 83
 title: Advertisements

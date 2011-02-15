@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 295
 title: XBox Live UX Fail
 wordpress_url: http://blog.alieniloquent.com/?p=295
---- |+
+---
 ### The Story
 
 Today I received an email from Microsoft. They wanted to let me know that in

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 113
 title: Currying Function Parameters
 wordpress_url: http://blog.alieniloquent.com/2007/12/23/currying-function-parameters/
---- |+
+---
 One of the first things I wanted to do to improve the readability of my
 language was to add the currying of function parameters. Since it is such a
 common pattern to have three or four abstractions right in a row to bind

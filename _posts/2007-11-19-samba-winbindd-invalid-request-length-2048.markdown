@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 110
 title: "Samba winbindd invalid request length: 2048"
 wordpress_url: http://blog.alieniloquent.com/2007/11/19/samba-winbindd-invalid-request-length-2048/
---- |+
+---
 An update came down from [Gentoo][1] for Samba updating it to version 2.0.26a.
 We had been having trouble with a problem in 3.0.24 that had been fixed in a
 intervening release of Samba. So, naturally, I wanted to upgrade. But when I

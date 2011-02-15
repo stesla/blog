@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 125
 title: SVN + Git + 1 = Still Awesome
 wordpress_url: http://blog.alieniloquent.com/2008/02/22/svn-git-1-still-awesome/
---- |+
+---
 Yesterday I wrote about using [SVN and Git][1] together to have version
 control away from the network your SVN server is on. Now, I'll admit, I wrote
 that shortly after figuring it out and doing it. So, at that time, I hadn't

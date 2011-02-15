@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 11
 title: Harry Potter
 wordpress_url: http://www.alieniloquent.com/2005/07/18/harry-potter/
---- |+
+---
 So I bought went to Borders Saturday to buy the latest Harry Potter, and
 discovered that I should have reserved a copy ahead of time. They weren't
 going to sell the normal edition to me until Monday. However, I could purchase

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 36
 title: Subversion + Apache + Windows
 wordpress_url: http://www.alieniloquent.com/?p=36
---- |+
+---
 I've always set up Subversion and Apache on Unix systems. Heck, aside from
 work, I generally don't use Windows. However, at work, it's all Windows on our
 production boxes. So, naturally, we needed our version control to run on a

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 54
 title: "Inexplicable Key-Chord #572"
 wordpress_url: http://www.alieniloquent.com/?p=54
---- |+
+---
 There's a plugin for the Delphi IDE called GExperts. This plugin provides a
 metric ton of addons. The one that we use it for here at my office is Grep. In
 most ways it is superior to Delphi's find-in-files functionality. There are

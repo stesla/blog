@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 86
 title: The Grandiloquent Dictionary
 wordpress_url: http://blog.alieniloquent.com/2006/08/29/the-grandiloquent-dictionary/
---- |+
+---
 So I was looking up an actual dictionary definition of "alieniloquent" today.
 I had one at some time in the past, but it's a hard word to find in
 dictionaries, and that's why I picked it for my domain. I finally found this

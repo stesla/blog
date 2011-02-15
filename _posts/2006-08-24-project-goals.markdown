@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 82
 title: Project Goals
 wordpress_url: http://blog.alieniloquent.com/2006/08/24/project-goals/
---- |+
+---
 Erica posted her [creative goals][1], and I figured I'd do the same.
 
   * I'm working on a Mac app that will interface with [Google Calendar][2] and

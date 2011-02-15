@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 67
 title: I suck at the internet
 wordpress_url: http://blog.alieniloquent.com/2006/07/17/i-suck-at-the-internet/
---- |+
+---
 Well, don't I just suck at the internet?
 
 I'm thinking about moving my blog over to [Typo][1] but first I needed to

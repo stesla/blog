@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 42
 title: Strings, arrays, and duck typing goodness
 wordpress_url: http://www.alieniloquent.com/?p=42
---- |+
+---
 We use more and more ruby around my shop every day, and that just tickles me
 pink. One thing that we've been using it a lot for is managing our Subversion
 working copies. We have a script that will delete unversioned files. We have a

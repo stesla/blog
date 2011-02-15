@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 103
 title: Base32 0.1.0 Released
 wordpress_url: http://blog.alieniloquent.com/2007/06/28/base32-010-released/
---- |+
+---
 As you may know, I've been [working][1] [with][2] base32 encoding. Well, I
 decided to share my work with the world in the form of a library.
 

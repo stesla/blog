@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 20
 title: House Pictures
 wordpress_url: http://www.alieniloquent.com/2005/08/05/house-pictures/
---- |+
+---
 Erica has blogged some [pictures][1] of the house we're buying. Note the porch
 funiture that we got into the contract!
 

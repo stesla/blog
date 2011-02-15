@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 51
 title: Of Grills and Receptacles
 wordpress_url: http://www.alieniloquent.com/?p=51
---- |+
+---
 I got a lot done this weekend. Getting up at five in the morning really has a
 lot to be said for it. I really got a lot done.
 

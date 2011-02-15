@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 118
 title: Living In the House That Rails Built
 wordpress_url: http://blog.alieniloquent.com/2008/01/29/living-in-the-house-that-rails-built/
---- |+
+---
 I wanted to share a snippet of code. This code will print a call stack to
 `STDOUT` every time a Ruby class definition is evaluated. It is particularly
 useful when you find that class constants are being mysteriously redefined.

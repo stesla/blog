@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 108
 title: Samuel's Lambda and the Y Combinator
 wordpress_url: http://blog.alieniloquent.com/2007/10/08/samuels-lambda-and-the-y-combinator/
---- |+
+---
 So I'm taking "Principles of Programming Languages" at UNO with [Dr.
 Winter][1]. There is a group project, and he is letting me do the project on
 my own. The project is to make a small imperative (and [Turing-complete][2])

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 56
 title: The Abstract Concept of Abstraction
 wordpress_url: http://www.alieniloquent.com/2006/03/11/the-abstract-concept-of-abstraction/
---- |+
+---
 So, last weekend, we bought a [grill][1]. Yesterday we got the gas line
 installed in our house so that we could use the grill. Naturally, I was
 planning on having steaks for dinner.

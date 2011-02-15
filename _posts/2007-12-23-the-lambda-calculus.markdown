@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 112
 title: The Lambda Calculus
 wordpress_url: http://blog.alieniloquent.com/2007/12/23/the-lambda-calculus/
---- |+
+---
 Earlier this fall I wrote a little functional programming language. However,
 the guts of it were not based on the [lambda calculus][1]. I used more of a
 denotational semantics approach to the evaluation, which worked fine. But, I

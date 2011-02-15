@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 45
 title: Okay, so maybe not so drastic
 wordpress_url: http://www.alieniloquent.com/2006/02/27/okay-so-maybe-not-so-drastic/
---- |+
+---
 Having made my declaration of goals yesterday, I did some thinking. I'm really
 looking forward to my dietary changes. I'm also really looking forward to the
 regular blogging.

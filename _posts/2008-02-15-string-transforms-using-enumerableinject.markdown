@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 121
 title: String transforms using <code>Enumerable#inject</code>
 wordpress_url: http://blog.alieniloquent.com/2008/02/15/string-transforms-using-enumerableinject/
---- |+
+---
 I love functional programming, and I love [Ruby][1]. One of the most awesome
 things about Ruby is how much it borrows from the functional programming
 mindset. One of the most powerful concepts that functional programming brings

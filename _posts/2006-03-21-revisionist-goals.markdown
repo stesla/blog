@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 60
 title: Revisionist Goals
 wordpress_url: http://www.alieniloquent.com/2006/03/21/revisionist-goals/
---- |+
+---
 I've been doing Atkins since Thursday. I'm past the energy slump and back to
 normal. It takes a little more effort to be as lazy as I like to about cooking
 and also do this diet, but the new grill helps. Mmm, steak.

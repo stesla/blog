@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 27
 title: OCFit on Tigris
 wordpress_url: http://www.alieniloquent.com/2005/09/12/ocfit-on-tigris/
---- |+
+---
 An astute reader may notice the new category and link in my sidebar.
 [OCFit][1] is a project I've been working on for a few weeks (well, really
 just a couple of weekends over the last few weeks). It is intended to be a

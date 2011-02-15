@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 90
 title: J3Testing 1.0
 wordpress_url: http://blog.alieniloquent.com/2006/09/01/j3testing-10/
---- |+
+---
 I decided to make my J3TestCase code into an actual framework. This way I
 don't have to copy the files each time I want to use the class.
 

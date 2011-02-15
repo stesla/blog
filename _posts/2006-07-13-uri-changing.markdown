@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 65
 title: URI Changing
 wordpress_url: http://blog.alieniloquent.com/2006/07/13/uri-changing/
---- |+
+---
 I have moved my blog. It is now [here][1]. Most of you are probably getting to
 this notice via my old URI. Please update. All you need to do is change "www"
 to "blog" and you're set.

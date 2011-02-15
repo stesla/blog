@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 40
 title: Waiting For the Build
 wordpress_url: http://www.alieniloquent.com/2006/01/20/waiting-for-the-build/
---- |+
+---
 So we've been moving over to new computers at work and also upgrading our
 compiler and changing virus protection and all that jazz that makes work fun
 and enjoyable. One problem we ran into was that our slow build (that runs more

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 101
 title: Base32 Encoded Freedom
 wordpress_url: http://blog.alieniloquent.com/2007/06/05/base32-encoded-freedom/
---- |+
+---
 So I'm writing the license-key generation code for the store-front for a
 shareware program my friend Tyler and I are preparing to release (more about
 that later). We've decided to use cryptography to reduce the likelihood that

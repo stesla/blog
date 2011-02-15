@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 12
 title: An Alarming Experience
 wordpress_url: http://www.alieniloquent.com/2005/07/21/an-alarming-experience/
---- |+
+---
 I'm never the first person to work. There's always somebody here before me.
 Even when I get in early there's somebody here already. Until today.
 

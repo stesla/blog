@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 133
 title: "Erlang Project: Stories"
 wordpress_url: http://blog.alieniloquent.com/?p=133
---- |+
+---
 In my previous [post][1], I discussed the goals and priorities for blogerl.
 This time I am going to brainstorm some stories and prioritize them. Then I'll
 select the first few from the prioritized list to be my first iteration. The

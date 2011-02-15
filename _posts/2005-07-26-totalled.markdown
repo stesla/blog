@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 14
 title: Totalled
 wordpress_url: http://www.alieniloquent.com/2005/07/26/totalled/
---- |+
+---
 Well, I got a call from State Farm and the little [accident][1] I had, will
 indeed total out my poor little Rio. I'm getting the full retail value for the
 vehicle, and thankfully I have gap insurance for my car loan, as I don't think

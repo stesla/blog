@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 119
 title: Adding files to <code>auto-mode-alist</code>
 wordpress_url: http://blog.alieniloquent.com/2008/01/31/adding-files-to-auto-mode-alist/
---- |+
+---
 One of the things that I require from an editor is decent syntax highlighting.
 Emacs provides me that, and it also provides me with awesome indentation (I've
 grown addicted to hitting TAB and having my text just go to the right place

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 92
 title: Making Active Directory liveable for Linux
 wordpress_url: http://blog.alieniloquent.com/2006/09/14/making-active-directory-liveable-for-linux/
---- |+
+---
 So my employer's network is a Windows network. This isn't terribly unusual.
 Our department's version control server, however, is a Linux box. We didn't
 want to have to have more than one password, so back when I set it up, I took

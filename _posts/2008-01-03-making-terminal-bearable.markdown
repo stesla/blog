@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 117
 title: Making Terminal Bearable
 wordpress_url: http://blog.alieniloquent.com/2008/01/03/making-terminal-bearable/
---- |+
+---
 I've been using Macintosh computers for several years now, but I came to them
 from the Unix world. There were several expectations I had from my terminal
 emulator. Among them were that the key that says Alt on it should be my Meta

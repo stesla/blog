@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 16
 title: "Step Three: Make an Offer"
 wordpress_url: http://www.alieniloquent.com/?p=16
---- |+
+---
 You might be wondering what happened to steps one and two. Step one is: decide
 you want to buy a house and learn some things about it. We already did that,
 and I didn't muster the gumption to blog about it. Step two is: look at houses

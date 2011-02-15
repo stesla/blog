@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 93
 title: Drawing graphs and automata in LaTeX
 wordpress_url: http://blog.alieniloquent.com/2006/09/21/drawing-graphs-and-automata-in-latex/
---- |+
+---
 I am currently enrolled in a class entitled "Automata, Computability, and
 Formal Languages" at [UNO][1]. It's a neat class. The professor requires us to
 submit our homework in both hard and soft copies. Naturally, he suggests we

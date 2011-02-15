@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 34
 title: PostgreSQL
 wordpress_url: http://www.alieniloquent.com/?p=34
---- |+
+---
 So I'm working on a website for [Erica][1]. She wants some custom coding done
 and some database goodness, so naturally she asked me to do it.
 

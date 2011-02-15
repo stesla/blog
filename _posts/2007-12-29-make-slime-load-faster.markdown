@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 116
 title: Make SLIME load faster
 wordpress_url: http://blog.alieniloquent.com/2007/12/29/make-slime-load-faster/
---- |+
+---
 I have joined up with some of the guys from [ODYNUG][1] who have started
 meeting for breakfast and learning [Common Lisp][2] together. We are all using
 some version of Emacs, [SLIME][3], and [SBCL][4].

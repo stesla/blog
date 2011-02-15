@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 102
 title: For those about to base32
 wordpress_url: http://blog.alieniloquent.com/2007/06/07/for-those-about-to-base32/
---- |+
+---
 I've scribbled this down so many times, I thought you all might want to
 benefit a little from my troubles.
 

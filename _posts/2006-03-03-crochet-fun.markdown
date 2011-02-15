@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 49
 title: Crochet Fun
 wordpress_url: http://www.alieniloquent.com/2006/03/03/crochet-fun/
---- |+
+---
 Erica started [crocheting][1] [again][2]. She's pretty excited about her
 projects. I am too. She's really starting to make some nice things. Aside from
 the hats, she's working on an afghan pattern that came on the yarn we bought

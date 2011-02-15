@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 69
 title: Lisp talk update
 wordpress_url: http://blog.alieniloquent.com/2006/07/31/lisp-talk-update/
---- |+
+---
 I was making sure everything was in order for my talk tomorrow for
 [ODYNUG][1], and I discovered that the venue has changed.
 

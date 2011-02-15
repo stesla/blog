@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 55
 title: Watching the flames
 wordpress_url: http://www.alieniloquent.com/2006/03/09/watching-the-flames/
---- |+
+---
 When we bought this house, we made sure to ask for the cast-iron chiminea that
 the previous owners had. They let us have it (along with a lot of other
 stuff). That was back in September. We were very excited because it was still

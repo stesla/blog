@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 63
 title: "Go: My Renewed Obsession"
 wordpress_url: http://www.alieniloquent.com/?p=63
---- |+
+---
 Lately I haven't been playing much [WoW][1], but I have been playing a lot of
 [Go][2]. It's a mentally challenging game, and I can look forward to a
 lifetime of learning and fun. Jessica is going to be giving me a [goban][3]

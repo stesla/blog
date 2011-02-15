@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 17
 title: "Agile Manifesto: Explained"
 wordpress_url: http://www.alieniloquent.com/?p=17
---- |+
+---
 A link to an article titled, ["Agile Programming: How to doom your software
 project"][1] by [Steve Friedl][2] was pasted into my IM window this evening.
 Steve wrote an excellent piece about [being a consultant][3] back in January,

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 29
 title: First Post
 wordpress_url: http://www.alieniloquent.com/2005/09/15/first-post/
---- |+
+---
 Today has been a very long day. To sum it all up, I'll simply tell you what
 I'm doing now: blogging from my front porch. That's right, my front porch. I
 love wifi. We closed on our house today. We've got internet hooked up. Our bed

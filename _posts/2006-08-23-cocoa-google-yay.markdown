@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 81
 title: Cocoa + Google = Yay!
 wordpress_url: http://blog.alieniloquent.com/2006/08/23/cocoa-google-yay/
---- |+
+---
     So, I'm going to be writing an app to interface with [Google Calendar][1], so
 I need to learn how to speak the [Google Data APIs][2]. The first part of this
 is being able to authenticate using their client login protocol.

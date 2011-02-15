@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 104
 title: Base32 0.1.1 Released
 wordpress_url: http://blog.alieniloquent.com/2007/06/29/base32-011-released/
---- |+
+---
 Quickly on the heels of the [initial release][1] of my Base32 library, I have
 an update. I should have tried to compile it on Linux, as the GCC settings on
 my Gentoo box caught some silly things I had done.

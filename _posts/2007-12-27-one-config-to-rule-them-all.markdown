@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 115
 title: One config to rule them all
 wordpress_url: http://blog.alieniloquent.com/2007/12/27/one-config-to-rule-them-all/
---- |+
+---
 Yesterday I was reminded the importance of familiarity and comfort with my
 tools. Over the years I have developed a set of configurations that work for
 me. I have configurations for [BASH][1] and I have configurations for

@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 68
 title: Intro to Lisp
 wordpress_url: http://blog.alieniloquent.com/2006/07/26/intro-to-lisp/
---- |+
+---
 Right now I'm in my hotel room in Minneapolis. I'm here for [Agile 2006][1]
 because my work sent me. Joe went into how we are all [lucky bastards][2]. I
 may blog more about the conference, but maybe not.

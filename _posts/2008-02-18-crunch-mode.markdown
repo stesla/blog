@@ -1,9 +1,9 @@
---- 
+---
 layout: post
 wordpress_id: 123
 title: Crunch Mode
 wordpress_url: http://blog.alieniloquent.com/2008/02/18/crunch-mode/
---- |+
+---
 James Golick writes about [crunch mode][1] and how it can turn a team of even
 the best all-star code artists in to mediocre programmers.
 
