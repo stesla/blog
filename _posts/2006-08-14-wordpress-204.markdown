@@ -1,11 +1,27 @@
 --- 
-wordpress_id: 72
 layout: post
+wordpress_id: 72
 title: WordPress 2.0.4
 wordpress_url: http://blog.alieniloquent.com/2006/08/14/wordpress-204/
----
-I've been waffling about trying <a href="http://www.typosphere.org/">Typo</a> as my blogging engine.  But, I ended up coming to the same conclusion I came last time I switched away from Wordpress.
+--- |+
+I've been waffling about trying [Typo][1] as my blogging engine. But, I ended
+up coming to the same conclusion I came last time I switched away from
+Wordpress.
 
-I don't care enough about my blog to code for it.  So I don't need to blog with Ruby, because I'm not going to be coding for my blog.  So, I've done what I should have done a long time ago: I upgraded to the latest version of <a href="http://wordpress.org/">WordPress</a>.
+I don't care enough about my blog to code for it. So I don't need to blog with
+Ruby, because I'm not going to be coding for my blog. So, I've done what I
+should have done a long time ago: I upgraded to the latest version of
+[WordPress][2].
 
-The posting interface certainly is sexy.  It also comes with a plugin for spam filtering out of the box, so I don't need the one I was using any more.  The primary reason I did this, though, is that I'm going to be getting into making a new template for my blog to integrate with the <a href="http://www.alieniloquent.com">rest of the site</a>, and I wanted to be on the latest version for the templating stuff.
+The posting interface certainly is sexy. It also comes with a plugin for spam
+filtering out of the box, so I don't need the one I was using any more. The
+primary reason I did this, though, is that I'm going to be getting into making
+a new template for my blog to integrate with the [rest of the site][3], and I
+wanted to be on the latest version for the templating stuff.
+
+   [1]: http://www.typosphere.org/
+
+   [2]: http://wordpress.org/
+
+   [3]: http://www.alieniloquent.com
+

@@ -1,12 +1,24 @@
 --- 
-wordpress_id: 103
 layout: post
+wordpress_id: 103
 title: Base32 0.1.0 Released
 wordpress_url: http://blog.alieniloquent.com/2007/06/28/base32-010-released/
----
-As you may know, I've been <a href="http://blog.alieniloquent.com/2007/06/05/base32-encoded-freedom/">working</a> <a href="http://blog.alieniloquent.com/2007/06/07/for-those-about-to-base32/">with</a> base32 encoding.  Well, I decided to share my work with the world in the form of a library.
+--- |+
+As you may know, I've been [working][1] [with][2] base32 encoding. Well, I
+decided to share my work with the world in the form of a library.
 
-This first release simply contains the code I needed for my original project, but I've packaged it up as a nice Ruby extension.
+This first release simply contains the code I needed for my original project,
+but I've packaged it up as a nice Ruby extension.
 
-You can visit the project page <a href="http://rubyforge.org/projects/base32">here</a>.
-You can download the release <a href="http://rubyforge.org/frs/?group_id=3938&release_id=12666">here</a>.
+You can visit the project page [here][3].
+
+You can download the release [here][4].
+
+   [1]: http://blog.alieniloquent.com/2007/06/05/base32-encoded-freedom/
+
+   [2]: http://blog.alieniloquent.com/2007/06/07/for-those-about-to-base32/
+
+   [3]: http://rubyforge.org/projects/base32
+
+   [4]: http://rubyforge.org/frs/?group_id=3938&release_id=12666
+

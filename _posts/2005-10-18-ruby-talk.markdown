@@ -1,11 +1,27 @@
 --- 
-wordpress_id: 33
 layout: post
+wordpress_id: 33
 title: Ruby Talk
 wordpress_url: http://www.alieniloquent.com/?p=33
----
-I know, I know.  It's been a while since I last blogged (9 days, and longer since it was anything of content).  I've been busy!  Every so often I think to myself "Do I want to blog about what I'm doing, or just do it."  Between work, school, home-ownership, and sleeping...there's not much time to do all the things I find fun.  Sadly, blogging seems to fall to the wayside.
+--- |+
+I know, I know. It's been a while since I last blogged (9 days, and longer
+since it was anything of content). I've been busy! Every so often I think to
+myself "Do I want to blog about what I'm doing, or just do it." Between work,
+school, home-ownership, and sleeping...there's not much time to do all the
+things I find fun. Sadly, blogging seems to fall to the wayside.
 
-But, I am getting better about sharing with other people.  For the third time in two months, I gave a talk about Ruby at a user group meeting here in Omaha.  This time it was <a href="http://www.ojug.org/">OJUG</a>, and I gave them Jim Weirich's OSCON 2005 talk,  <a href="http://onestepback.org/articles/10things/">"10 Things Java Programmers Should Know About Ruby"</a> (yay for creative commons).  Well, at least I gave a talk using Jim's slides, as they were just perfect.
+But, I am getting better about sharing with other people. For the third time
+in two months, I gave a talk about Ruby at a user group meeting here in Omaha.
+This time it was [OJUG][1], and I gave them Jim Weirich's OSCON 2005 talk,
+["10 Things Java Programmers Should Know About Ruby"][2] (yay for creative
+commons). Well, at least I gave a talk using Jim's slides, as they were just
+perfect.
 
-I've really enjoyed doing this, so I'm going to put this out there.  If you are a group in the Omaha area, and would like to have me come talk about Ruby, shoot me an email.  I'm cheap.  All I need is some free food, and I'm your man.
+I've really enjoyed doing this, so I'm going to put this out there. If you are
+a group in the Omaha area, and would like to have me come talk about Ruby,
+shoot me an email. I'm cheap. All I need is some free food, and I'm your man.
+
+   [1]: http://www.ojug.org/
+
+   [2]: http://onestepback.org/articles/10things/
+

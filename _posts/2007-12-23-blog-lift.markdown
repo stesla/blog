@@ -1,11 +1,19 @@
 --- 
-wordpress_id: 111
 layout: post
+wordpress_id: 111
 title: Blog Lift
 wordpress_url: http://blog.alieniloquent.com/2007/12/23/blog-lift/
----
-You may have noticed that my layout changed a little. I got rid of my Google ads.
+--- |+
+You may have noticed that my layout changed a little. I got rid of my Google
+ads.
 
-I've noticed that when I paste code snippets or other bits of pre-formatted text that is narrower than 80 columns, I still get a horizontal scroll. That was because my content area was simply too narrow.  I intend to be posting more code, so I started looking for ways to get some space.
+I've noticed that when I paste code snippets or other bits of pre-formatted
+text that is narrower than 80 columns, I still get a horizontal scroll. That
+was because my content area was simply too narrow. I intend to be posting more
+code, so I started looking for ways to get some space.
 
-Changing the layout to only have one column on the right was a start. I was simply going to move the google ads down, but then Erica asked me how much money I was making off of them. The answer is not much at all. So I just got rid of them entirely.
+Changing the layout to only have one column on the right was a start. I was
+simply going to move the google ads down, but then Erica asked me how much
+money I was making off of them. The answer is not much at all. So I just got
+rid of them entirely.
+

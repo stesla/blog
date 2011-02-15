@@ -1,9 +1,14 @@
 --- 
-wordpress_id: 7
 layout: post
+wordpress_id: 7
 title: RSS Fixed
 wordpress_url: http://www.alieniloquent.com/2005/07/12/rss-fixed/
----
-<p>My feeds should be back up and running.  An upgrade to the install of WordPress on our server tromped on my .htaccess file, and so my rewrite rules got trashed.  They are all up and running again, sorry for the time.  I think most people will have missed one post unless they come and read my site by hand.</p>
+--- |+
+My feeds should be back up and running. An upgrade to the install of WordPress
+on our server tromped on my .htaccess file, and so my rewrite rules got
+trashed. They are all up and running again, sorry for the time. I think most
+people will have missed one post unless they come and read my site by hand.
 
-<p>To those on LiveJournal who may very well get a big flood because of this, I'm sorry.  Use a better RSS reader. *grin*</p>
+To those on LiveJournal who may very well get a big flood because of this, I'm
+sorry. Use a better RSS reader. *grin*
+

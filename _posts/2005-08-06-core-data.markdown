@@ -1,11 +1,29 @@
 --- 
-wordpress_id: 21
 layout: post
+wordpress_id: 21
 title: Core Data
 wordpress_url: http://www.alieniloquent.com/2005/08/06/core-data/
----
-A week ago I read <a href="http://wilshipley.com/blog/WWDC_Student_Talk.pdf">this presentation</a> by <a href="http://wilshipley.com/blog">Wil Shipley</a> (of Omni and Delicious Library fame).  It has inspired me.  I'm going to write a Cocoa program that does something useful and then sell it.
+--- |+
+A week ago I read [this presentation][1] by [Wil Shipley][2] (of Omni and
+Delicious Library fame). It has inspired me. I'm going to write a Cocoa
+program that does something useful and then sell it.
 
-Cocoa is fantastic.  It makes things so easy.  The best part is, Apple is always making things easier for developers.  One of their latest technologies, <a href="http://developer.apple.com/macosx/coredata.html">Core Data</a>, makes things orders of magnitude easier for developers.  I just put together a prototype in under two hours (most of which was poking around documentation since I'm new to using Core Data).  I had to write maybe ten lines of code, and that's because I was doing something a little out of the CD paradigm.  That code will probably go away soon.
+Cocoa is fantastic. It makes things so easy. The best part is, Apple is always
+making things easier for developers. One of their latest technologies, [Core
+Data][3], makes things orders of magnitude easier for developers. I just put
+together a prototype in under two hours (most of which was poking around
+documentation since I'm new to using Core Data). I had to write maybe ten
+lines of code, and that's because I was doing something a little out of the CD
+paradigm. That code will probably go away soon.
 
-My application already knows how to serialize its data, with zero lines of code from me telling it how.  It knows how to add and remove records from a collection and refresh the UI for it, with zero lines of code.  Core Data and Cocoa Bindings are just awesome.
+My application already knows how to serialize its data, with zero lines of
+code from me telling it how. It knows how to add and remove records from a
+collection and refresh the UI for it, with zero lines of code. Core Data and
+Cocoa Bindings are just awesome.
+
+   [1]: http://wilshipley.com/blog/WWDC_Student_Talk.pdf
+
+   [2]: http://wilshipley.com/blog
+
+   [3]: http://developer.apple.com/macosx/coredata.html
+
