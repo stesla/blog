@@ -11,7 +11,8 @@ SVN repo, so I hadn't been fetching. This morning, I wanted to stash a script
 into the repo, and so the first thing I did was `git svn fetch`. But, I was
 greeted with a beastly error:
 
-{% highlight text %}Index mismatch: c2714646b0290e3e3c44a0d5f239e1849083aefe
+{% highlight text %}
+Index mismatch: c2714646b0290e3e3c44a0d5f239e1849083aefe
 != e12bd4a7d89970506864ad2b1c5caeef0a6a0876
 
 rereading f2260561581e98397c66b939d90efb2a351ce993
@@ -38,8 +39,8 @@ ee3fefa770a98ef90c9696c7a635ffda8d762404
 971afb2b2dbacb83ef96f68b3b84960ae97a6833
 93900609d9ec96def83a43940c2722123ec5f73c
 67edd1ed8ad06c79e39cbb631696077856961a84 --not
-f2260561581e98397c66b939d90efb2a351ce993: command returned error: 128{%
-endhighlight %}
+f2260561581e98397c66b939d90efb2a351ce993: command returned error: 128
+{% endhighlight %}
 
 I tried it again, and got the same error. So, at least the behavior was
 deterministic. Indeed, running this pared down command yielded the same

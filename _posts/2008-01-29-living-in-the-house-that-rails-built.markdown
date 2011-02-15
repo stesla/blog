@@ -52,7 +52,7 @@ RAILS_IS_A_GHETTO = true
 
 end
 
-{% endhighlight %}{% endhighlight %}
+{% endhighlight %}
 
 And then write a test for something that Rails didn't generate (such as
 something in the `lib` directory like I did):
@@ -73,7 +73,7 @@ end
 
 end
 
-{% endhighlight %}{% endhighlight %}
+{% endhighlight %}
 
 If you `rake test` you will get an error complaining that `RAILS_IS_A_GHETTO`
 was reinitialized, and that's because Rails loads it for you as "models/foo"

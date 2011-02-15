@@ -36,9 +36,10 @@ Now you should make a directory to put your clones of these in.
 
 And then cloning them is as simple as this:
 
-{% highlight text %}$ git svn clone
-http://example.com/svn/app/foo_plugin/trunk ~/Projects/plugins/foo_plugin{%
-endhighlight %}
+{% highlight text %}
+$ git svn clone
+http://example.com/svn/app/foo_plugin/trunk ~/Projects/plugins/foo_plugin
+{% endhighlight %}
 
 #### Step Two: Clone your SVN repository
 
@@ -88,8 +89,9 @@ from). But it is easy to set Git up to ignore all of the files.
 
 First, let's make sure Git ignores all the same things SVN was ignoring:
 
-{% highlight text %}$ git svn show-ignore >> .git/info/exclude{% endhighlight
-%}
+{% highlight text %}
+$ git svn show-ignore >> .git/info/exclude
+{% endhighlight %}
 
 Then open up `.git/info/exclude` and add these lines to it:
 
@@ -177,9 +179,7 @@ It works well, and it allows me to do my work disconnected from the network.
 
    [4]: http://panthersoftware.com
 
-   [5]: http://panthersoftware.com/articles/view/3/svn-s-svn-externals-to-
-git-s-submodule-for-rails-plugins
+   [5]: http://panthersoftware.com/articles/view/3/svn-s-svn-externals-to-git-s-submodule-for-rails-plugins
 
-   [6]: http://www.kernel.org/pub/software/scm/git/docs/user-
-manual.html#submodules
+   [6]: http://www.kernel.org/pub/software/scm/git/docs/user-manual.html#submodules
 
