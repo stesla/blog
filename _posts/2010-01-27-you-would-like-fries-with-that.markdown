@@ -77,8 +77,7 @@ alternative to working in food service: [programming][5].
 
    [1]: http://www.gamearchitect.net/Articles/SoftwareIsHard.html
 
-   [2]:
-http://homepages.cs.ncl.ac.uk/brian.randell/NATO/NATOReports/index.html
+   [2]: http://homepages.cs.ncl.ac.uk/brian.randell/NATO/NATOReports/index.html
 
    [3]: http://www.levenez.com/lang/
 

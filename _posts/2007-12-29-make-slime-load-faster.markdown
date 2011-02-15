@@ -35,7 +35,7 @@ loader-original.lisp`. Then make `swank-loader.lisp` look like this (changing
 
 {% endhighlight %}
 
-Then, make a file called `bootstrap.lisp`` with the following content:
+Then, make a file called `bootstrap.lisp` with the following content:
 
 {% highlight text %}
 
@@ -57,9 +57,9 @@ $ sbcl --load bootstrap.lisp
 
 {% endhighlight %}
 
-Then copy ``sbcl-with-slime.core` somewhere safe, I put mine in with my slime
+Then copy `sbcl-with-slime.core` somewhere safe, I put mine in with my slime
 code to keep it all together. Then you just have to add the following to your
-`.emacs``:
+`.emacs`:
 
 {% highlight text %}
 
@@ -71,7 +71,7 @@ code to keep it all together. Then you just have to add the following to your
 
 {% endhighlight %}
 
-Then you can ``M-x slime` and it will be super fast.
+Then you can `M-x slime` and it will be super fast.
 
    [1]: http://www.blainebuxton.com/odynug/
 

@@ -48,7 +48,7 @@ recent version of the file. So, if you analyze the history to figure out
 commits and then ask for an old revision...you get nothing. Try to add a file
 that doesn't exist to Subversion, and you get an error.
 
-**Lesson #3: VSS has a lot of retarded [mis]features.**
+**Lesson #3: VSS has a lot of retarded \[mis\]features.**
 
 Ruby to the rescue! We write a script to figure out how many of these files
 exist. We run it. Wow, that's a lot of files. We look at all of them, and

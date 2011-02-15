@@ -11,6 +11,4 @@ minority, as Congress has just passed a [bill to extend DST by four weeks][1].
 Yay! Let's give the people _more_ of a stupid thing. Of all the great ideas
 Ben Franklin had, why, why, _why_ did anybody listen to this one?
 
-   [1]:
-http://www.cnn.com/2005/POLITICS/07/22/congress.daylighttime.ap/index.html
-
+   [1]: http://www.cnn.com/2005/POLITICS/07/22/congress.daylighttime.ap/index.html

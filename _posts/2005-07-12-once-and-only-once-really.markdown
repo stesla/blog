@@ -39,7 +39,7 @@ version of the data to that version, run the SQL, and move on. Of course,
 after it runs the last one that brings the data up to the last version. Neato,
 right? If only it were that simple.
 
-The problem was that our code has a symbolic constant which is [supposed to]
+The problem was that our code has a symbolic constant which is \[supposed to\]
 always be set to the latest data version. The schema updater assumes that
 there will always be a section in the SQL script for the latest version and
 that will match the symbolic constant in the source code. However, if the

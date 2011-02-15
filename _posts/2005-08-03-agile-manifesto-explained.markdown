@@ -21,7 +21,7 @@ talking pitcher is just so charismatic, I have to drink from its head). So I
 am here to explain the four points and hopefully allay any misconceptions you
 might have about them.
 
-**"[We value] _individuals and interactions_ over processes and tools"**
+**"\[We value\] _individuals and interactions_ over processes and tools"**
 
 
 Steve seems to interpret this to mean that agile practitioners would rather
@@ -64,7 +64,7 @@ the code, software is all about individuals and interactions. Agile
 practitioners realize this and strive to make the interactions efficient and
 enjoyable so that the individuals can do more and enjoy themselves.
 
-**"[We value] _working software_ over comprehensive documentation"**
+**"\[We value\] _working software_ over comprehensive documentation"**
 
 
 This is an easy one to misunderstand, and maybe Steve didn't. There are two
@@ -103,7 +103,7 @@ more efficiently we can change and the more quality those changes will have.
 This is what we mean when we say we value working software over comprehensive
 documentation.
 
-**"[We value] _customer collaboration_ over contract negotiation."**
+**"\[We value\] _customer collaboration_ over contract negotiation."**
 
 
 Steve's right. Customers never know what they want. What he's wrong about is
@@ -127,7 +127,7 @@ Give me a customer who wouldn't want to have a working program that delivers
 business value after two or three weeks, and I'll eat the paper you printed
 this out on (assuming, of course, you printed this out).
 
-**"[We value] _responding to change_ over following a plan"**
+**"\[We value\] _responding to change_ over following a plan"**
 
 
 Steve returns once again to software specifications. We know what agile
@@ -137,7 +137,7 @@ time when it does these things? We plan. But built into that plan is the
 _expectation of change_.
 
 Agile methods build in the assumption that change will happen and it will
-happen often. So Steve's sentiment that "hopefully one has built a [software]
+happen often. So Steve's sentiment that "hopefully one has built a \[software\]
 system that tolerates change," is reduced to "one built a software system that
 tolerates change." Assume that there will be technical changes and ensure that
 your software is easy to change by keeping it well factored and easy to
