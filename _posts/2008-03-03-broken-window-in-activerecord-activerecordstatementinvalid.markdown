@@ -20,27 +20,20 @@ write.
 When the database connection disappears, the database driver throws an
 exception. `ActiveRecord::Base` catches that exception and does this:
 
-{% highlight text %}# Find this in Rails 2.0.2
-
+{% highlight ruby %}
+# Find this in Rails 2.0.2
 # active_record/connection_adapter/abstract_adapter.rb:121
 
 rescue Exception => e
-
-# Log message and raise exception.
-
-# Set last_verfication to 0, so that connection gets verified
-
-# upon reentering the request loop
-
-@last_verification = 0
-
-message = "#{e.class.name}: #{e.message}: #{sql}"
-
-log_info(message, name, 0)
-
-raise ActiveRecord::StatementInvalid, message
-
-end{% endhighlight %}
+  # Log message and raise exception.
+  # Set last_verfication to 0, so that connection gets verified
+  # upon reentering the request loop
+  @last_verification = 0
+  message = "#{e.class.name}: #{e.message}: #{sql}"
+  log_info(message, name, 0)
+  raise ActiveRecord::StatementInvalid, message
+end
+{% endhighlight %}
 
 This is the exception handler that catches all exceptions raised during a
 query run by ActiveRecord. As you can see, it snags the class name, and the
@@ -54,28 +47,19 @@ key violations to database connection errors, and the only way to distinguish
 them is by inspecting the message. Surely, that can't be true, right? I dig
 further and find this:
 
-{% highlight text %}# Find this in Rails 2.0.2
-
+{% highlight text %}
+# Find this in Rails 2.0.2
 # active_record/connection_adapters/mysql_adapter.rb:244
-
 #
-
 # Note: I snipped the error message because it is very long
 
 rescue ActiveRecord::StatementInvalid => exception
-
-if exception.message.split(":").first =~ /Packets out of order/
-
-raise ActiveRecord::StatementInvalid, snipped_error_message
-
-else
-
-raise
-
+  if exception.message.split(":").first =~ /Packets out of order/
+    raise ActiveRecord::StatementInvalid, snipped_error_message
+  else
+    raise
+  end
 end
-
-end
-
 {% endhighlight %}
 
 That is just completely unacceptable. I can find it in my heart to forgive the

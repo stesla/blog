@@ -14,57 +14,40 @@ We'll make an object that runs for a number of cycles and calls our event
 handler each cycle after sleeping for a little bit. Here's the code for
 `Clock`:
 
-{% highlight text %}
-
+{% highlight c++ %}
 // Example.h
 
 public ref class Clock
-
 {
+ public:
 
-public:
+  Clock():
 
-Clock():
+  _progressCallback(gcnew ProgressCallback(NULL, NULL)) {}
 
-_progressCallback(gcnew ProgressCallback(NULL, NULL)) {}
+  ~Clock() {}
 
-~Clock() {}
+  void SetProgressCallback(ProgressCallback ^ callback)
+  {
+    _progressCallback = callback;
+  }
 
-void SetProgressCallback(ProgressCallback ^ callback)
+  void Run(int cycles);
 
-{
+ private:
 
-_progressCallback = callback;
-
-}
-
-void Run(int cycles);
-
-private:
-
-ProgressCallback ^ _progressCallback;
-
+  ProgressCallback ^ _progressCallback;
 };
 
-
 // Example.cpp
-
 void Example::Clock::Run(int cycles)
-
 {
-
-for (int i = 1; i <= cycles; ++i)
-
-{
-
-Thread::Sleep(250); // A noticeable pause
-
-_progressCallback->Execute(i, cycles);
-
+  for (int i = 1; i <= cycles; ++i)
+    {
+      Thread::Sleep(250); // A noticeable pause
+      _progressCallback->Execute(i, cycles);
+    }
 }
-
-}
-
 {% endhighlight %}
 
 Now the first thing to notice there is the `ref` keyword. This is how you let
@@ -75,53 +58,37 @@ behind simulating method pointers from Delphi.
 A brief aside to talk about just what method pointers are. In C and C++ you
 can declare a pointer type like this:
 
-{% highlight text %}
-
+{% highlight c++ %}
 typedef int (* CALLBACK)(int x, int y);
-
 {% endhighlight %}
 
 Then you can use that type like this:
 
-{% highlight text %}
-
+{% highlight c++ %}
 int Apply(CALLBACK cb, int x, int y)
-
 {
-
-return cb == NULL ? 0 : cb(x, y);
-
+  return cb == NULL ? 0 : cb(x, y);
 }
-
 
 int Multiply(int x, int y)
-
 {
-
-return x * y;
-
+  return x * y;
 }
 
-
 Apply(Multiply, 6, 7); // returns 42
-
 {% endhighlight %}
 
 You can do the exact same thing in Delphi like this:
 
-{% highlight text %}
-
+{% highlight delphi %}
 type TCallback = function(X, Y: Integer): Integer;
-
 {% endhighlight %}
 
 But Delphi also offers another kind of function pointer called a method
 pointer. You declare it like this:
 
-{% highlight text %}
-
+{% highlight delphi %}
 type TMethodCallback = function(X, Y: Integer): Integer of object;
-
 {% endhighlight %}
 
 Those two words `of object` make all the difference. What this does is it lets
@@ -131,39 +98,24 @@ can access the state on the object. It is really powerful. This is typically
 how progress bars are driven in VCL applications. You just do something like
 this:
 
-{% highlight text %}
-
+{% highlight delphi %}
 type TProgressEvent = procedure(ACurrent, AMax: Integer) of object;
-
-
 // ...
 
-
 type TMyForm = class(TForm)
-
-// ... stuff ...
-
-Progress(ACurrent, AMax: Integer);
-
-// ... more stuff ...
-
+  // ... stuff ...
+  Progress(ACurrent, AMax: Integer);
+  // ... more stuff ...
 end;
 
 
 // ... then somewhere in the implementation ...
-
 procedure TForm1.InitializeStuff;
-
 begin
-
-// ... Initialize some things ...
-
-FThingWithProgressEvent.OnProgress := Progress;
-
-// ... Initialize more things ...
-
+  // ... Initialize some things ...
+  FThingWithProgressEvent.OnProgress := Progress;
+  // ... Initialize more things ...
 end;
-
 {% endhighlight %}
 
 And then that method can do something such as adjust a progress bar or log to
@@ -181,94 +133,62 @@ with the rest of the parameters.
 So now that we have the basic strategy in mind. Let me show you the code that
 encapsulates this method pointer idea:
 
-{% highlight text %}
-
+{% highlight c++ %}
 // Example.h
 
 public ref class ProcedureOfObject
-
 {
+ public:
+  ProcedureOfObject(void * object, void * procedure):
 
-public:
+  _object((IntPtr) object), _procedure((IntPtr) procedure) {}
 
-ProcedureOfObject(void * object, void * procedure):
+ protected:
 
-_object((IntPtr) object), _procedure((IntPtr) procedure) {}
+  property bool HasNullPointers
+  {
+    bool get()
+    {
+      return ObjectPointer == NULL ||
+        ProcedurePointer == NULL;
+    }
+  }
 
-protected:
+  property void * ObjectPointer
+  {
+    void * get() { return _object->ToPointer(); }
+  }
 
-property bool HasNullPointers
+  property void * ProcedurePointer
+  {
+    void * get() { return _procedure->ToPointer(); }
+  }
 
-{
+ private:
 
-bool get()
-
-{
-
-return ObjectPointer == NULL ||
-
-ProcedurePointer == NULL;
-
-}
-
-}
-
-property void * ObjectPointer
-
-{
-
-void * get() { return _object->ToPointer(); }
-
-}
-
-property void * ProcedurePointer
-
-{
-
-void * get() { return _procedure->ToPointer(); }
-
-}
-
-private:
-
-IntPtr^ _object;
-
-IntPtr^ _procedure;
-
+  IntPtr^ _object;
+  IntPtr^ _procedure;
 };
 
 
 typedef void (* PROGRESSEVENT)(void *, int, int);
 
 public ref class ProgressCallback : public ProcedureOfObject
-
 {
-
-public:
-
-ProgressCallback(void * object, void * procedure): ProcedureOfObject(object,
-procedure) {}
-
-void Execute(int current, int max);
-
+ public:
+  ProgressCallback(void * object, void * procedure): ProcedureOfObject(object, procedure) {}
+  void Execute(int current, int max);
 };
 
 
 // Example.cpp
 
 void Example::ProgressCallback::Execute(int current, int max)
-
 {
-
-if (this->HasNullPointers)
-
-return;
-
-((Example::PROGRESSEVENT) ProcedurePointer)(this->ObjectPointer, current,
-max);
-
+  if (this->HasNullPointers)
+    return;
+  ((Example::PROGRESSEVENT) ProcedurePointer)(this->ObjectPointer, current, max);
 }
-
 {% endhighlight %}
 
 Note that I store the pointers as `IntPtr` references. This is the type that
@@ -282,203 +202,125 @@ can't send a pointer to a managed object out of the DLL, but we can send a
 pointer to an unmanaged object that has a reference to our managed object. So
 we make this wrapper:
 
-{% highlight text %}
-
+{% highlight c++ %}
 // Example.h
 
 public class ClockWrapper
-
 {
+ public:
 
-public:
+  ClockWrapper(): _clock(gcnew Clock()) {}
 
-ClockWrapper(): _clock(gcnew Clock()) {}
+  ~ClockWrapper() {}
 
-~ClockWrapper() {}
+  void SetProgressCallback(void * object, PROGRESSEVENT callback)
+  {
+    _clock->SetProgressCallback(gcnew ProgressCallback(object, callback));
+  }
 
-void SetProgressCallback(void * object, PROGRESSEVENT callback)
+  void Run(int cycles)
+  {
+    _clock->Run(cycles);
+  }
 
-{
+ private:
 
-_clock->SetProgressCallback(gcnew ProgressCallback(object, callback));
-
-}
-
-void Run(int cycles)
-
-{
-
-_clock->Run(cycles);
-
-}
-
-private:
-
-gcroot<Clock ^> _clock;
-
+  gcroot<Clock ^> _clock;
 };
-
 {% endhighlight %}
 
 So all that's left is to export the DLL functions like before. Just to keep
 them separate I'll make another delete method, even though it's identical in
 every way except the name.
 
-{% highlight text %}
-
+{% highlight c++t %}
 // Exports.h
 
 DLLAPI void * ClockCreate();
-
 DLLAPI void ClockDelete(void * clock);
-
 DLLAPI void ClockRun(void * clock, int cycles);
-
-DLLAPI void ClockSetProgressCallback(void * clock, void * object,
-PROGRESSEVENT callback);
-
+DLLAPI void ClockSetProgressCallback(void * clock, void * object, PROGRESSEVENT callback);
 
 // Exports.cpp
 
 #define C(p) ((ClockWrapper *) p)
 
-
 DLLAPI void * ClockCreate()
-
 {
-
-return new ClockWrapper();
-
+  return new ClockWrapper();
 }
-
 
 DLLAPI void ClockDelete(void * clock)
-
 {
-
-delete clock;
-
+  delete clock;
 }
-
 
 DLLAPI void ClockRun(void * clock, int cycles)
-
 {
-
-C(clock)->Run(cycles);
-
+  C(clock)->Run(cycles);
 }
 
-
-DLLAPI void ClockSetProgressCallback(void * clock, void * object,
-PROGRESSEVENT callback)
-
+DLLAPI void ClockSetProgressCallback(void * clock, void * object, PROGRESSEVENT callback)
 {
-
-C(clock)->SetProgressCallback(object, callback);
-
+  C(clock)->SetProgressCallback(object, callback);
 }
-
 {% endhighlight %}
 
 Then on the Delphi side:
 
-{% highlight text %}
-
+{% highlight delphi %}
 // interface
-
 type TForm1 = class(TForm)
-
-edtCycles: TEdit;
-
-btnCycle: TButton;
-
-ProgressBar1: TProgressBar;
-
-procedure btnCycleClick(Sender: TObject);
-
+   edtCycles: TEdit;
+   btnCycle: TButton;
+   ProgressBar1: TProgressBar;
+   procedure btnCycleClick(Sender: TObject);
 private
-
-procedure Progress(ACurrent, AMax: Integer);
-
+   procedure Progress(ACurrent, AMax: Integer);
 end;
 
-
 // implementation
-
 type
-
-TProgressEvent = procedure(AObject: Pointer; ACurrent, AMax: Integer); cdecl;
-
-PForm1 = ^TForm1;
-
+   TProgressEvent = procedure(AObject: Pointer; ACurrent, AMax: Integer); cdecl;
+   PForm1 = ^TForm1;
 
 function ClockCreate: Pointer;
-
 cdecl; external 'Example';
 
 procedure ClockDelete(AClock: Pointer);
-
 cdecl; external 'Example';
 
 procedure ClockRun(AClock: Pointer; ACycles: Integer);
-
 cdecl; external 'Example';
 
-procedure ClockSetProgressCallback(AClock: Pointer; AObject: Pointer;
-ACallback: TProgressEvent);
-
+procedure ClockSetProgressCallback(AClock: Pointer; AObject: Pointer; ACallback: TProgressEvent);
 cdecl; external 'Example';
-
 
 procedure ProgressCallback(AObject: Pointer; ACurrent, AMax: Integer); cdecl;
-
 begin
-
-PForm1(AObject).Progress(ACurrent, AMax);
-
-Application.ProcessMessages;
-
+   PForm1(AObject).Progress(ACurrent, AMax);
+   Application.ProcessMessages;
 end;
-
 
 procedure TForm1.btnCycleClick(Sender: TObject);
-
 var
-
-Clock: Pointer;
-
+   Clock: Pointer;
 begin
-
-Clock := ClockCreate();
-
-try
-
-ProgressBar1.Position := 0;
-
-ClockSetProgressCallback(Clock, @Self, ProgressCallback);
-
-ClockRun(Clock, StrToInt(edtCycles.Text));
-
-finally
-
-ClockDelete(Clock);
-
+   Clock := ClockCreate();
+   try
+      ProgressBar1.Position := 0;
+      ClockSetProgressCallback(Clock, @Self, ProgressCallback);
+      ClockRun(Clock, StrToInt(edtCycles.Text));
+   finally
+      ClockDelete(Clock);
+   end;
 end;
-
-end;
-
 
 procedure TForm1.Progress(ACurrent, AMax: Integer);
-
 begin
-
-ProgressBar1.Max := AMax;
-
-ProgressBar1.Position := ACurrent;
-
+   ProgressBar1.Max := AMax;
+   ProgressBar1.Position := ACurrent;
 end;
-
 {% endhighlight %}
 
 Some things to note. First off, the `Progress` method on `TForm1` is

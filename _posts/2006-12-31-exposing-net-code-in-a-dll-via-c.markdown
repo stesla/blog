@@ -25,10 +25,8 @@ Library." I'll give it a name "Example" and hit go. This makes most of the
 files that you need. Delete the class that it creates ("Class1") and make a
 new one like this:
 
-{% highlight text %}
-
+{% highlight c++ %}
 // Example.h
-
 #include <vcclr.h>
 
 #pragma once
@@ -36,37 +34,26 @@ new one like this:
 using namespace System;
 
 namespace Example {
+  public class Example1
+  {
+  public:
 
-public class Example1
+    Example1(const char * name)
+      {
+        _name = gcnew String(name);
+      }
 
-{
+    ~Example1()
+      {
+      }
 
-public:
+    void ShowName();
 
-Example1(const char * name)
+  private:
 
-{
-
-_name = gcnew String(name);
-
+    gcroot<String ^> _name;
+  };
 }
-
-~Example1()
-
-{
-
-}
-
-void ShowName();
-
-private:
-
-gcroot<String ^> _name;
-
-};
-
-}
-
 {% endhighlight %}
 
 A couple things to note about the above code. The `Example1` class is an
@@ -77,68 +64,42 @@ object.
 Next, we need to export some DLL functions so that we can call them from
 Delphi:
 
-{% highlight text %}
-
+{% highlight c++ %}
 // Exports.h
-
 #define DLLAPI extern "C" __declspec(dllexport)
-
-
 DLLAPI void * Example1Create(const char * name);
-
 DLLAPI void Example1Delete(void * example);
-
 DLLAPI void Example1ShowName(void * example);
-
 {% endhighlight %}
 
 The important thing to notice here is the `DLLAPI` define. You need to put it
 before each function you want to export. We have to extern the functions as
 C-style functions so that their names don't get mangled in the symbol table.
 
-{% highlight text %}
-
+{% highlight c++ %}
 // Exports.cpp
-
 #include "stdafx.h"
-
 #include "Example.h"
-
 #include "Exports.h"
-
 
 using namespace Example;
 
-
 #define E1(p) ((Example1 *) p)
 
-
 DLLAPI void * Example1Create(const char * name)
-
 {
-
-return new Example1(name);
-
+  return new Example1(name);
 }
-
 
 DLLAPI void Example1Delete(void * example)
-
 {
-
-delete example;
-
+  delete example;
 }
-
 
 DLLAPI void Example1ShowName(void * example)
-
 {
-
-E1(example)->ShowName();
-
+  E1(example)->ShowName();
 }
-
 {% endhighlight %}
 
 Note the macro defined to do the cast. We only have to do the cast in one

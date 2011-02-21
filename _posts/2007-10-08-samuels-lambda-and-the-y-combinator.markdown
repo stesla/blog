@@ -22,33 +22,25 @@ venerable of functional programming tools: [the fixed point combinator][3]
 For my example of recursion, I'll show you the factorial. What sort of
 discussion of recursion would this be if I didn't?
 
-{% highlight text %}let
-
-val y = fn f =>
-
-(fn g => g g) (fn g => f (fn x => g g x))
-
-val fac = fn f =>
-
-fn n =>
-
-if eq n 0 then 1
-
-else multiply n (f (subtract n 1))
-
+{% highlight text %}
+let
+  val y = fn f =>
+      (fn g => g g) (fn g => f (fn x => g g x))
+  val fac = fn f =>
+            fn n =>
+               if eq n 0 then 1
+               else multiply n (f (subtract n 1))
 in y fac 5
-
 end
-
 {% endhighlight %}
 
 When run at the SML/NJ prompt:
 
-{% highlight text %}- SLParser.evalPrintFile("examples/factorial.sl");
-
+{% highlight text %}
+- SLParser.evalPrintFile("examples/factorial.sl");
 120
-
-val it = () : unit{% endhighlight %}
+val it = () : unit
+{% endhighlight %}
 
 It helps that I'm working with a functional language to start with. That makes
 implementing things such as closures and `let` nearly trivial. I'm going to

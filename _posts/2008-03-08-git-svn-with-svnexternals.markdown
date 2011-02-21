@@ -25,20 +25,20 @@ Git submodules are fantastic, but to use them you need Git repositories for
 each of your externals. Fortunately, you can easily clone them with `git-svn`.
 First, to list your externals:
 
-{% highlight text %}$ svn propget svn:externals
-http://example.com/svn/app/vendor/plugins
-
-foo_plugin http://example.com/svn/foo_plugin/trunk{% endhighlight %}
+{% highlight text %}
+$ svn propget svn:externals http://example.com/svn/app/vendor/plugins foo_plugin http://example.com/svn/foo_plugin/trunk
+{% endhighlight %}
 
 Now you should make a directory to put your clones of these in.
 
-{% highlight text %}$ mkdir ~/Projects/plugins{% endhighlight %}
+{% highlight text %}
+$ mkdir ~/Projects/plugins
+{% endhighlight %}
 
 And then cloning them is as simple as this:
 
 {% highlight text %}
-$ git svn clone
-http://example.com/svn/app/foo_plugin/trunk ~/Projects/plugins/foo_plugin
+$ git svn clone http://example.com/svn/app/foo_plugin/trunk ~/Projects/plugins/foo_plugin
 {% endhighlight %}
 
 #### Step Two: Clone your SVN repository
@@ -53,8 +53,9 @@ SVN branches, and it makes branches for the tags as well.
 Just do this wherever you want your project to live. You may want to rename
 any SVN working copies you have so that there aren't any naming conflicts.
 
-{% highlight text %}$ git svn clone http://example.com/svn/app -T trunk -t
-tags -b branches{% endhighlight %}
+{% highlight text %}
+$ git svn clone http://example.com/svn/app -T trunk -t tags -b branches
+{% endhighlight %}
 
 That'll give you a git repository named "app" in the current directory. The
 master branch will be a remote tracking branch that is set up to track trunk,
@@ -68,14 +69,16 @@ submodule for the external we cloned above.
 
 From within the top-level of your project repository do this:
 
-{% highlight text %}$ git submodule add ~/Projects/plugins/foo_plugin
-vendor/plugins/foo_plugin{% endhighlight %}
+{% highlight text %}
+$ git submodule add ~/Projects/plugins/foo_plugin vendor/plugins/foo_plugin
+{% endhighlight %}
 
 After you've added the submodule do this:
 
-{% highlight text %}$ git submodule init
-
-$ git submodule update{% endhighlight %}
+{% highlight text %}
+$ git submodule init
+$ git submodule update
+{% endhighlight %}
 
 That should get the code from the plugin repository and into your project
 repository just like the external did.
@@ -95,13 +98,12 @@ $ git svn show-ignore >> .git/info/exclude
 
 Then open up `.git/info/exclude` and add these lines to it:
 
-{% highlight text %}# .git/info/exclude
-
+{% highlight text %}
+# .git/info/exclude
 .gitignore
-
 .gitmodules
-
-/vendor/plugins/foo_plugin{% endhighlight %}
+./vendor/plugins/foo_plugin
+{% endhighlight %}
 
 That should prevent you from committing anything into SVN that is git-
 specific.
@@ -113,8 +115,9 @@ repository. Here are your two basic operations.
 
 Update from SVN
 
-
-{% highlight text %}$ git svn rebase{% endhighlight %}
+{% highlight text %}
+$ git svn rebase
+{% endhighlight %}
 
 This works just like `git-rebase`, except it pulls from SVN instead of some
 other Git branch. It will not work if there are changes that have not been
@@ -124,8 +127,9 @@ are conflicts, you resolve them as you would if you were using `git-rebase`.
 
 Commit to SVN
 
-
-{% highlight text %}$ git svn dcommit{% endhighlight %}
+{% highlight text %}
+$ git svn dcommit
+{% endhighlight %}
 
 This will take all of the commits since your last time and commit them one at
 a time to SVN. This allows all those people still using SVN to see each
@@ -139,7 +143,9 @@ effectively frozen at whichever revision you cloned. If you want to update
 them, you'll need to first update the cloned repository, and then run this
 command at the root of your repository:
 
-{% highlight text %}$ git submodule update{% endhighlight %}
+{% highlight text %}
+$ git submodule update
+{% endhighlight %}
 
 Another caveat is that you need to keep your development as linear as you can.
 Don't try to do anything crazy with lots of branches and merges between them.
@@ -150,24 +156,22 @@ Here's my workflow. I use a branch named work to do all of my work in. I will
 sync it up with SVN several times a day, just so it isn't too stale. This is
 how I do that:
 
-{% highlight text %}$ git checkout master
-
+{% highlight text %}
+$ git checkout master
 $ git svn rebase
-
 $ git checkout work
-
-$ git rebase master{% endhighlight %}
+$ git rebase master
+{% endhighlight %}
 
 Then, when I've commited all of my changes to my work branch, and I'm ready to
 commit to SVN:
 
-{% highlight text %}$ git checkout master
-
+{% highlight text %}
+$ git checkout master
 $ git merge work
-
 $ git svn rebase # Just to be safe
-
-$ git svn dcommit{% endhighlight %}
+$ git svn dcommit
+{% endhighlight %}
 
 It works well, and it allows me to do my work disconnected from the network.
 

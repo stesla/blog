@@ -13,14 +13,15 @@ stupid mistake.
 
 Before our refactor:
 
-{% highlight text %}
+{% highlight c# %}
 Assert.Equals(1, object.Detail, "Details don't match")
 {% endhighlight %}
 
 After our refactor:
 
-{% highlight text %}Assert.Equals(object.hasDetail(1), "Details don't
-match"){% endhighlight %}
+{% highlight c# %}
+Assert.Equals(object.hasDetail(1), "Details don't match")
+{% endhighlight %}
 
 That is a perfectly valid test...syntactically. However it results in the
 following error message:

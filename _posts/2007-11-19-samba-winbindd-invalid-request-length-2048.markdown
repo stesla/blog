@@ -9,10 +9,10 @@ We had been having trouble with a problem in 3.0.24 that had been fixed in a
 intervening release of Samba. So, naturally, I wanted to upgrade. But when I
 did, I got this mysterious error in my `log.winbindd`.
 
-{% highlight text %}[2007/11/19 13:27:16, 0]
-nsswitch/winbindd.c:request_len_recv(517)
-
-request_len_recv: Invalid request size received: 2084{% endhighlight %}
+{% highlight text %}
+[2007/11/19 13:27:16, 0] nsswitch/winbindd.c:request_len_recv(517)
+  request_len_recv: Invalid request size received: 2084
+{% endhighlight %}
 
 I have spent the entire day googling and yahooing and searching and grepping
 to no avail. _Nothing_ I have tried worked. Now at one point I was reading and
@@ -23,7 +23,9 @@ back to 3.0.24 everything worked again.
 Well, through a course of events I ended up with the following line in
 `/etc/nsswitch.conf`:
 
-{% highlight text %}shadow: shadow{% endhighlight %}
+{% highlight text %}
+shadow: shadow
+{% endhighlight %}
 
 As you can imagine, that didn't work too well for my unix user that I keep on
 the box for when ADS is hosed. So I broke out the trusty install CD, rebooted,

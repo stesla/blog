@@ -27,7 +27,7 @@ I'd share. I make a Cocoa Shell Tool target, and I name it something like
 `stub`. I make a C file and name it `stub-main.m`. In that file I put the
 following three lines:
 
-{% highlight text %}
+{% highlight c %}
 int main(int argc, char *argv[]) {
   return 0;
 }

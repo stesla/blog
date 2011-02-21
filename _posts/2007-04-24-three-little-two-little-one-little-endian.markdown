@@ -18,28 +18,18 @@ useful.
 
 So I wrote this:
 
-{% highlight text %}
+{% highlight objc %}
 
 - (NSData *) dataValue
-
 {
-
-NSMutableData *result = [NSMutableData data];
-
-for (unsigned i = 0; i <= UINT8_MAX; ++i)
-
-{
-
-if (contains[i])
-
-[result appendBytes: &i length: 1];
-
+  NSMutableData *result = [NSMutableData data];
+  for (unsigned i = 0; i <= UINT8_MAX; ++i)
+    {
+      if (contains[i])
+        [result appendBytes: &i length: 1];
+    }
+  return result;
 }
-
-return result;
-
-}
-
 {% endhighlight %}
 
 I had unit tests that proved it worked, and they all passed, so I checked in.
@@ -98,7 +88,9 @@ leaving the other three bytes all zero.
 
 The line of code where I do this:
 
-{% highlight text %}[data appendBytes: &i length: 1]{% endhighlight %}
+{% highlight objc %}
+[data appendBytes: &i length: 1]
+{% endhighlight %}
 
 Is a clever little trick I've used to avoid having to actually declare a one-
 byte array when I want to append just one byte. It works great if `i` is
@@ -111,36 +103,21 @@ be zero.
 
 So now the code looks like this:
 
-{% highlight text %}
-
+{% highlight objc %}
 - (NSData *) dataValue
-
 {
-
-NSMutableData *result = [NSMutableData data];
-
-uint8_t byte[1];
-
-for (unsigned i = 0; i <= UINT8_MAX; ++i)
-
-{
-
-if (contains[i])
-
-{
-
-byte[0] = i;
-
-[result appendBytes: byte length: 1];
-
+  NSMutableData *result = [NSMutableData data];
+  uint8_t byte[1];
+  for (unsigned i = 0; i <= UINT8_MAX; ++i)
+    {
+      if (contains[i])
+        {
+          byte[0] = i;
+          [result appendBytes: byte length: 1];
+        }
+    }
+  return result;
 }
-
-}
-
-return result;
-
-}
-
 {% endhighlight %}
 
 The compiler knows to do the _correct_ conversion between the 32-bit and 8-bit

@@ -7,7 +7,9 @@ wordpress_url: http://blog.alieniloquent.com/2006/08/15/code-survival/
 While [Brian][1] and I were pairing today, we also found an offensive bit of
 code.
 
-{% highlight text %}property P: Pointer read FP;{% endhighlight %}
+{% highlight delphi %}
+property P: Pointer read FP;
+{% endhighlight %}
 
 This was a _public_ property on a class. It had no meaningful name, and was of
 the least-specific type in the system. (I'm prefer dynamic languages, but if

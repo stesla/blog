@@ -20,55 +20,43 @@ matched any of them.
 
 I thought it would be cool if I could call it like this:
 
-{% highlight text %}list.delete_if_status(['?', 'I']){% endhighlight %}
+{% highlight ruby %}
+list.delete_if_status(['?', 'I'])
+{% endhighlight %}
 
 But also call it like this:
 
-{% highlight text %}list.delete_if_status('?I'){% endhighlight %}
+{% highlight ruby %}
+list.delete_if_status('?I')
+{% endhighlight %}
 
 Naturally, I figured Ruby would have a duck-typing answer to this problem, but
 just the way it solved it surprised me (just a little--actually, now that I
 think about it, it's unsurprising). Here is an IRB log that demonstrates just
 what I discovered.
 
-{% highlight text %}irb(main):001:0> 'I?'.split
-
+{% highlight text %}
+irb(main):001:0> 'I?'.split
 => ["I?"]
-
 irb(main):002:0> 'I?'.split('')
-
 => ["I", "?"]
-
 irb(main):003:0> 'I?'.to_a
-
 => ["I?"]
-
 irb(main):004:0> ['I','?'].to_s
-
 => "I?"
-
 irb(main):005:0> ['I','?'].to_s.split('')
-
 => ["I", "?"]
-
 {% endhighlight %}
 
 So what I ended up with was this method:
 
-{% highlight text %}def delete_if_status(spec)
-
-status_list = spec.to_s.split('')
-
-self.delete_if do
-
-|item|
-
-status_list.include? item.status
-
+{% highlight ruby %}
+def delete_if_status(spec)
+  status_list = spec.to_s.split('')
+  self.delete_if do |item|
+    status_list.include? item.status
+  end
 end
-
-end
-
 {% endhighlight %}
 
 I love Ruby.

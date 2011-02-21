@@ -25,33 +25,22 @@ One of my co-workers wanted his nav to show up on the right-hand side. So I
 started by typing `C-h k nav RET` and that brought up the help for the
 function `nav` which puts the navigation buffer on the screen.
 
-{% highlight text %}(defun nav ()
-
-"Run nav-mode in a narrow window on the left side."
-
-(interactive)
-
-(if (nav-is-open)
-
-(nav-quit)
-
-(delete-other-windows)
-
-(split-window-horizontally)
-
-**(other-window 1)**
-
-(ignore-errors (kill-buffer nav-buffer-name))
-
-(pop-to-buffer nav-buffer-name nil)
-
-(set-window-dedicated-p (selected-window) t)
-
-(nav-mode)
-
-(when nav-resize-frame-p
-
-(nav-resize-frame)))){% endhighlight %}
+{% highlight text %}
+(defun nav ()
+  "Run nav-mode in a narrow window on the left side."
+  (interactive)
+  (if (nav-is-open)
+      (nav-quit)
+    (delete-other-windows)
+    (split-window-horizontally)
+    **(other-window 1)**
+    (ignore-errors (kill-buffer nav-buffer-name))
+    (pop-to-buffer nav-buffer-name nil)
+    (set-window-dedicated-p (selected-window) t)
+    (nav-mode)
+    (when nav-resize-frame-p
+      (nav-resize-frame))))
+{% endhighlight %}
 
 A quick terminology note. In Emacs-speak, operating-system windows are called
 _frames_. A frame can be split into multiple _windows_.
@@ -73,25 +62,18 @@ shows up on the right-hand side.
 However, I do not want to duplicate all the rest of that code. Emacs has an
 awesome facility to assist me, and it's called `defadvice`.
 
-{% highlight text %};;;;;;;; To launch nav on left side: M-x nav RET
-
+{% highlight text %}
+;;;;;;;; To launch nav on left side: M-x nav RET
 ;;;;;;;; To launch nav on right side: C-u M-x nav RET
-
 (defadvice other-window (around other-window-nop))
-
 (defadvice nav (around prefix-nav)
-
-(if current-prefix-arg
-
-(ad-activate-regexp "other-window-nop"))
-
-(unwind-protect
-
-ad-do-it
-
-(ad-deactivate-regexp "other-window-nop")))
-
-(ad-activate-regexp "prefix-nav"){% endhighlight %}
+  (if current-prefix-arg
+      (ad-activate-regexp "other-window-nop"))
+  (unwind-protect
+      ad-do-it
+    (ad-deactivate-regexp "other-window-nop")))
+(ad-activate-regexp "prefix-nav")
+{% endhighlight %}
 
 This is essentially [monkey-patching][3] by another name. When I activate this
 advice it gets called instead of the function it's advising, then at the point

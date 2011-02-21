@@ -23,49 +23,27 @@ something designed for drawing finite state-machines, even. What I found was
 The following source code from their samples page:
 
 {% highlight text %}
-
 \begin{figure}[H]
-
-\begin{center}
-
-\unitlength=4pt
-
-\begin{picture}(15, 28)(0,-10)
-
-\gasset{Nw=5,Nh=5,Nmr=2.5,curvedepth=3}
-
-\thinlines
-
-\node(A0)(7.5,0){$0$}
-
-\node[Nmarks=i,iangle=90](A1)(0,13){$1$}
-
-\node[Nmarks=if,iangle=90,fangle=90](A2)(15,13){$2$}
-
-\drawloop[loopangle=180](A1){$a$}
-
-\drawloop[loopangle=0](A2){$b$}
-
-\drawedge(A1,A2){$a$}
-
-\drawedge(A2,A1){$b$}
-
-\drawedge(A2,A0){$a$}
-
-\gasset{curvedepth=-3}
-
-\drawedge[ELside=r](A1,A0){$b$}
-
-\drawloop[loopangle=270](A0){$a, b$}
-
-\end{picture}
-
-\end{center}
-
-\caption{La complétion de l'automate.}
-
+  \begin{center}
+    \unitlength=4pt
+    \begin{picture}(15, 28)(0,-10)
+    \gasset{Nw=5,Nh=5,Nmr=2.5,curvedepth=3}
+    \thinlines
+    \node(A0)(7.5,0){$0$}
+    \node[Nmarks=i,iangle=90](A1)(0,13){$1$}
+    \node[Nmarks=if,iangle=90,fangle=90](A2)(15,13){$2$}
+    \drawloop[loopangle=180](A1){$a$}
+    \drawloop[loopangle=0](A2){$b$}
+    \drawedge(A1,A2){$a$}
+    \drawedge(A2,A1){$b$}
+    \drawedge(A2,A0){$a$}
+    \gasset{curvedepth=-3}
+    \drawedge[ELside=r](A1,A0){$b$}
+    \drawloop[loopangle=270](A0){$a, b$}
+    \end{picture}
+  \end{center}
+  \caption{La complétion de l'automate.}
 \end{figure}
-
 {% endhighlight %}
 
 Generates this graph (which I have scaled down):

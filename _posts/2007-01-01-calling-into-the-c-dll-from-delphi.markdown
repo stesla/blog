@@ -9,51 +9,35 @@ edits to the code from the last one. Today I was wrangling around and began to
 recall more of my C++, initializers in particular, so I've updated the
 `Example1` class to use them.
 
-{% highlight text %}
-
+{% highlight c++ %}
 public class Example1
-
 {
+ public:
 
-public:
+  Example1(const char * name) : _name(gcnew String(name)) {}
+  ~Example1() {}
+  void ShowName();
 
-Example1(const char * name) : _name(gcnew String(name)) {}
+ private:
 
-~Example1() {}
-
-void ShowName();
-
-private:
-
-gcroot<String ^> _name;
-
+  gcroot<String ^> _name;
 };
-
 {% endhighlight %}
 
 I also realize that I forgot to show the implementation side of that class, so
 here it is:
 
-{% highlight text %}
-
+{% highlight c++ %}
 // Example.cpp
-
 #include "stdafx.h"
-
 #include "Example.h"
-
 
 using namespace System::Windows::Forms;
 
-
 void Example::Example1::ShowName()
-
 {
-
-MessageBox::Show(_name);
-
+  MessageBox::Show(_name);
 }
-
 {% endhighlight %}
 
 So there's our DLL. Now, let's use it from Delphi! I'm using Turbo Delphi for
@@ -67,43 +51,27 @@ that when we click the button it creates an `Example1`, shows it, and then
 deletes it. Here is the implementation section from the main unit in the
 delphi program:
 
-{% highlight text %}
-
+{% highlight delphi %}
 function Example1Create(AName: PChar): Pointer;
-
 cdecl; external 'Example';
 
 procedure Example1Delete(AExample: Pointer);
-
 cdecl; external 'Example';
 
 procedure Example1ShowName(AExample: Pointer);
-
 cdecl; external 'Example';
 
-
 procedure TForm1.btnDoItClick(Sender: TObject);
-
 var
-
-Example: Pointer;
-
+  Example: Pointer;
 begin
-
-Example := Example1Create(PChar(edtName.Text));
-
-try
-
-Example1ShowName(Example);
-
-finally
-
-Example1Delete(Example);
-
+  Example := Example1Create(PChar(edtName.Text));
+  try
+     Example1ShowName(Example);
+  finally
+     Example1Delete(Example);
+  end;
 end;
-
-end;
-
 {% endhighlight %}
 
 The button handler is straight-forward and normal. The only interesting thing
@@ -114,20 +82,15 @@ you would for most things.
 The interesting part is at the top where we import from the DLL, let's look at
 one of those lines again:
 
-{% highlight text %}
-
+{% highlight delphi %}
 function Example1Create(AName: PChar): Pointer;
-
 cdecl; external 'Example';
-
 {% endhighlight %}
 
 Now this corresponds to the following line from `Exports.h`:
 
-{% highlight text %}
-
+{% highlight c++ %}
 DLLAPI void * Example1Create(const char * name);
-
 {% endhighlight %}
 
 Since it has a return type that is not void, it becomes a function (the others

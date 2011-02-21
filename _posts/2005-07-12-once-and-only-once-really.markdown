@@ -15,21 +15,15 @@ step further, we could just write a SQL script that does all the work and not
 have to recompile any code for the schema updater to do the right thing.
 
 {% highlight text %}
-
 [2.1]
-
 ALTER TABLE ...
 
 [2.2]
-
 DROP TABLE ...
-
 CREATE TABLE ...
 
 [2.7]
-
 INSERT INTO ...
-
 {% endhighlight %}
 
 You get the idea. The program would then check the database to see if it was

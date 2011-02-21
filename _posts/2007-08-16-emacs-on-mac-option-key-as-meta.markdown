@@ -15,11 +15,8 @@ before I hit the option key instead.
 I used to have this in my `.emacs`, although I never really noticed it:
 
 {% highlight text %}
-
 (when stesla-mac-p
-
-(setq mac-command-key-is-meta nil))
-
+  (setq mac-command-key-is-meta nil))
 {% endhighlight %}
 
 A week ago when I wanted to finally fix this and make my command key do
@@ -32,13 +29,9 @@ lets you specify the behavior of all three special keys. So now what have is
 this:
 
 {% highlight text %}
-
 (when stesla-mac-p
-
-(setq mac-command-modifier nil)
-
-(setq mac-option-modifier 'meta))
-
+  (setq mac-command-modifier nil)
+  (setq mac-option-modifier 'meta))
 {% endhighlight %}
 
 This makes Emacs not recognize the command key as a modifier at all and use

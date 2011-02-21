@@ -26,31 +26,27 @@ nothing about it. Here's what you do.
 
 At the top level of your SVN working copy:
 
-{% highlight text %}$ git init
-
+{% highlight text %}
+$ git init
 $ echo .svn > .gitignore
-
 $ git add *
-
 $ git add .gitignore
-
-$ git commit -m "Initial commit"{% endhighlight %}
+$ git commit -m "Initial commit"
+{% endhighlight %}
 
 Now we just need to teach SVN to ignore the Git stuff. So open up your
 `~/.subversion/config` file and find the `[miscellany]` section. You should
 see a commented out setting for `global-ignores`. Uncomment it and add `.git*`
 to it like this:
 
-{% highlight text %}[miscellany]
-
+{% highlight text %}
+[miscellany]
 ### Set global-ignores to a set of whitespace-delimited globs
-
 ### which Subversion will ignore in its 'status' output, and
-
 ### while importing or adding files and directories.
 
-global-ignores = *.o *.lo *.la \#*\# .*.rej *.rej .*~ *~ .\#* .DS_Store
-.git*{% endhighlight %}
+global-ignores = *.o *.lo *.la \#*\# .*.rej *.rej .*~ *~ .\#* .DS_Store .git*
+{% endhighlight %}
 
 And voila! When you're able to connect to your SVN repo, you can use SVN. But
 when you're offline and still want the ability to use version control to

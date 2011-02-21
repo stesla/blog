@@ -6,31 +6,21 @@ wordpress_url: http://www.alieniloquent.com/?p=30
 ---
 So I was looking at a C# class that looked something like this:
 
-{% highlight text %}
-
+{% highlight c# %}
 class FooFactory
-
 {
+  private BazCollection _bazzen;
+  private QuxCollection _quxxen;
 
-private BazCollection _bazzen;
+  // ...constructors, other methds, etc...
 
-private QuxCollection _quxxen;
+  public Foo BuildFoo(Bar bar)
+  {
+    return new Foo(bar, _bazzen, _quxxen.FindQuxForBar(bar));
+  }
 
-
-// ...constructors, other methds, etc...
-
-public Foo BuildFoo(Bar bar)
-
-{
-
-return new Foo(bar, _bazzen, _quxxen.FindQuxForBar(bar));
-
+  // ...more stuff...
 }
-
-// ...more stuff...
-
-}
-
 {% endhighlight %}
 
 Now that smells to me. Take a moment and see if you can sniff it out. I'll
@@ -52,16 +42,11 @@ spread onto two objects, and only should be in one.
 Now, one refactor that we could do would be to just pass the collection in for
 the Qux as well:
 
-{% highlight text %}
-
+{% highlight c# %}
 public Foo BuildFoo(Bar bar)
-
 {
-
-return new Foo(bar, _bazzen, _quxxen);
-
+  return new Foo(bar, _bazzen, _quxxen);
 }
-
 {% endhighlight %}
 
 This refactor is not the one I would choose, though, as now it is even more
@@ -70,16 +55,11 @@ do, of course). The foo is only ever interested in a single Baz and a single
 Qux, so it's just extra overhead to have to create a collection for each. That
 brings me to the next refactoring that I might try:
 
-{% highlight text %}
-
+{% highlight c# %}
 public Foo BuildFoo(Bar bar)
-
 {
-
-return new Foo(bar, _bazzen.FindBazForBar(bar), _quxxen.FindQuxForBar(bar));
-
+  return new Foo(bar, _bazzen.FindBazForBar(bar), _quxxen.FindQuxForBar(bar));
 }
-
 {% endhighlight %}
 
 This has the advantage of making Foo's responsibility very clear. It is meant
@@ -88,17 +68,11 @@ fact, it reeks more with that original odor. At this point, it would be
 worthwhile to see what Foo actually needs the Bar for and further factor that
 out. Maybe we can have something like this:
 
-{% highlight text %}
-
+{% highlight c# %}
 public Foo BuildFoo(Bar bar)
-
 {
-
-return new Foo(bar.name, bar.id, _bazzen.FindBazForBar(bar),
-_quxxen.FindQuxForBar(bar));
-
+  return new Foo(bar.name, bar.id, _bazzen.FindBazForBar(bar), _quxxen.FindQuxForBar(bar));
 }
-
 {% endhighlight %}
 
 That way we remove the dependence on Bar completely from the Foo, and push it
