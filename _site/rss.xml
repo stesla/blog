@@ -5,10 +5,32 @@
     <title>Alieniloquent</title>
     <link>http://blog.alieniloquent.com</link>
     <language>en</language>
-    <pubDate>2011-02-25T00:13:10-08:00</pubDate>
+    <pubDate>2011-02-25T00:43:52-08:00</pubDate>
     <copyright>Copyright 2005-2011</copyright>
     <ttl>60</ttl>
     <description>off on a tangent</description>
+    
+    <item>
+      <title>Now Powered By Jekyll</title>
+      <link>http://blog.alieniloquent.com/2011/02/25/now-powered-by-jekyll.html</link>
+      <pubDate>Fri Feb 25 00:00:00 -0800 2011</pubDate>
+      <guid>http://blog.alieniloquent.com/2011/02/25/now-powered-by-jekyll.html</guid>
+      <description>&lt;p&gt;I know I promised more blogging. I know it&amp;#8217;s been weeks. I &lt;em&gt;have&lt;/em&gt; been working on my blog, just behind the scenes.&lt;/p&gt;
+
+&lt;p&gt;I decided that if I was going to start blogging seriously, I did not want to be doing it in a web form. I&amp;#8217;ve been using &lt;a href='http://wordpress.org/'&gt;WordPress&lt;/a&gt; for a long time now, and the biggest thing that has always bugged me were my options for actually typing in my blog posts. Web forms suck for writing. I&amp;#8217;d rather use Emacs.&lt;/p&gt;
+
+&lt;p&gt;Now, I realize there&amp;#8217;s ways to use Emacs to post to WordPress. I&amp;#8217;m not interested. The second thing that bugged me about my old setup is the database. This is a blog. Except for comments and track-backs, it is essentially static content. There is no reason to bring a database into this transaction.&lt;/p&gt;
+
+&lt;p&gt;So, I started considering doing something simple that would generate my content statically. I could store it in a Git repository and push it up to my server. That&amp;#8217;s when I remembered &lt;a href='http://jekyllrb.com'&gt;Jekyll&lt;/a&gt;. It was pretty much exactly what I wanted, and it&amp;#8217;s written in Ruby, so I&amp;#8217;ll be comfortable hacking on it when the need arises.&lt;/p&gt;
+
+&lt;p&gt;The trouble was that Jekyll doesn&amp;#8217;t have a lot of built-in generation options. It will generate a page for each post, and it will run any extra files through its template expansion, but for things like archive pages some extra code is needed. But, Jekyll provides a plugin mechanism that is more than adequate to allow for extension.&lt;/p&gt;
+
+&lt;p&gt;As part of this migration, I&amp;#8217;ve decided to remove the commenting and track-backing functionality from my blog. Experience has shown that I don&amp;#8217;t really get much in the way of comments, and I believe there are better ways to facilitate discussion. If, later, I feel that I should have comments, I&amp;#8217;ll probably use &lt;a href='http://disqus.com'&gt;Disqus&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I also made a little tweak so that only new posts should show up in the RSS feed. Since my scheme for determining GUIDs is new, I didn&amp;#8217;t want to spam people with a bunch of posts that are quite old. Also quite easy with Jekyll.&lt;/p&gt;
+
+&lt;p&gt;Ultimately, I&amp;#8217;m quite happy with my new blog setup. It will help me blog more frequently.&lt;/p&gt;</description>
+    </item>
     
   </channel>
 </rss>

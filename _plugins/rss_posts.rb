@@ -4,10 +4,10 @@
 # to tease. Once I have more than 10 new posts, this can go away.
 
 module Jekyll
-  class Site
-    def rss_posts
-      self.posts.select do |post|
-        post.date >= Time.new(2011, 2, 25)
+  class RssHack < Generator
+    def generate(site)
+      site.config['rss_posts'] = site.posts.select do |post|
+        post.date >= Time.utc(2011,2,25)
       end
     end
   end

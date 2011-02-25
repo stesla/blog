@@ -10,13 +10,6 @@ module Jekyll
       end
       years
     end
-
-    alias orig_site_payload site_payload
-    def site_payload
-      result = orig_site_payload
-      result['site']['years'] = self.years
-      result
-    end
   end
 
   class ArchiveIndex < Page
@@ -54,6 +47,7 @@ module Jekyll
         site.pages << index
         site.years << index
       end
+      site.config['years'] = site.years
     end
   end
 end
