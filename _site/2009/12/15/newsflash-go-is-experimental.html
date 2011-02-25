@@ -1,0 +1,168 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Newsflash: Go is Experimental</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2009/12/15/newsflash-go-is-experimental.html" title="Permalink for this post">Newsflash: Go is Experimental</a></h3>
+  <p class="date">December 15th, 2009</p>
+  <div class="entry"><p>Saw a <a href='http://monoc.mo.funpic.de/go-rant/'>rant</a> today about <a href='http://golang.org'>Go</a>. I was genuinely impressed with the amount of piss and vinegar the author managed to conjure up over this. He&#8217;s more upset about this language than I am excited about it, and I wrote a <a href='http://github.com/stesla/gospecify'>library</a> in it and an <a href='http://www.engineyard.com/blog/2009/ready-set-go/'>article</a> about it already. He brought up some valid points, but overall, he completely missed the mark.</p>
+
+<p>The author brings up two major gripes with Go: it has an ugly syntax, and it lacks innovation. I&#8217;ll cede both points, but with a few reservations. Go is experimental. It&#8217;s not complete yet. In fact, the language is still changing. The Go authors released it so that other people could see what they were working on, but even they don&#8217;t suggest using it for anything critical. Go is not intended to replace Java, or even C++ (though maybe). It&#8217;s an upgrade to C.</p>
+
+<h3 id='ugly_syntax'>Ugly Syntax!</h3>
+
+<p>I&#8217;m not a huge fan of Go&#8217;s syntax. It&#8217;s a curly-brace language. I do, however, understand why the syntax looks like it does. It is a similar reason to why JavaScript looks like Java. I don&#8217;t have a direct line into the Go authors&#8217; thoughts, but I&#8217;d wager they wanted something familiar. So we end up with another curly-brace language. I forgive them.</p>
+
+<p>That said, I&#8217;d love to hear what the author suggests as alternative syntaxes for the statements he calls out. In fact, I&#8217;m sure the Go authors would love to hear any constructive suggestions he might have on a better syntax for these things. I know that the <a href='http://groups.google.com/group/golang-nuts'>mailing list</a> has frequent discussion regarding ways to improve the syntax. The Go authors are willing to consider changes, especially changes that are proposed along with patches that show how to implement them.</p>
+
+<p>I do want to call him out on his hate of the condition initializer. That new syntax, along with multiple return values allows programmers to replace C code like this:</p>
+<div class='highlight'><pre><code class='c'><span class='kt'>int</span> <span class='n'>result</span> <span class='o'>=</span> <span class='n'>someCall</span><span class='p'>();</span>
+<span class='k'>if</span> <span class='n'>result</span> <span class='o'>&lt;</span> <span class='mi'>0</span> <span class='p'>{</span>
+  <span class='cm'>/* Handle Error */</span>
+<span class='p'>}</span> <span class='k'>else</span> <span class='p'>{</span>
+  <span class='cm'>/* Do something with result */</span>
+<span class='p'>}</span>
+
+<span class='cm'>/* Or worse... */</span>
+
+<span class='k'>if</span> <span class='p'>(</span><span class='n'>result</span> <span class='o'>=</span> <span class='n'>someCall</span><span class='p'>())</span> <span class='o'>&lt;</span> <span class='mi'>0</span> <span class='p'>{</span>
+  <span class='cm'>/* Handle Error */</span>
+<span class='p'>}</span> <span class='k'>else</span> <span class='p'>{</span>
+  <span class='cm'>/* Do something with result */</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>With Go code like this:</p>
+<div class='highlight'><pre><code class='go'><span class='k'>if</span> <span class='n'>result</span><span class='p'>,</span> <span class='n'>err</span> <span class='p'>:=</span> <span class='n'>someCall</span><span class='p'>();</span> <span class='k'>if</span> <span class='n'>err</span> <span class='p'>!=</span> <span class='n'>nil</span> <span class='p'>{</span>
+  <span class='cm'>/* Handle Error */</span>
+<span class='p'>}</span> <span class='k'>else</span> <span class='p'>{</span>
+  <span class='cm'>/* Do something with result */</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Notably, in the Go code, both <code>result</code> and <code>err</code> are scoped to just inside the if statement. They don&#8217;t clutter the surrounding block. I&#8217;ll talk more about this pattern in the part about exceptions.</p>
+
+<h3 id='innovation'>Innovation?</h3>
+
+<p>I will take the author&#8217;s statement that Go lacks innovation, and go one step further. Go offers <em>no real innovation</em> over other languages that exist today. The three things that the author calls out aren&#8217;t really innovative. Analogs to both channels and goroutines have been present in Erlang for twenty years. The interface-only inheritance is just a way to apply the duck-typing concepts of Ruby and Python to a statically type-checked language. There is nothing new to see here. Move along.</p>
+
+<p>The point the author fails to see is that Go is not meant to innovate programming theory. It&#8217;s meant to innovate programming practice. This is an upgrade to C. It&#8217;s a language that applies the innovations of the last thirty years to the systems world, where the state of the art is still <em>portable assembler</em>. So no, the language isn&#8217;t introducing brilliant new ideas. It&#8217;s taking tested old ideas, and introducing them into a new arena.</p>
+
+<h3 id='exceptions'>Exceptions</h3>
+
+<p><em>Oh no!</em> Go doesn&#8217;t have exceptions. Everybody knows that every <em>modern</em> language has exceptions. You can&#8217;t write <em>real</em> programs without non-local transfer of control. Wait? What&#8217;s that you say? C doesn&#8217;t have exceptions? <a href='http://www.linux.org/'>People</a> <a href='http://httpd.apache.org/'>still</a> <a href='http://git-scm.com/'>code</a> <a href='http://code.google.com/p/redis/'>in</a> <a href='http://github.com/erlang/otp'>that</a> <a href='http://www.gtk.org/'>unusable</a> <a href='http://memcached.org/'>language</a>?</p>
+
+<p>Don&#8217;t get the wrong idea. I think exceptions are useful. I use them in languages that have them. I also strongly dislike the C idiom of returning out-of-band values to indicate errors (thus requiring that some value <em>be</em> out of band). However, I think Go has a reasonable way to handle this. Using multiple return values, named return variables, and the comma-error pattern, a decent error reporting facility can be created without exceptions.</p>
+
+<p>Here is an example:</p>
+<div class='highlight'><pre><code class='go'><span class='k'>func</span> <span class='n'>magic</span><span class='p'>()</span> <span class='p'>(</span><span class='n'>result</span> <span class='nb'>int</span><span class='p'>,</span> <span class='n'>err</span> <span class='n'>io</span><span class='p'>.</span><span class='n'>Error</span><span class='p'>)</span> <span class='p'>{</span>
+  <span class='k'>if</span> <span class='n'>err</span> <span class='p'>=</span> <span class='n'>moreMagic</span><span class='p'>();</span> <span class='n'>err</span> <span class='p'>!=</span> <span class='n'>nil</span> <span class='p'>{</span>
+    <span class='cm'>/* Calculate result */</span>
+  <span class='p'>}</span>
+  <span class='k'>return</span><span class='p'>;</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>This allows the error from <code>moreMagic</code> to propagate up without reserving an out-of-band result value. It provides no more syntactic overhead than explicit exceptions in Java (and arguably less).</p>
+
+<p>The argument was made that people can fail to check return codes. People can be just as stupid in languages with exceptions. I&#8217;ve lost count how many times I&#8217;ve seen this in Java:</p>
+<div class='highlight'><pre><code class='java'><span class='k'>try</span> <span class='o'>{</span>
+  <span class='cm'>/* Do something that might blow up */</span>
+<span class='o'>}</span> <span class='k'>catch</span> <span class='o'>{</span>
+<span class='o'>}</span>
+</code></pre>
+</div>
+<p>The catch block is empty on purpose. People do that. They catch <em>all</em> exceptions and then <em>do nothing</em> with them <em>on purpose</em>. You can be an idiot in any language.</p>
+
+<h3 id='generics'>Generics</h3>
+
+<p>I&#8217;ll be honest. I&#8217;ve hated every implementation of generics I&#8217;ve seen in non- functional languages. That is to say, C++, Java, and C#. They are a poor attempt at implementing the polymorphic types that ML-derivatives have enjoyed for decades. The syntax for them is inevitably terrible and the semantics just as awful. However, plenty of modern languages don&#8217;t have generics.</p>
+
+<p>The author is whining because the language doesn&#8217;t have his favorite language feature.</p>
+
+<h3 id='new_jersey_style'>New Jersey style</h3>
+
+<p>The author wants to suggest that the Go authors subscribe to the <a href='http://www.jwz.org/doc/worse-is-better.html'>New Jersey school</a> of programming. He suggests that his two favorite features (exceptions and generics) aren&#8217;t in the language because the Go authors were too scared to implement them. He even cites the <a href='http://golang.org/doc/go_lang_faq.html'>Language Design FAQ</a> as proof.</p>
+
+<p>If this were a reading report, I would give it a grade of D, maybe a C- if I felt charitable. Why? Because the author of the article clearly had nearly no comprehension of the FAQ. He suggests that the Go authors decided not to include the features because they couldn&#8217;t figure out how to implement them. When the truth is, <em>Go is incomplete</em> and they cannot figure out how to include exceptions or generics <em>yet</em> and are <em>open to suggestions</em>.</p>
+
+<p>Just like with his syntax improvements, I&#8217;d encourage the author to post to the mailing lists with suggestions on how to implement exceptions and generics in such a fashion that they fit in with the philosophy of the language. The Go community is interested in those topics. The discussions are happening right now.</p>
+
+<h3 id='tldr'>TL;DR</h3>
+
+<p>Go is <em>incomplete</em> and <em>experimental</em>. Even recently it went through a fundamental syntax change (making semi-colons optional virtually everywhere). The Go authors are very willing to listen to suggestions that are backed up with code. So, what I have to say to the author is: nut up or shut up.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

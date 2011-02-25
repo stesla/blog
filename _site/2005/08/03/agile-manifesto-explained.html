@@ -1,0 +1,129 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Agile Manifesto: Explained</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2005/08/03/agile-manifesto-explained.html" title="Permalink for this post">Agile Manifesto: Explained</a></h3>
+  <p class="date">August 3rd, 2005</p>
+  <div class="entry"><p>A link to an article titled, <a href='http://www.unixwiz.net/archives/2005/07/agile_programmi_1.html'>&#8220;Agile Programming: How to doom your software project&#8221;</a> by <a href='http://www.unixwiz.net/blog/'>Steve Friedl</a> was pasted into my IM window this evening. Steve wrote an excellent piece about <a href='http://www.unixwiz.net/techtips/be-consultant.html'>being a consultant</a> back in January, and I enjoyed it quite thoroughly.</p>
+
+<p>Seeing as I work in an agile shop, I was drawn to the title of this article like a moth to a flame. It seems that Steve found the <a href='http://www.agilemanifesto.org/'>agile manifesto</a>, and misunderstood each line item. Now, it&#8217;s really not his fault. The manifesto could use a companion document that explains it, or perhaps it should be rewritten such that it elaborates. But, the end result was that Steve came away thinking that all of us agile guys have had a bunch of kool- aid and are about to plunge our companies into deep pits of failure with these kooky ideas. This just isn&#8217;t true (well, except the kool-aid, but I mean, that talking pitcher is just so charismatic, I have to drink from its head). So I am here to explain the four points and hopefully allay any misconceptions you might have about them.</p>
+
+<p><strong>&#8220;[We value] <em>individuals and interactions</em> over processes and tools&#8221;</strong></p>
+
+<p>Steve seems to interpret this to mean that agile practitioners would rather throw people at a problem than find a good tool for it. That is simply not true. Even cursory research into agile practices (including surfing the <a href='http://www.agilealliance.com/home'>Agile Alliance</a>, which Steve linked) would reveal a heavy preference toward tool usage. In fact, agile practitioners strive to automate as much as they can so that they can focus on the hard problems.</p>
+
+<p>The idea behind this principle is that our teams should place a higher value on our people than on which tools or processes that we use. The people that comprise a team are the most expensive, and most valuable resources that the business will put into producing software, and so it is important that they are valued. Individuals should be given the power to get things done the best way that they can. They should be given a license to be creative and innovate.</p>
+
+<p>The people on a software team are the most important part. If the tools are getting in the way, then they need to be replaced. If the process is slowing things down, then it needs to be revised. Tools and processes are a means for the people on the team to get to and end. Each engineer should be able to get to those ends by the best, most efficient way they can.</p>
+
+<p>Steve also says that in his experience, &#8220;a lot more projects have been sunk by not-enough-tools than by not-enough-interaction.&#8221; I&#8217;d wager that when he thinks of interaction, he thinks of meetings that last hours&#8211;nearly useless meetings that mostly serve to bore all those in attendance. That is, indeed, not going to help a project succeed. Thankfully, that&#8217;s not what agile practioners mean.</p>
+
+<p>Agile practioners realize that developing software is not a technical business, at its core. It is a social business. It is about providing people a way to do something that they couldn&#8217;t do before. It is about making things easier for people to do. It is about enabling people to interact with technology.</p>
+
+<p>At its core, software is all about individuals and interactions. Whether its a user interacting with his computer, a salesperson interacting with her client, a programmer interacting with his customer, or a programmer interacting with the code, software is all about individuals and interactions. Agile practitioners realize this and strive to make the interactions efficient and enjoyable so that the individuals can do more and enjoy themselves.</p>
+
+<p><strong>&#8220;[We value] <em>working software</em> over comprehensive documentation&#8221;</strong></p>
+
+<p>This is an easy one to misunderstand, and maybe Steve didn&#8217;t. There are two schools of thought when it comes to specifications: they are either redundant information that is duplicated in the code, or they are essential tools to communicating what the software is supposed to do. Whether or not Steve understood the manifesto, he clearly adheres to the latter school.</p>
+
+<p>Agile practitioners realized that they were writing documentation that described how the program was supposed to behave and then they were writing code that described how the program was supposed to behave. Yes, you read that correctly. That is all code is: a description of how the program is supposed to behave. It&#8217;s expressed in very precise terms with very specific grammar, but it is a description of the program&#8217;s behaviour nonetheless.</p>
+
+<p>What&#8217;s more, because we&#8217;re writing everything down twice (or more, depending on your process), there are two (or more) places that have to change if those behaviours have to change. And, unless you&#8217;ve got some magic voo-doo that I don&#8217;t know about, there&#8217;s nothing that <em>forces</em> you to keep your documentation in sync (even the best literate code tools don&#8217;t care if your documentation comments are out of sync with the real behavior).</p>
+
+<p>The solution is to make your specification out of code. Write tests using technical-facing tools like <a href='http://c2.com/cgi/wiki?TestingFramework'>these</a> and write tests using business-facing tools like <a href='http://fit.c2.com/'>this</a>. Use these tests to specify exactly what the behavior is: if the tests pass, the program works. What&#8217;s more, these tests actually <em>use</em> the code and <em>inspect</em> its behavior. So, if its behavior changes, the tests will know automatically. Furthermore, the tests serve as examples of how to use the code. With tests like these, you don&#8217;t really need a specification document anymore.</p>
+
+<p>We all know that we should strive to remove duplication from our code. That&#8217;s why we refactor and that&#8217;s why we design. Agile practitioners strive to remove duplication from our processes as well. The less we duplicate information, the more efficiently we can change and the more quality those changes will have. This is what we mean when we say we value working software over comprehensive documentation.</p>
+
+<p><strong>&#8220;[We value] <em>customer collaboration</em> over contract negotiation.&#8221;</strong></p>
+
+<p>Steve&#8217;s right. Customers never know what they want. What he&#8217;s wrong about is that negotiating a contract up-front is the way to find out what they want. The truth is that the only way for a customer to find out what they want, and more importantly what they <em>need</em>, is to <em>use the software</em>. This is why agile teams place such a high priority on delivering working software quickly.</p>
+
+<p>What&#8217;s more, agile teams tend to deliver their software in small increments and put in the features that are the absolutely most important first. I bet that if you asked a customer to come up with the list of features that would have to be in the product to make it have <em>any</em> business value at all, they wouldn&#8217;t have a hard time (&#8220;a text editor must be able to display text files, change text, and save text files&#8221;). Once you have this super-simple, barely valuable product <em>in the customer&#8217;s hands</em> they can give you good feedback as to what should go in next. Working this way, the customer gets exactly what they need and they get it as quickly as they can. It also allows their understanding of what they need to grow <em>while they have a working program</em>.</p>
+
+<p>Give me a customer who wouldn&#8217;t want to have a working program that delivers business value after two or three weeks, and I&#8217;ll eat the paper you printed this out on (assuming, of course, you printed this out).</p>
+
+<p><strong>&#8220;[We value] <em>responding to change</em> over following a plan&#8221;</strong></p>
+
+<p>Steve returns once again to software specifications. We know what agile practitioners think of duplicating data, but that is all about documenting what the software does. How are we supposed to decide how to get from now to a time when it does these things? We plan. But built into that plan is the <em>expectation of change</em>.</p>
+
+<p>Agile methods build in the assumption that change will happen and it will happen often. So Steve&#8217;s sentiment that &#8220;hopefully one has built a [software] system that tolerates change,&#8221; is reduced to &#8220;one built a software system that tolerates change.&#8221; Assume that there will be technical changes and ensure that your software is easy to change by keeping it well factored and easy to understand. Assume that there will be business changes so deliver software in short cycles.</p>
+
+<p>Agile software development is all about embracing change and expecting it. As the old adage goes: the only constant thing in software is change. Learn it, love it, live it.</p>
+
+<p>I&#8217;m certainly not the first person to say these things, and I probably won&#8217;t be the last. I hope reading this has shed a little light on what that manifesto really means, but the best way is to get out there and <em>do it</em>. Try an agile method on a project and see how you like it. If it works for you, great. If it doesn&#8217;t work for you, great, now you know. Sitting around and speculating gets you nowhere.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: off on a tangent</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         
+<div class="post">
+  <h3><a href="/2011/02/01/yet-another-ltns-post.html" rel="bookmark" title="Permanent Link to Yet Another LTNS Post">Yet Another LTNS Post</a></h3>
+  <p class="date">February 1st, 2011</p>
+  <div class="entry"><p>Okay, so it seems like over the last few years, so many of my blog posts are &#8220;I am still alive&#8221; or &#8220;long time no see, I&#8217;m going to start blogging again.&#8221;</p>
+
+<p>The problem is that I&#8217;ve thought of this blog as a technical blog for so long, and so when I want to talk about other things, I&#8217;ve felt I couldn&#8217;t post them here. But, as my better half told me today, &#8220;It&#8217;s called <em>Alieniloquent</em>. It&#8217;s almost perverse for it to be a single-topic blog.&#8221;</p>
+
+<p>So, I&#8217;m going to start blogging about several topics that interest me: programming, knitting, cooking, parenting, politics, and whatever else strikes my fancy. I&#8217;m going to make an effort to tag things appropriately so that if you want to just follow certain kinds of posts, you can.</p>
+
+<p>So, long time no see. I&#8217;m going to start blogging again.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2010/11/02/xbox-live-ux-fail.html" rel="bookmark" title="Permanent Link to XBox Live UX Fail">XBox Live UX Fail</a></h3>
+  <p class="date">November 2nd, 2010</p>
+  <div class="entry"><h3 id='the_story'>The Story</h3>
+
+<p>Today I received an email from Microsoft. They wanted to let me know that in about a month, my XBox Live Gold membership was going to automatically renew. I really appreciate the notice because I don&#8217;t own an XBox any more, so it was time to cancel.</p>
+
+<p>I clicked on the link provided in the email they sent me. Navigated the site to the page with the link to manage my account billing, and clicked on the link. &#8220;Oops, an error occurred.&#8221; I navigated back, and tried something else. &#8220;Oops, an error occurred.&#8221; In fact, no matter what I tried to do on the site, aside from look at the list of things I could (not) do caused an error to occur.</p>
+
+<p>Fine, I thought, I&#8217;ll just call the phone number. I closed the window out of frustration and picked up the phone. As I navigated the phone tree, I was kindly reminded that I&#8217;d need details from my account, such as my gamertag. Well shit, I don&#8217;t remember that stuff, so I logged back in.</p>
+
+<p>I was greeted with a page insisting I accept their new Terms of Service. I had no way to proceed to the rest of the site without checking a box saying I&#8217;d read them, and then clicking a button to proceed. So I did that, and a horde of trained mice swarmed over their database to update the bit on my user account record that said I&#8217;d agreed to the new terms.</p>
+
+<p>Greeted, once again, with the page that offered to me all the things I could do on their website, I clicked the link to manage my billing details. It worked just fine. After hanging up the phone, I went through the multi-page attempt to try and save me from cancellation (&#8220;But you won&#8217;t be able to watch Netflix on your XBox. Have you heard about these games? Maybe you want to go month-to-month?&#8221;) and turned off my auto-renewal setting.</p>
+
+<h3 id='the_fail'>The Fail</h3>
+
+<p>There was actually two parts to the UX fail. The first was the lame, and at one point seemingly-never-ending, attempt to save me from cancelling my auto- renewal. I just wanted to turn off a setting, and I had to click through about five pages of completely unrelated bullshit to get to the radio switch that let me do that. The second part of the fail was a bit more subtle, and is probably a bug in the XBox Live site.</p>
+
+<p>When companies change their terms of service, they like to ensure that you cannot do anything until you have accepted them. Products with a piece of client software (e.g. EVE Online, iTunes) can simply disallow access until you&#8217;ve clicked the appropriate widget. But websites are a bit more complicated. The vendor cannot control your web surfing experience. All they can control is what content they display to you. At first blush, that seems like a simple problem, just redirect if the user hasn&#8217;t accepted the TOS. But, when your site has several possible paths a user can follow to enter, that simple solution becomes vastly more complex.</p>
+
+<p>My theory of what happened is that the link I clicked in my email went through a route in their site that was <em>not</em> wrapped in the code to see if I&#8217;d accepted the new TOS. That allowed me access to my user portal. However, <em>all</em> of the functionality was coded to verify I had accepted the TOS and (probably) raise an exception if I had not. So, everything I tried to do gave me an unexpected error. But, when I logged out, and came in through the <em>usual</em> route, I was presented with the TOS, the flag was set, and everything worked.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2010/11/01/git-svn-fetch-dies-with-fatal-bad-object.html" rel="bookmark" title="Permanent Link to git svn fetch dies with "fatal: bad object"">git svn fetch dies with "fatal: bad object"</a></h3>
+  <p class="date">November 1st, 2010</p>
+  <div class="entry"><p>At the day job, I use git-svn to interface with the SVN repository my team uses to manage its code. For the last several months that&#8217;s been going on painlessly. For the last couple of weeks I haven&#8217;t been doing anything in the SVN repo, so I hadn&#8217;t been fetching. This morning, I wanted to stash a script into the repo, and so the first thing I did was <code>git svn fetch</code>. But, I was greeted with a beastly error:</p>
+<div class='highlight'><pre><code class='text'>Index mismatch: c2714646b0290e3e3c44a0d5f239e1849083aefe != e12bd4a7d89970506864ad2b1c5caeef0a6a0876
+rereading f2260561581e98397c66b939d90efb2a351ce993
+
+...SNIP: a bunch of SVN output...
+
+fatal: bad object 5b32d4ac2e03a566830f30a702523c68dbdf715b
+rev-list -1 4a9fb23c88083656f6019fdedd7dc3d61b12ea50 85d1c926ebf06809247ae33850a94641f784bb66 3cd61c68706584009288ffc6e0c51d9dffdf9e5c 94b0c26b28610ea96e8989f4be21c92a9d78ef96 d82148570448de76f11f6b47b64ca3d4ac69cd21 de7e70d23ae10c9025b66206962b0fe358752268 dd02022bac0c2127300c937d80dfa793503c484c 36e6caf0aec8ae79d1d40cb4687466cd2f9e3718 5b32d4ac2e03a566830f30a702523c68dbdf715b 796a816059111a495c8ca14836c9bf567cc19c2a a0c450588867bbe11363d7dd6eb8f610b21c7f6c 4c7b780c0369a17e9f166aaeb851d9e14ecaeeea 56215cbb64f791cd85bf6094c18033f8712960ea 2ac18c2a0f144e64ff03ffab0e8ab6e7c3dc08b5 ee3fefa770a98ef90c9696c7a635ffda8d762404 971afb2b2dbacb83ef96f68b3b84960ae97a6833 93900609d9ec96def83a43940c2722123ec5f73c 67edd1ed8ad06c79e39cbb631696077856961a84 --not f2260561581e98397c66b939d90efb2a351ce993: command returned error: 128
+</code></pre>
+</div>
+<p>I tried it again, and got the same error. So, at least the behavior was deterministic. Indeed, running this pared down command yielded the same result:</p>
+<div class='highlight'><pre><code class='text'>$ git rev-list 5b32d4ac2e03a566830f30a702523c68dbdf715b
+fatal: bad object 5b32d4ac2e03a566830f30a702523c68dbdf715b
+</code></pre>
+</div>
+<p>Stepping through the code in git-svn it became clear that the command that was failing was part of the code that tries to reconcile <code>svn:mergeinfo</code> properties with the git commit info that git-svn produces. So I began to develop a theory. I had recently run a <code>git gc</code> and perhaps it had deleted a commit that was only referenced from git-svn&#8217;s information.</p>
+
+<p>From inside the <code>.git</code> directory, I ran this:</p>
+<div class='highlight'><pre><code class='text'>$ find . -exec grep -Hin 5b32d4ac2e03a566830f30a702523c68dbdf715b {} \;
+Binary file ./svn/.caches/lookup_svn_merge.db matches
+Binary file ./svn/.caches/check_cherry_pick.db matches
+</code></pre>
+</div>
+<p>That pretty much confirmed my suspicion. I removed those files (they&#8217;re caches, right?), and then my fetch was able to proceed successfully.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2010/04/15/interview-question-combinations.html" rel="bookmark" title="Permanent Link to Interview Question: Combinations">Interview Question: Combinations</a></h3>
+  <p class="date">April 15th, 2010</p>
+  <div class="entry"><p>So I had a job interview yesterday with a great company, and I met a lot of awesome people. A question that was asked, presumably to test my approach to algorithm design, caught me off guard, and I didn&#8217;t give the best answer I feel I was capable of. It bugged me the whole flight home, so, I whipped up a better answer. It seemed like the perfect kind of thing to post here on my blog.</p>
+
+<p>The problem: generate all combinations (without repetiton) with length <code>len</code> of the numbers from 1 to <code>max</code>.</p>
+
+<p>Hearing that problem, my mind immediately jumped to all of my combinatorics background, and I started thinking about how to <em>count</em> all of those combinations. I really just could not get my mind out of that little rat hole, but my interviewers coaxed me out. By the time we were done with that part of the interview, we had come up with something that was on the right track, but still wouldn&#8217;t work.</p>
+
+<p>A few simplifying assumptions can be made. Since these are combinations, order doesn&#8217;t matter (e.g. <code>[1,2,3]</code> is the same as <code>[3,2,1]</code>). Also, since they do not have repetition, we can place an ordering constraint on the individual elements. So, for the 3-element combinations, we can say we want all combinations <code>[z,y,x]</code> where <code>1 ≤ x &lt; y &lt; z ≤ max</code> (the tuple is backwards for convenience of implementation, you could do it the other way just as easy).</p>
+
+<p>So with those two assumptions in mind, I stubbed out my function.</p>
+<div class='highlight'><pre><code class='haskell'><span class='nf'>combinations</span> <span class='ow'>::</span> <span class='kt'>Int</span> <span class='ow'>-&gt;</span> <span class='kt'>Int</span> <span class='ow'>-&gt;</span> <span class='p'>[[</span><span class='kt'>Int</span><span class='p'>]]</span>
+<span class='nf'>combinations</span> <span class='n'>len</span> <span class='n'>max</span> <span class='ow'>=</span> <span class='n'>undefined</span>
+</code></pre>
+</div>
+<p>I had gotten three-quarters of the way toward a working implementation during my interview, so I was already leaning toward a recursive solution here. But, when I keyed in what I&#8217;d come up with earlier, it wasn&#8217;t working right. I was getting things like <code>[2,2]</code> which should just not show up. I also could not do something like <code>combinations 3 3</code> and get anything back. I clearly had some boundary issues. So, I decided to actually write out the sets I was expecting and see if I saw any patterns.</p>
+<div class='highlight'><pre><code class='text'>combinations 0 3 =&gt; [[]]
+combinations 1 3 =&gt; [[1],[2],[3]]
+combinations 2 3 =&gt; [[2,1],[3,1],[3,2]]
+combinations 3 3 =&gt; [[3,2,1]]
+combinations 4 3 =&gt; [[]]
+</code></pre>
+</div>
+<p>The most obvious thing is that there&#8217;s a clear relationship between the length of the combination and the number of combinations available, which is pretty basic combinatorics. There&#8217;s only one way to choose 3 items from a set of 3 items. But looking at this, I&#8217;m trying to conceive of some way to devise a recursive algorithm to produce those lists. So I rewrite the output to show how I would expect those to get built recursively.</p>
+<div class='highlight'><pre><code class='text'>combinations 0 3 =&gt; [[]]
+combinations 1 3 =&gt; [1:[]] ++ [2:[]] ++ [3:[]]
+combinations 2 3 =&gt; [2:[1]] ++ [3:[1], 3:[2]]
+combinations 3 3 =&gt; [3:[2,1]]
+combinations 4 3 =&gt; [[]]
+</code></pre>
+</div>
+<p>Now it might be apparent why I chose the ordering constraint I did. It makes it easy to build these lists with conses. The most imporant observation to make from this data is what numbers actually get selected to be consed. At each level of recursion we&#8217;re selecting only the numbers between <code>len</code> and <code>max</code> to be added onto lists, and then we recurse with all the numbers <em>less than</em> those.</p>
+
+<p>Here is the final implementation:</p>
+<div class='highlight'><pre><code class='haskell'><span class='nf'>combinations</span> <span class='mi'>0</span> <span class='kr'>_</span> <span class='ow'>=</span> <span class='p'>[</span><span class='kt'>[]</span><span class='p'>]</span>
+<span class='nf'>combinations</span> <span class='n'>len</span> <span class='n'>max</span> <span class='ow'>=</span> <span class='n'>foldr</span> <span class='n'>reduce</span> <span class='kt'>[]</span> <span class='p'>[</span><span class='n'>len</span><span class='o'>..</span><span class='n'>max</span><span class='p'>]</span>
+  <span class='kr'>where</span> <span class='n'>reduce</span> <span class='n'>x</span> <span class='n'>ys</span> <span class='ow'>=</span> <span class='n'>recurse</span> <span class='n'>x</span> <span class='o'>++</span> <span class='n'>ys</span>
+        <span class='n'>recurse</span> <span class='n'>x</span> <span class='ow'>=</span> <span class='n'>prepend</span> <span class='n'>x</span> <span class='p'>(</span><span class='n'>combinations</span> <span class='p'>(</span><span class='n'>len</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>)</span> <span class='p'>(</span><span class='n'>x</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>))</span>
+        <span class='n'>prepend</span> <span class='n'>x</span> <span class='ow'>=</span> <span class='n'>map</span> <span class='p'>(</span><span class='nf'>\</span><span class='n'>xs</span> <span class='ow'>-&gt;</span> <span class='n'>x</span><span class='kt'>:</span><span class='n'>xs</span><span class='p'>)</span>
+</code></pre>
+</div></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2010/01/27/you-would-like-fries-with-that.html" rel="bookmark" title="Permanent Link to <code>you.would? like(:fries).with(that)</code>"><code>you.would? like(:fries).with(that)</code></a></h3>
+  <p class="date">January 27th, 2010</p>
+  <div class="entry"><p>I was recently linked to an insightful article about how <a href='http://www.gamearchitect.net/Articles/SoftwareIsHard.html'>software is hard</a>. He makes several good points, but the one that sticks out most in my mind is the following:</p>
+
+<blockquote>
+<p>Every software engineer has a low opinion of the way we develop software. Even the term &#8220;software engineering,&#8221; Rosenberg writes, is a statement of hope, not fact. He quotes the 1968 NATO <a href='http://homepages.cs.ncl.ac.uk/brian.randell/NATO/NATOReports/index.html'>Software Engineering Conference</a> that coined the term: &#8220;We undoubtedly produce software by backward techniques.&#8221; &#8220;We build systems like the Wright brothers built airplanes&#8211;build the whole thing, push it off the cliff, let it crash, and start over again.&#8221; Certainly statements that could still be made forty years later.</p>
+</blockquote>
+
+<p>That is so true, especially when it comes to the programming languages we use. Most of the languages with widespread use in industry today are essentially thirty years old, and even those are just the latest in a long <a href='http://www.levenez.com/lang/'>lineage</a> that leads back to FORTRAN and Lisp in the late sixties. Languages in today&#8217;s generation don&#8217;t do anything for you that their ancestors didn&#8217;t do forty years ago.</p>
+
+<p>What&#8217;s worse is that more modern languages exist&#8211;they have existed for decades&#8211;yet they don&#8217;t find mainstream adoption. For the last twenty years the main thrust of innovation in the software industry has been focused on people and process rather than languages and tools. Modern languages are dismissed as academic, and industry experts are struggling to find new and better ways to build useful systems with ancient technology.</p>
+
+<p>We are rapidly approaching a singularity after which the descendants of FORTRAN and Lisp will be grossly inadequate for writing programs. The current rise of concurrent programming is just the beginning. As time plods on and concurrency and distributed programming become more commonplace, we are going to have to develop new ways of writing software.</p>
+
+<p>This really isn&#8217;t news. Software is hard. Concurrent software is harder. We know that. The solutions offered today are primitive, and not much different from the thinking over thirty years ago. Whether you use some shared-memory model or some message-passing model, writing concurrent programs is a mentally exhausting process with a lot of work centered around getting the parallelism right.</p>
+
+<p>Another problem we face is the increasing ubiquity of software. In the modern, Western world it is nearly impossible to take ten steps without walking past at least a hundred semiconductors. Many of those little bits of manufactured silicon are running some sort of program (whether it is firm or software). We passed the point in time where our lives are computerized a long time ago, and many people didn&#8217;t even notice. Your life relies on software in vehicles, hospitals and banks.</p>
+
+<p>With software becoming so commonplace, the burden to produce quality software is greater than ever. Software verification is a critical area of the development process that has been shit on and forgotten for over forty years. Today&#8217;s state of the art in quality assurance is a combination between exploratory testing and developer-written regression suites. In other words, if you don&#8217;t think about verification, then none happens at all.</p>
+
+<p>These problems are both huge. We must solve them, and wetware solutions will be woefully inadequate. We need to adopt and develop new languages and tools that directly address these issues. This is the area where we have <em>regressed</em> from forty years ago. Back then programmers quickly grew impatient with wetware solutions and would write software to automate things and introduce abstractions: programming languages, parser and scanner generators, build automation tools, build configuration tools, stream editors, and the list just goes on.</p>
+
+<p>Somewhere in the last forty years, we just gave up. As an industry, we decided that languages and tool-chains were fundamentally solved problems, and all we needed to do was evolve the syntax and libraries. We have eschewed the <a href='http://c2.com/cgi/wiki?LazinessImpatienceHubris'>virtuous</a> path of software development in favor of a naively pragmatic alternative. Rather than working smarter, we try to work faster. Rather than finding smarter people, we just find <em>more</em> people. These days, there&#8217;s an alternative to working in food service: <a href='http://steve.yegge.googlepages.com/choosing-languages'>programming</a>.</p></div>
+</div>
+
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

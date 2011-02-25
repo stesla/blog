@@ -1,0 +1,119 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Currying Function Parameters</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2007/12/23/currying-function-parameters.html" title="Permalink for this post">Currying Function Parameters</a></h3>
+  <p class="date">December 23rd, 2007</p>
+  <div class="entry"><p>One of the first things I wanted to do to improve the readability of my language was to add the currying of function parameters. Since it is such a common pattern to have three or four abstractions right in a row to bind variables, there is a syntax for expressing them more consisely.</p>
+
+<p>So this:</p>
+<div class='highlight'><pre><code class='text'>fn x. fn y. fn z. x y z
+</code></pre>
+</div>
+<p>Becomes this:</p>
+<div class='highlight'><pre><code class='text'>fn x y z. x y z
+</code></pre>
+</div>
+<p>Adding the code do this was nearly trivial, and all in the parser. First I wrote a function that given a list of variables and an expression for the body, would be able to construct the parse tree for a curried function:</p>
+<div class='highlight'><pre><code class='text'>let curry ids body =
+  List.fold_right (fun id expr -&gt; Abstraction(id, expr)) ids body
+</code></pre>
+</div>
+<p>Then I took the existing production for recognizing expressions:</p>
+<div class='highlight'><pre><code class='text'>expr:
+  aexprs {apply $1}
+| FN VAR PERIOD expr {Abstraction ($2, $4)}
+;
+</code></pre>
+</div>
+<p>And turned it into this:</p>
+<div class='highlight'><pre><code class='text'>expr:
+  aexprs {apply $1}
+| FN ids PERIOD expr {curry $2 $4}
+;
+
+ids:
+  VAR {[$1]}
+| VAR ids {$1::$2}
+;
+</code></pre>
+</div>
+<p>That <code>ids</code> production is using the OCaml <code>::</code> operator which performs the cons operation. So as I recurse on the right, I&#8217;m building up a list and consing each new id onto it all the way up.</p>
+
+<p>And just like that I&#8217;ve added currying to my language.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

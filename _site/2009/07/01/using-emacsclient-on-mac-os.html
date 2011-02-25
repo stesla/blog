@@ -1,0 +1,118 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Using <code>emacsclient</code> on Mac OS</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2009/07/01/using-emacsclient-on-mac-os.html" title="Permalink for this post">Using <code>emacsclient</code> on Mac OS</a></h3>
+  <p class="date">July 1st, 2009</p>
+  <div class="entry"><p>There&#8217;s this feature of <a href='http://macromates.com/'>TextMate</a> that a lot of people like: the <code>mate</code> command. It opens up the file or directory you pass to it in your running TextMate instance.</p>
+
+<p>This sort of feature isn&#8217;t anything new. Emacs has had this feature for a long time. You just add this snippet to your to your <code>init.el</code>:</p>
+<div class='highlight'><pre><code class='text'>(emacs-server)
+</code></pre>
+</div>
+<p>Then you can use <code>emacsclient</code> to send files to it the same way. However, on my mac this wasn&#8217;t working. The trick, it seems, is making sure you use the <em>correct</em> emacsclient.</p>
+
+<p>About a year ago, <a href='http://emacs-app.sourceforge.net/'>Emacs.app</a> was merged into the main-line GNU Emacs. So you can build a completely Cocoa-based version of the very latest GNU Emacs right out of CVS. If you do that, an <code>emacsclient</code> executable is included in the application bundle.</p>
+
+<p>You can write a little shell script, we&#8217;ll call it <code>eopen</code>:</p>
+<div class='highlight'><pre><code class='bash'><span class='c'>#!/bin/sh</span>
+
+<span class='c'># Send the file to our running Emacs and bring it to the foreground.</span>
+/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n <span class='s2'>&quot;${1}&quot;</span> <span class='se'>\</span>
+  2&gt; /dev/null <span class='se'>\</span>
+  <span class='o'>&amp;&amp;</span> open -a Emacs
+
+<span class='c'># If that failed, then open a new emacs visiting the file.</span>
+<span class='k'>if</span> <span class='o'>[</span> <span class='nv'>$?</span> -ne 0 <span class='o'>]</span>; <span class='k'>then</span>
+<span class='k'>  </span><span class='nv'>EOPEN_DIR</span><span class='o'>=</span><span class='s2'>&quot;${PWD}&quot;</span> <span class='nv'>EOPEN_FILE</span><span class='o'>=</span><span class='s2'>&quot;${1}&quot;</span> open -a Emacs
+<span class='k'>fi</span>
+</code></pre>
+</div>
+<p>Now, you&#8217;ll notice that in the failure case, my script sets some environment variables and just opens Emacs. Those environment variables aren&#8217;t anything special. In fact, unless you add some code to your <code>init.el</code> all you&#8217;ll get is a fresh Emacs open to whatever default buffer you usually see.</p>
+
+<p>So, add the following to your <code>init.el</code>:</p>
+<div class='highlight'><pre><code class='text'>(let ((dir (getenv &quot;EOPEN_DIR&quot;))
+      (file (getenv &quot;EOPEN_FILE&quot;)))
+  (if dir
+      (cd dir))
+  (if file
+      (find-file file)))
+</code></pre>
+</div>
+<p>Then, when you have those environment variables set (such as in the shell script), emacs will open up a buffer on the file or directory passed in as an argument to the script. This hack is there so that you can use eopen to open non-existent files in addition to existent files (<code>open</code> complains if the file does not exist). Subsequent calls to the script can just use <code>emacsclient</code>.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

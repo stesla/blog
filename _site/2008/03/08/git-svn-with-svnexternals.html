@@ -1,0 +1,184 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: <code>git-svn</code> with <code>svn:externals</code></title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2008/03/08/git-svn-with-svnexternals.html" title="Permalink for this post"><code>git-svn</code> with <code>svn:externals</code></a></h3>
+  <p class="date">March 8th, 2008</p>
+  <div class="entry"><p>I&#8217;ve really fallen <a href='http://blog.alieniloquent.com/2008/02/20/svn-git-awesome/'>head</a> over <a href='http://blog.alieniloquent.com/2008/02/22/svn-git-1-still-awesome/'>heels</a> in love with Git. But my original solution was really a hack. There is a better way to do it. In fact, it&#8217;s so much better, it comes with Git.</p>
+
+<p>I took a look at <a href='http://www.kernel.org/pub/software/scm/git/docs/git-svn.html'><code>git-svn</code></a> when I was researching this a couple weeks ago, and the trouble that I had was that it didn&#8217;t fetch externals. Rather than figure out the problem, I just moved on with the working solution that I had. But, it bothered me. So I continued to research, and sure enough, Git has a way to do it just fine.</p>
+
+<p>Nazar Aziz over at <a href='http://panthersoftware.com'>Panther Software</a> posted an excellent <a href='http://panthersoftware.com/articles/view/3/svn-s-svn-externals-to-git-s-submodule-for-rails-plugins'>guide</a> for setting up a Rails app with plugins using <code>git-svn</code> and <a href='http://www.kernel.org/pub/software/scm/git/docs/user-manual.html#submodules'>Git submodules</a>. I am going to distill it and add a few notes about how to make your use of Git as unnoticeable to the other SVN users as possible.</p>
+
+<h4 id='step_one_clone_your_externals'>Step One: Clone your externals</h4>
+
+<p>Git submodules are fantastic, but to use them you need Git repositories for each of your externals. Fortunately, you can easily clone them with <code>git-svn</code>. First, to list your externals:</p>
+<div class='highlight'><pre><code class='text'>$ svn propget svn:externals http://example.com/svn/app/vendor/plugins foo_plugin http://example.com/svn/foo_plugin/trunk
+</code></pre>
+</div>
+<p>Now you should make a directory to put your clones of these in.</p>
+<div class='highlight'><pre><code class='text'>$ mkdir ~/Projects/plugins
+</code></pre>
+</div>
+<p>And then cloning them is as simple as this:</p>
+<div class='highlight'><pre><code class='text'>$ git svn clone http://example.com/svn/app/foo_plugin/trunk ~/Projects/plugins/foo_plugin
+</code></pre>
+</div>
+<h4 id='step_two_clone_your_svn_repository'>Step Two: Clone your SVN repository</h4>
+
+<p>The next step is to clone your repository sans-externals. We&#8217;ll use <code>git-svn</code> to do that, but we&#8217;ll use it in a slightly different manner. The Git folks recognize that there is a standard layout for SVN repositories. If you tell it where the trunk, branches and tags are kept relative the the URI you provide, it will try to preserve that information. It makes branches for each of the SVN branches, and it makes branches for the tags as well.</p>
+
+<p>Just do this wherever you want your project to live. You may want to rename any SVN working copies you have so that there aren&#8217;t any naming conflicts.</p>
+<div class='highlight'><pre><code class='text'>$ git svn clone http://example.com/svn/app -T trunk -t tags -b branches
+</code></pre>
+</div>
+<p>That&#8217;ll give you a git repository named &#8220;app&#8221; in the current directory. The master branch will be a remote tracking branch that is set up to track trunk, and other branches are set up for any tags and branches.</p>
+
+<h4 id='step_three_hook_up_the_submodules'>Step Three: Hook up the submodules</h4>
+
+<p>Now that we&#8217;ve got Git repositories for all of the plugins, and a Git repository for our project, we can hook everything up. We will set up a submodule for the external we cloned above.</p>
+
+<p>From within the top-level of your project repository do this:</p>
+<div class='highlight'><pre><code class='text'>$ git submodule add ~/Projects/plugins/foo_plugin vendor/plugins/foo_plugin
+</code></pre>
+</div>
+<p>After you&#8217;ve added the submodule do this:</p>
+<div class='highlight'><pre><code class='text'>$ git submodule init
+$ git submodule update
+</code></pre>
+</div>
+<p>That should get the code from the plugin repository and into your project repository just like the external did.</p>
+
+<h4 id='step_four_cover_your_tracks'>Step Four: Cover your tracks</h4>
+
+<p>When you are using <code>git-svn</code> it commits all of your Git commits into SVN, and you don&#8217;t really want to commit anything into your Git that you don&#8217;t want finding it&#8217;s way into SVN (at least not on the branch that you commit to SVN from). But it is easy to set Git up to ignore all of the files.</p>
+
+<p>First, let&#8217;s make sure Git ignores all the same things SVN was ignoring:</p>
+<div class='highlight'><pre><code class='text'>$ git svn show-ignore &gt;&gt; .git/info/exclude
+</code></pre>
+</div>
+<p>Then open up <code>.git/info/exclude</code> and add these lines to it:</p>
+<div class='highlight'><pre><code class='text'># .git/info/exclude
+.gitignore
+.gitmodules
+./vendor/plugins/foo_plugin
+</code></pre>
+</div>
+<p>That should prevent you from committing anything into SVN that is git- specific.</p>
+
+<h4 id='step_five_using_this_thing'>Step Five: Using this thing</h4>
+
+<p>So once you&#8217;re all set up, you&#8217;ll want to be able to interact with the SVN repository. Here are your two basic operations.</p>
+
+<p>Update from SVN</p>
+<div class='highlight'><pre><code class='text'>$ git svn rebase
+</code></pre>
+</div>
+<p>This works just like <code>git-rebase</code>, except it pulls from SVN instead of some other Git branch. It will not work if there are changes that have not been committed to Git. What it does is roll back all of the changes since the last time, and then update from SVN, then reapply the changes in order. If there are conflicts, you resolve them as you would if you were using <code>git-rebase</code>.</p>
+
+<p>Commit to SVN</p>
+<div class='highlight'><pre><code class='text'>$ git svn dcommit
+</code></pre>
+</div>
+<p>This will take all of the commits since your last time and commit them one at a time to SVN. This allows all those people still using SVN to see each individual commit instead of one monster commit.</p>
+
+<p>I recommend using SVN to do anything more involved than simple adds, removes, renames and edits.</p>
+
+<p>Something to be aware of with this set up is that your submodules are effectively frozen at whichever revision you cloned. If you want to update them, you&#8217;ll need to first update the cloned repository, and then run this command at the root of your repository:</p>
+<div class='highlight'><pre><code class='text'>$ git submodule update
+</code></pre>
+</div>
+<p>Another caveat is that you need to keep your development as linear as you can. Don&#8217;t try to do anything crazy with lots of branches and merges between them. SVN can&#8217;t really make sense of it. The big deal here is you want to use <code>git-
+rebase</code> to pull in changes from SVN.</p>
+
+<p>Here&#8217;s my workflow. I use a branch named work to do all of my work in. I will sync it up with SVN several times a day, just so it isn&#8217;t too stale. This is how I do that:</p>
+<div class='highlight'><pre><code class='text'>$ git checkout master
+$ git svn rebase
+$ git checkout work
+$ git rebase master
+</code></pre>
+</div>
+<p>Then, when I&#8217;ve commited all of my changes to my work branch, and I&#8217;m ready to commit to SVN:</p>
+<div class='highlight'><pre><code class='text'>$ git checkout master
+$ git merge work
+$ git svn rebase # Just to be safe
+$ git svn dcommit
+</code></pre>
+</div>
+<p>It works well, and it allows me to do my work disconnected from the network.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

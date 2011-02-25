@@ -1,0 +1,145 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Three little, two little, one little-endian</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2007/04/24/three-little-two-little-one-little-endian.html" title="Permalink for this post">Three little, two little, one little-endian</a></h3>
+  <p class="date">April 24th, 2007</p>
+  <div class="entry"><p>I recently found myself wanting a Cocoa class that represents a set of 8-bit bytes. Cocoa has NSCharacterSet, but that is for <code>unichar</code>, not <code>uint8_t</code>. So I wrote one. It was easy enough, I gave it an array of <code>UINT8_MAX</code> booleans and said that if a particular element in the array was <code>YES</code> then that byte was in the set, and not if the element was <code>NO</code>.</p>
+
+<p>Initially the class only knew how to answer questions of membership: is a byte in the set or not? But then I found a number of places where I was enumerating all possible values and testing for membership, so I figured adding a method that would return a <code>NSData</code> with just the bytes included in the set would be useful.</p>
+
+<p>So I wrote this:</p>
+<div class='highlight'><pre><code class='objc'><span class='o'>-</span> <span class='p'>(</span><span class='n'>NSData</span> <span class='o'>*</span><span class='p'>)</span> <span class='n'>dataValue</span>
+<span class='p'>{</span>
+  <span class='n'>NSMutableData</span> <span class='o'>*</span><span class='n'>result</span> <span class='o'>=</span> <span class='p'>[</span><span class='n'>NSMutableData</span> <span class='n'>data</span><span class='p'>];</span>
+  <span class='k'>for</span> <span class='p'>(</span><span class='kt'>unsigned</span> <span class='n'>i</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span> <span class='n'>i</span> <span class='o'>&lt;=</span> <span class='n'>UINT8_MAX</span><span class='p'>;</span> <span class='o'>++</span><span class='n'>i</span><span class='p'>)</span>
+    <span class='p'>{</span>
+      <span class='k'>if</span> <span class='p'>(</span><span class='n'>contains</span><span class='p'>[</span><span class='n'>i</span><span class='p'>])</span>
+        <span class='p'>[</span><span class='n'>result</span> <span class='nl'>appendBytes:</span> <span class='o'>&amp;</span><span class='n'>i</span> <span class='nl'>length:</span> <span class='mi'>1</span><span class='p'>];</span>
+    <span class='p'>}</span>
+  <span class='k'>return</span> <span class='n'>result</span><span class='p'>;</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>I had unit tests that proved it worked, and they all passed, so I checked in. All was good in the world.</p>
+
+<p>Five days later, I flip open my laptop and decide to use the program this code is part of. I always try to eat my own dog food, and I prefer the freshest dog food I can get. So, whenever I want to use this application, I delete it, update from our Subversion repository, and build it.</p>
+
+<p>Much to my surprise, when I built it on my laptop, some of those tests did not pass. I was expecting the <code>NSData</code> returned from <code>-dataValue</code> to have certain bytes in it. The <code>NSData</code> I actually got back did have the correct <em>number</em> of bytes, but they were all zeroes.</p>
+
+<p>I banged my head against it for about twenty minutes, until I had a flash of insight. My desktop machine at home is an iMac, and inside it is an Intel Core Duo processor. My laptop is a PowerBook, and inside it is a Motorola G4 processor. The Core Duo, like most other Intel processors, stores numbers in the little-endian format, whereas the G4 stores them in big-endian format.</p>
+
+<p><a href='http://en.wikipedia.org/wiki/Endianness'>Endianess</a> is a computer topic that makes a lot of programmers&#8217; heads hurt. Unfortunately, Cocoa programmers do have to think about this now. Since Apple switched from their old, big-endian, Motorola platform to their new, little-endian, Intel platform, applications that are meant to run on both have to be aware of byte-order issues.</p>
+
+<p>Computers store data in bytes, which are eight bits long. However, eight bits is only enough to store a number up to 255. In order to store larger numbers, computers just concatenate bytes together. A 16-bit number is comprised of two bytes, and a 32-bit number is comprised of four. The endianess of a system determines what order those bytes are stored in.</p>
+
+<p>When you read a decimal number like 4242, you read it from left to right. The most significant digit is the left-most digit. Similarly, when you read a binary number like 1000010010010, the most significant digit is the left-most digit. If we divide that number into bytes, 00010000 10010010, the left-most byte is called the most significant byte, or the high-order byte. The right- most byte is called the least significant byte, or the low-order byte.</p>
+
+<p>A big-endian processor, like the G4, stores numbers exactly like you&#8217;d read them. So if you read a 16-bit integer in big-endian order, the first byte you read is the high-order byte. Now, if the number is less than 255, for example 42, you&#8217;ll get this: 00000000 00101010.</p>
+
+<p>A little-endian processor, like the Core Duo, stores numbers just the opposite of how you&#8217;d expect. The first byte you read is the least significant byte, followed by the next most significant byte, and then so on. So when we read our binary number in we&#8217;ll get 10010010 00010000 instead of what we expected. Now, if we look at that small number again, you&#8217;d get this: 00101010 00000000.</p>
+
+<p>So, to bring this back to my bug. The <code>unsigned</code> type is actually an unsigned 32-bit integer. Since my code was manipulating a set of 8-bit numbers, every single number would fit into the low-order byte of that <code>unsigned</code>, thus leaving the other three bytes all zero.</p>
+
+<p>The line of code where I do this:</p>
+<div class='highlight'><pre><code class='objc'><span class='p'>[</span><span class='n'>data</span> <span class='nl'>appendBytes:</span> <span class='o'>&amp;</span><span class='n'>i</span> <span class='nl'>length:</span> <span class='mi'>1</span><span class='p'>]</span>
+</code></pre>
+</div>
+<p>Is a clever little trick I&#8217;ve used to avoid having to actually declare a one- byte array when I want to append just one byte. It works great if <code>i</code> is actually an <code>uint8_t</code>. It also works great if <code>i</code> is an <code>unsigned</code> and stored in little-endian format, since the first byte happens to be the byte I&#8217;m interested in. However, on a big-endian processor, that will reference the most significant byte of the number instead, and since <code>i</code> never gets any bigger than <code>UINT8_MAX</code> (which is 11111111 in binary), that byte will always be zero.</p>
+
+<p>So now the code looks like this:</p>
+<div class='highlight'><pre><code class='objc'><span class='o'>-</span> <span class='p'>(</span><span class='n'>NSData</span> <span class='o'>*</span><span class='p'>)</span> <span class='n'>dataValue</span>
+<span class='p'>{</span>
+  <span class='n'>NSMutableData</span> <span class='o'>*</span><span class='n'>result</span> <span class='o'>=</span> <span class='p'>[</span><span class='n'>NSMutableData</span> <span class='n'>data</span><span class='p'>];</span>
+  <span class='n'>uint8_t</span> <span class='n'>byte</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>];</span>
+  <span class='k'>for</span> <span class='p'>(</span><span class='kt'>unsigned</span> <span class='n'>i</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span> <span class='n'>i</span> <span class='o'>&lt;=</span> <span class='n'>UINT8_MAX</span><span class='p'>;</span> <span class='o'>++</span><span class='n'>i</span><span class='p'>)</span>
+    <span class='p'>{</span>
+      <span class='k'>if</span> <span class='p'>(</span><span class='n'>contains</span><span class='p'>[</span><span class='n'>i</span><span class='p'>])</span>
+        <span class='p'>{</span>
+          <span class='n'>byte</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>i</span><span class='p'>;</span>
+          <span class='p'>[</span><span class='n'>result</span> <span class='nl'>appendBytes:</span> <span class='n'>byte</span> <span class='nl'>length:</span> <span class='mi'>1</span><span class='p'>];</span>
+        <span class='p'>}</span>
+    <span class='p'>}</span>
+  <span class='k'>return</span> <span class='n'>result</span><span class='p'>;</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>The compiler knows to do the <em>correct</em> conversion between the 32-bit and 8-bit types when assigning from one to another, so the new code now works on both of my machines.</p>
+
+<p><strong>Update:</strong> The title is a joke that <a href='http://www.sperari.com'>Erica</a> made up when I told her about this bug. All blame for its terribleness should go to her, I just recognized how apropos it was for the post.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

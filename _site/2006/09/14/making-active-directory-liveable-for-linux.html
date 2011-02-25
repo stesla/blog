@@ -1,0 +1,95 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Making Active Directory liveable for Linux</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2006/09/14/making-active-directory-liveable-for-linux.html" title="Permalink for this post">Making Active Directory liveable for Linux</a></h3>
+  <p class="date">September 14th, 2006</p>
+  <div class="entry"><p>So my employer&#8217;s network is a Windows network. This isn&#8217;t terribly unusual. Our department&#8217;s version control server, however, is a Linux box. We didn&#8217;t want to have to have more than one password, so back when I set it up, I took the time to figure out how to get it to authenticate to Active Directory for us. It&#8217;s really cool, actually. <a href='http://samba.org'>Samba</a> is really awesome.</p>
+
+<p>However, we have had a few problems. The thing is that every so often, our Linux server was being removed from the Windows domain. So then we couldn&#8217;t authenticate users, and so we couldn&#8217;t check out our source code. Obviously, that causes problems.</p>
+
+<p>It turns out that adding one line to the <code>[global]</code> section of my <code>smb.conf</code> file is what is needed to solve the problem. See, the Windows boxes check in with the Active Directory controller once a day to update their machine ID. My server was not doing this. I&#8217;ve found, over time, that there are a lot of options for making Samba play well in a Windows network that aren&#8217;t really defaulted like they should be. Below is what I added to make it update like the others.</p>
+<div class='highlight'><pre><code class='text'>machine password timeout = 86400 # one day
+</code></pre>
+</div>
+<p>Another interesting thing, was that despite my not telling it to, Samba was advertising the machine as a domain controller. So I had to add the line below to disable that (despite the docs saying I shouldn&#8217;t have to).</p>
+<div class='highlight'><pre><code class='text'>domain master = no
+</code></pre>
+</div>
+<p>In addition to the rest of the configuration for Samba to work with Active Directory, and I think we may finally have it working all the way.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

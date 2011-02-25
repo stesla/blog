@@ -1,0 +1,114 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Fixing My Markup</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2009/12/09/fixing-my-markup.html" title="Permalink for this post">Fixing My Markup</a></h3>
+  <p class="date">December 9th, 2009</p>
+  <div class="entry"><p>Several years ago when I created the current design for this blog, I made a rather unfortunate choice of markup for my code snippets. I decided to enclose them in <code>&lt;div&gt;</code> tags like this:</p>
+<div class='highlight'><pre><code class='html'><span class='nt'>&lt;div</span> <span class='na'>class=</span><span class='s'>&quot;code&quot;</span><span class='nt'>&gt;&lt;/div&gt;</span>
+</code></pre>
+</div>
+<p>I&#8217;m really not sure <em>why</em> I did that, although I have a vague recollection that it had to do with my CSS not working otherwise.</p>
+
+<p>There was an unfortunate consequence of that: I had to use <code>&amp;nbsp;</code>s in order to get indentation right inside the code blocks. Well, let me tell you, that is a pain in the ass. Needless to say, it demotivated me from writing blog articles with code snippets. This is a blog about programming. You can practically hear the long silence that follows.</p>
+
+<p>Well, I&#8217;ve been more and more motivated to blog stuff lately. However, I wanted to fix this issue with my markup. It turns out that whatever issues I had run into before are gone. This markup works:</p>
+<div class='highlight'><pre><code class='html'><span class='nt'>&lt;pre</span> <span class='na'>class=</span><span class='s'>&quot;code&quot;</span><span class='nt'>&gt;&lt;/pre&gt;</span>
+</code></pre>
+</div>
+<p>All I needed to do was go through my nearly 140 posts and change tags and remove <code>&amp;nbsp;</code>s. Yeah, that sounds like fun. Ruby to the rescue! After an aborted attempt to use the AtomPub API (which gave a 302 to a 404), I spent a little bit of time poring over the <a href='http://codex.wordpress.org/XML-RPC_Support'>api</a> <a href='http://www.xmlrpc.com/metaWeblogApi'>documentation</a>. Then I whipped up this little script:</p>
+<div class='highlight'><pre><code class='ruby'><span class='nb'>require</span> <span class='s1'>&#39;xmlrpc/client&#39;</span>
+
+<span class='n'>wp</span> <span class='o'>=</span> <span class='no'>XMLRPC</span><span class='o'>::</span><span class='no'>Client</span><span class='o'>.</span><span class='n'>new_from_uri</span><span class='p'>(</span><span class='s1'>&#39;http://example.com/xmlrpc.php&#39;</span><span class='p'>)</span>
+<span class='n'>user</span> <span class='o'>=</span> <span class='s1'>&#39;yeah&#39;</span>
+<span class='n'>pass</span> <span class='o'>=</span> <span class='s1'>&#39;right&#39;</span>
+<span class='n'>blogid</span> <span class='o'>=</span> <span class='mi'>42</span>
+
+<span class='n'>posts</span> <span class='o'>=</span> <span class='n'>wp</span><span class='o'>.</span><span class='n'>call</span><span class='p'>(</span><span class='s2'>&quot;metaWeblog.getRecentPosts&quot;</span><span class='p'>,</span> <span class='n'>blogid</span><span class='p'>,</span> <span class='n'>user</span><span class='p'>,</span> <span class='n'>pass</span><span class='p'>)</span>
+<span class='n'>posts</span><span class='o'>.</span><span class='n'>each</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>post</span><span class='o'>|</span>
+  <span class='n'>newtext</span> <span class='o'>=</span> <span class='n'>post</span><span class='o'>[</span><span class='s1'>&#39;description&#39;</span><span class='o'>].</span><span class='n'>gsub</span><span class='p'>(</span><span class='sr'>/&lt;div class=&quot;code&quot;&gt;(.*?)&lt;\/div&gt;/m</span><span class='p'>)</span> <span class='k'>do</span>
+    <span class='s2'>&quot;&lt;pre class=</span><span class='se'>\&quot;</span><span class='s2'>code</span><span class='se'>\&quot;</span><span class='s2'>&gt;</span><span class='si'>#{</span><span class='vg'>$1</span><span class='o'>.</span><span class='n'>gsub</span><span class='p'>(</span><span class='s1'>&#39;&amp;nbsp;&#39;</span><span class='p'>,</span><span class='s1'>&#39; &#39;</span><span class='p'>)</span><span class='si'>}</span><span class='s2'>&lt;/pre&gt;&quot;</span>
+  <span class='k'>end</span>
+  <span class='k'>next</span> <span class='k'>if</span> <span class='n'>post</span><span class='o'>[</span><span class='s1'>&#39;description&#39;</span><span class='o'>]</span> <span class='o'>==</span> <span class='n'>newtext</span>
+  <span class='n'>post</span><span class='o'>[</span><span class='s1'>&#39;description&#39;</span><span class='o'>]</span> <span class='o'>=</span> <span class='n'>newtext</span>
+  <span class='n'>wp</span><span class='o'>.</span><span class='n'>call</span><span class='p'>(</span><span class='s2'>&quot;metaWeblog.editPost&quot;</span><span class='p'>,</span> <span class='n'>post</span><span class='o'>[</span><span class='s1'>&#39;postid&#39;</span><span class='o'>]</span><span class='p'>,</span> <span class='n'>user</span><span class='p'>,</span> <span class='n'>pass</span><span class='p'>,</span> <span class='n'>post</span><span class='p'>)</span>
+<span class='k'>end</span>
+</code></pre>
+</div>
+<p>I ran it, held my tongue just right, and voila. Every post that had the old markup now has the new markup. Just like that.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

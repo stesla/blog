@@ -1,0 +1,119 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Strings, arrays, and duck typing goodness</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2006/02/14/strings-arrays-and-duck-typing-goodness.html" title="Permalink for this post">Strings, arrays, and duck typing goodness</a></h3>
+  <p class="date">February 14th, 2006</p>
+  <div class="entry"><p>We use more and more ruby around my shop every day, and that just tickles me pink. One thing that we&#8217;ve been using it a lot for is managing our Subversion working copies. We have a script that will delete unversioned files. We have a script that will delete ignored files. I wanted to write a script that would do both of those things and also revert any modified files (thus returning the working copy to a pristine state, essentially).</p>
+
+<p>There was a <em>lot</em> of duplication between the two scripts. In fact, the only thing different was one character in a regex: it was &#8217;?&#8217; for the unversioned and &#8216;I&#8217; for the ignored. I went through and wrote a new class to represent these things and then I wanted to write a method named <code>delete_if_status</code> which would take a list of statuses and delete any items in the checkout that matched any of them.</p>
+
+<p>I thought it would be cool if I could call it like this:</p>
+<div class='highlight'><pre><code class='ruby'><span class='n'>list</span><span class='o'>.</span><span class='n'>delete_if_status</span><span class='p'>(</span><span class='o'>[</span><span class='s1'>&#39;?&#39;</span><span class='p'>,</span> <span class='s1'>&#39;I&#39;</span><span class='o'>]</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>But also call it like this:</p>
+<div class='highlight'><pre><code class='ruby'><span class='n'>list</span><span class='o'>.</span><span class='n'>delete_if_status</span><span class='p'>(</span><span class='s1'>&#39;?I&#39;</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>Naturally, I figured Ruby would have a duck-typing answer to this problem, but just the way it solved it surprised me (just a little&#8211;actually, now that I think about it, it&#8217;s unsurprising). Here is an IRB log that demonstrates just what I discovered.</p>
+<div class='highlight'><pre><code class='text'>irb(main):001:0&gt; &#39;I?&#39;.split
+=&gt; [&quot;I?&quot;]
+irb(main):002:0&gt; &#39;I?&#39;.split(&#39;&#39;)
+=&gt; [&quot;I&quot;, &quot;?&quot;]
+irb(main):003:0&gt; &#39;I?&#39;.to_a
+=&gt; [&quot;I?&quot;]
+irb(main):004:0&gt; [&#39;I&#39;,&#39;?&#39;].to_s
+=&gt; &quot;I?&quot;
+irb(main):005:0&gt; [&#39;I&#39;,&#39;?&#39;].to_s.split(&#39;&#39;)
+=&gt; [&quot;I&quot;, &quot;?&quot;]
+</code></pre>
+</div>
+<p>So what I ended up with was this method:</p>
+<div class='highlight'><pre><code class='ruby'><span class='k'>def</span> <span class='nf'>delete_if_status</span><span class='p'>(</span><span class='n'>spec</span><span class='p'>)</span>
+  <span class='n'>status_list</span> <span class='o'>=</span> <span class='n'>spec</span><span class='o'>.</span><span class='n'>to_s</span><span class='o'>.</span><span class='n'>split</span><span class='p'>(</span><span class='s1'>&#39;&#39;</span><span class='p'>)</span>
+  <span class='nb'>self</span><span class='o'>.</span><span class='n'>delete_if</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>item</span><span class='o'>|</span>
+    <span class='n'>status_list</span><span class='o'>.</span><span class='n'>include?</span> <span class='n'>item</span><span class='o'>.</span><span class='n'>status</span>
+  <span class='k'>end</span>
+<span class='k'>end</span>
+</code></pre>
+</div>
+<p>I love Ruby.</p>
+
+<p><em>Edited:</em> Fixed some formatting with code and output snippets.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

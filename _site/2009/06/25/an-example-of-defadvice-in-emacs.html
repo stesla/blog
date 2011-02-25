@@ -1,0 +1,128 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: An example of <code>defadvice</code> in Emacs</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2009/06/25/an-example-of-defadvice-in-emacs.html" title="Permalink for this post">An example of <code>defadvice</code> in Emacs</a></h3>
+  <p class="date">June 25th, 2009</p>
+  <div class="entry"><p>For decades there&#8217;s been a <a href='http://en.wikipedia.org/wiki/Editor_war'>war</a> between zealous users of various editors. The truth is, though, that it is completely unfair to compare editors such as vi, Textmate, or BBedit with Emacs. Why is it unfair? Emacs isn&#8217;t an editor, it is a programming environment. Today I want to share an example just how powerful this distinction is.</p>
+
+<p>It&#8217;s better to compare Emacs to Smalltalk. It has a very small core written in C, but almost all of the functionality you think of as Emacs is written in Emacs Lisp. Emacs is really just a Lisp interpreter with a lot of primitives built in for shuffling text around on the screen. This has a lot of awesome implications for people who want to build tools for programming.</p>
+
+<p>For example, some people like to have a window pane that shows them the file structure of their project. Textmate does this. With <a href='http://code.google.com/p/emacs-nav/'>nav</a> you can have that in Emacs. However, it always puts the navigation on the left-hand side of the frame.</p>
+
+<p>One of my co-workers wanted his nav to show up on the right-hand side. So I started by typing <code>C-h k nav RET</code> and that brought up the help for the function <code>nav</code> which puts the navigation buffer on the screen.</p>
+<div class='highlight'><pre><code class='text'>(defun nav ()
+  &quot;Run nav-mode in a narrow window on the left side.&quot;
+  (interactive)
+  (if (nav-is-open)
+      (nav-quit)
+    (delete-other-windows)
+    (split-window-horizontally)
+    **(other-window 1)**
+    (ignore-errors (kill-buffer nav-buffer-name))
+    (pop-to-buffer nav-buffer-name nil)
+    (set-window-dedicated-p (selected-window) t)
+    (nav-mode)
+    (when nav-resize-frame-p
+      (nav-resize-frame))))
+</code></pre>
+</div>
+<p>A quick terminology note. In Emacs-speak, operating-system windows are called <em>frames</em>. A frame can be split into multiple <em>windows</em>.</p>
+
+<p>Doing the same for some of the other functions (<code>split-window-horizontally</code>, <code>other-window</code>, <code>pop-to-buffer</code>), I was able to determine what this function was doing. The call to <code>split-window-horizontally</code> leaves the right-hand window active, so the call to <code>other-window</code> hops back to the left-hand window (but only because all windows were deleted before the split). Then from there on out, everything assumes that it&#8217;s in that left-hand window and alters its behavior.</p>
+
+<p>So, all we need to do is delete the line I bolded above and it should work. Because this is Lisp, I just copy the whole function into a buffer called <code>*scratch*</code>, make my edit, and evaluate the code. So, now when I type <code>M-x nav
+RET</code> I call my new function that does not call <code>other-window</code>. Sure enough, it shows up on the right-hand side.</p>
+
+<p>However, I do not want to duplicate all the rest of that code. Emacs has an awesome facility to assist me, and it&#8217;s called <code>defadvice</code>.</p>
+<div class='highlight'><pre><code class='text'>;;;;;;;; To launch nav on left side: M-x nav RET
+;;;;;;;; To launch nav on right side: C-u M-x nav RET
+(defadvice other-window (around other-window-nop))
+(defadvice nav (around prefix-nav)
+  (if current-prefix-arg
+      (ad-activate-regexp &quot;other-window-nop&quot;))
+  (unwind-protect
+      ad-do-it
+    (ad-deactivate-regexp &quot;other-window-nop&quot;)))
+(ad-activate-regexp &quot;prefix-nav&quot;)
+</code></pre>
+</div>
+<p>This is essentially <a href='http://en.wikipedia.org/wiki/Monkey_patch'>monkey-patching</a> by another name. When I activate this advice it gets called instead of the function it&#8217;s advising, then at the point I call <code>ad-do-it</code>, the original function (and any previously defined advice) gets called. In the above code, I have two pieces of advice. One simply turns <code>other-window</code> into a no-op, and the other turns that on and off, but only if you use the universal prefix.</p>
+
+<p>You can do this for any function in the system. Even the functions that get called when you hit individual keys. That is why Emacs is so powerful. It&#8217;s not an editor, it&#8217;s an environment.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

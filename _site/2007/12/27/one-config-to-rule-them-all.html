@@ -1,0 +1,95 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: One config to rule them all</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2007/12/27/one-config-to-rule-them-all.html" title="Permalink for this post">One config to rule them all</a></h3>
+  <p class="date">December 27th, 2007</p>
+  <div class="entry"><p>Yesterday I was reminded the importance of familiarity and comfort with my tools. Over the years I have developed a set of configurations that work for me. I have configurations for <a href='http://www.gnu.org/software/bash/'>BASH</a> and I have configurations for <a href='http://www.gnu.org/software/emacs/'>emacs</a> and they help me be productive. Yesterday I started configuring my new computer here at my new job (yes I got a new job) and I couldn&#8217;t get to them because they were on my laptop at home.</p>
+
+<p>Several years ago I had a system that involved keeping all of my config files in a <a href='http://subversion.tigris.org/'>Subversion</a> repository and a shell script to make symlinks from the real locations to the ones in <code>~/.config</code>. I eventually stopped using it, mostly because it was a little clunky and hard to get set up on new machines. Last night I devised a similar system but tweaked a few things and it has made it so much better.</p>
+
+<p>The first thing I changed was the revision control tool. I&#8217;m using <a href='http://darcs.net'>darcs</a> as the version control. It is a distributed version control system and it is much simpler to use. To top it all off, it does not put a directory in each directory I add to my repository, it just puts one <code>_darcs</code> folder at the top level. To top it all off, it&#8217;s written in Haskell, so it gets cool points for that.</p>
+
+<p>The second thing I tweaked was that instead of using <a href='http://en.wikipedia.org/wiki/Symbolic_link'>symbolic links</a> I&#8217;m using <a href='http://en.wikipedia.org/wiki/Hard_link'>hard links</a>. This means that both <code>~/.bashrc</code> and <code>~/.config/home/.bashrc</code> are actually pointing to the same file on disk. So I can update the darcs repository and the linked files out in the rest of my home directory will get updated too, but if I delete the repository, I&#8217;ll still have copies of the config.</p>
+
+<p>Last, instead of keeping a flat list of files like <code>~/.config/bashrc</code> and <code>~/.config/ssh_config</code>, I&#8217;m keeping the files in a directory with their exact file names and the directory structure that they&#8217;d be stored in under my home directory. This makes writing the linking script much easier.</p>
+
+<p>So with this structure in place I wrote an update script that makes directories and hard links so that what&#8217;s in my home directory mirrors what&#8217;s in my config repository. I even protected against files already existing with a friendly prompt (courtesy of <code>ln -i</code>).</p>
+
+<p>A darcs repository of my config, including the update script, is available <a href='http://www.alieniloquent.com/code/config/'>here</a>.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

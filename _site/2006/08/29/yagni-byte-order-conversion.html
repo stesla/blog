@@ -1,0 +1,93 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: YAGNI: byte-order conversion</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2006/08/29/yagni-byte-order-conversion.html" title="Permalink for this post">YAGNI: byte-order conversion</a></h3>
+  <p class="date">August 29th, 2006</p>
+  <div class="entry"><p>So I have this project, and it compiles for the Mac on both PPC and i386 architectures. Naturally, I have unit tests for this project.</p>
+
+<p>One of the things that I&#8217;ve had to write for this is a simple SOCKS5 implementation (because of issues with Apple&#8217;s implementation). As part of this I had to do some manipulation of a port number and get the high and low bytes.</p>
+
+<p>I&#8217;ve done this sort of thing before. That&#8217;s what <code>htons</code> and friends are for. So naturally, I went ahead and put this in where I thought it mattered and went on my merry way. On my ppc powerbook, my tests all passed.</p>
+
+<p>Yesterday, when I ran the unit tests on my intel mac for the first time, I discovered that a test failed. It was failing because of some byte-order problem. After troubleshooting it, I narrowed it down to the <code>htons</code> calls. It turns out I did not need them.</p>
+
+<p>See the thing is, on a ppc, things are already in network byte-order so <code>htons</code> does absolutely nothing. However, on i386 host byte-order is <em>different</em> from network byte-order. So the reason it worked on ppc was that it was essentially as if I hadn&#8217;t done it.</p>
+
+<p>It turns out that the particular thing I was doing didn&#8217;t need the conversion to work correctly. I removed it, and everything worked peachy on both machines.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

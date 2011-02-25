@@ -1,0 +1,121 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Generics shmemerics</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2005/08/09/generics-shmemerics.html" title="Permalink for this post">Generics shmemerics</a></h3>
+  <p class="date">August 9th, 2005</p>
+  <div class="entry"><p>It&#8217;s no secret that the next version of Java will have generics, as will the next version of C#. This is nothing incredibly new. C++ has had templates since the dawn of time and they&#8217;ve always made code unreadable and needlessly complex (okay, so I&#8217;m a dynamic language nut). It basically amounts to wanting all the neat tricks that dynamic typing gives without any of the programmer niceties (like trusting that the programmer knows what she&#8217;s doing).</p>
+
+<p>Over on <a href='http://www.blainebuxton.com/weblog'>Blaine Buxton&#8217;s blog</a> he posted about <a href='http://www.blainebuxton.com/weblog/2005/08/huh.html'>Java generics</a> and the <em>recommended</em> naming for the generic types:</p>
+
+<blockquote>
+<p>A note on naming conventions. We recommend that you use pithy (single character if possible) yet evocative names for formal type parameters. It’s best to avoid lower 3 case characters in those names, making it easy to distinguish formal type parameters from ordinary classes and interfaces. Many container types use E, for element, as in the examples above.</p>
+</blockquote>
+<div class='highlight'><pre><code class='java'><span class='kd'>public</span> <span class='kd'>interface</span> <span class='nc'>List</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>&gt;</span>
+<span class='o'>{</span>
+  <span class='kt'>void</span> <span class='nf'>add</span><span class='o'>(</span><span class='n'>E</span> <span class='n'>x</span><span class='o'>);</span>
+  <span class='n'>Iterator</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>&gt;</span> <span class='n'>iterator</span><span class='o'>();</span>
+<span class='o'>}</span>
+
+<span class='kd'>public</span> <span class='kd'>interface</span> <span class='nc'>Iterator</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>&gt;</span>
+<span class='o'>{</span>
+  <span class='n'>E</span> <span class='nf'>next</span><span class='o'>();</span>
+  <span class='kt'>boolean</span> <span class='nf'>hasNext</span><span class='o'>();</span>
+<span class='o'>}</span>
+</code></pre>
+</div>
+<p>In the comments over on Blaine&#8217;s blog, this guy named Issac (who&#8217;s mission it appears to be to disagree with everything Blaine says) said:</p>
+
+<blockquote>
+<p>Everyone knows better than to use single letter names for classes and interfaces - so when we see a single letter name, we can be confident the parameter is not a class or an interface but is a formal type parameter.</p>
+</blockquote>
+
+<p>Isaac clearly have a very narrow definition of &#8220;everyone&#8221; or a very narrow sample of code to draw from. I see terrible naming in every language and it makes code harder to read every time. I see the single letter and have to spend the split second saying to myself &#8220;E, what a terrible class name, nobody in their right mind would name a class that. Oh, right, that&#8217;s the name of the generic class.&#8221;</p>
+
+<p>The cognitive dissonance only becomes worse when you want to make a class generic on more than one axis. When you have something like:</p>
+<div class='highlight'><pre><code class='java'><span class='kd'>public</span> <span class='kd'>interface</span> <span class='nc'>Matrix</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>,</span> <span class='n'>F</span><span class='o'>&gt;</span>
+<span class='o'>{</span>
+  <span class='n'>add</span><span class='o'>(</span><span class='n'>E</span> <span class='n'>x</span><span class='o'>,</span> <span class='n'>F</span> <span class='n'>y</span><span class='o'>);</span>
+  <span class='c1'>//... more methods in E and F ...</span>
+<span class='o'>}</span>
+</code></pre>
+</div>
+<p>When does it stop? How are we supposed to make &#8220;evocative&#8221; names when we only have one letter to choose from? Sure, we can take the class name we would&#8217;ve used and use the first letter, but then we are limited to only 26 names. It might very well get confusing when we use E to mean Element in one place but use it to mean Enumerator in another.</p>
+
+<p>Now, if I actually give the thing a name, like ElementClass, I can say &#8220;Oh, right, that&#8217;s the class of whatever element is in here.&#8221; Heck, I don&#8217;t even need to think that hard, it just <em>reads</em> that way. It may seem like a small win, but it&#8217;s a huge win to somebody coming into the code from outside.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

@@ -1,0 +1,895 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: 2007</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         
+<div class="post">
+  <h3><a href="/2007/12/29/make-slime-load-faster.html" rel="bookmark" title="Permanent Link to Make SLIME load faster">Make SLIME load faster</a></h3>
+  <p class="date">December 29th, 2007</p>
+  <div class="entry"><p>I have joined up with some of the guys from <a href='http://www.blainebuxton.com/odynug/'>ODYNUG</a> who have started meeting for breakfast and learning <a href='http://en.wikipedia.org/wiki/Common_Lisp'>Common Lisp</a> together. We are all using some version of Emacs, <a href='http://common-lisp.net/project/slime/'>SLIME</a>, and <a href='http://sbcl.sourceforge.net/'>SBCL</a>.</p>
+
+<p><a href='http://blainebuxton.com'>Blaine</a> shared a cool way to make SLIME load much faster by taking advantage of the fact that Lisp uses images like Smalltalk (or more accurately, Smalltalk uses images like Lisp). He posted it for the group to see, but I wanted to post it here for my readers.</p>
+
+<p>SBCL allows you to specify an image, or as they call it a core, by passing the <code>--core</code> option along with (as far as I can tell) an absolute path to the core file (well, at least it doesn&#8217;t know that <code>~</code> means <code>$HOME</code>). It, of course, also provides a way to create these core files, so you can load a bunch of stuff in, and then save a core file that has all of that already loaded.</p>
+
+<p>So first, go into your SLIME directory and copy <code>swank-loader.lisp</code> to <code>swank-
+loader-original.lisp</code>. Then make <code>swank-loader.lisp</code> look like this (changing <code>slime-dir</code> to be wherever your SLIME is, of course):</p>
+<div class='highlight'><pre><code class='text'>(if (not (find-package &#39;swank-loader))
+    ;; Edit SLIME-DIR to be where you have SLIME installed.
+    (let ((slime-dir (merge-pathnames &quot;.elisp/slime/&quot; (user-homedir-pathname))))
+      (load (merge-pathnames &quot;swank-loader-original&quot; slime-dir))))
+</code></pre>
+</div>
+<p>Then, make a file called <code>bootstrap.lisp</code> with the following content:</p>
+<div class='highlight'><pre><code class='text'>;; Load Swank
+(load (merge-pathnames &quot;.elisp/slime/swank-loader&quot; (user-homedir-pathname)))
+
+;; Save image
+(sb-ext:save-lisp-and-die &quot;sbcl-with-slime.core&quot;)
+</code></pre>
+</div>
+<p>And run this command:</p>
+<div class='highlight'><pre><code class='text'>$ sbcl --load bootstrap.lisp
+</code></pre>
+</div>
+<p>Then copy <code>sbcl-with-slime.core</code> somewhere safe, I put mine in with my slime code to keep it all together. Then you just have to add the following to your <code>.emacs</code>:</p>
+<div class='highlight'><pre><code class='text'>(let* ((slime-dir (concat elisp-dir &quot;/slime&quot;))
+       (core-file (concat slime-dir &quot;/sbcl-with-slime.core&quot;)))
+  (setq inferior-lisp-program (concat &quot;sbcl --core &quot; core-file)))
+</code></pre>
+</div>
+<p>Then you can <code>M-x slime</code> and it will be super fast.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/12/27/one-config-to-rule-them-all.html" rel="bookmark" title="Permanent Link to One config to rule them all">One config to rule them all</a></h3>
+  <p class="date">December 27th, 2007</p>
+  <div class="entry"><p>Yesterday I was reminded the importance of familiarity and comfort with my tools. Over the years I have developed a set of configurations that work for me. I have configurations for <a href='http://www.gnu.org/software/bash/'>BASH</a> and I have configurations for <a href='http://www.gnu.org/software/emacs/'>emacs</a> and they help me be productive. Yesterday I started configuring my new computer here at my new job (yes I got a new job) and I couldn&#8217;t get to them because they were on my laptop at home.</p>
+
+<p>Several years ago I had a system that involved keeping all of my config files in a <a href='http://subversion.tigris.org/'>Subversion</a> repository and a shell script to make symlinks from the real locations to the ones in <code>~/.config</code>. I eventually stopped using it, mostly because it was a little clunky and hard to get set up on new machines. Last night I devised a similar system but tweaked a few things and it has made it so much better.</p>
+
+<p>The first thing I changed was the revision control tool. I&#8217;m using <a href='http://darcs.net'>darcs</a> as the version control. It is a distributed version control system and it is much simpler to use. To top it all off, it does not put a directory in each directory I add to my repository, it just puts one <code>_darcs</code> folder at the top level. To top it all off, it&#8217;s written in Haskell, so it gets cool points for that.</p>
+
+<p>The second thing I tweaked was that instead of using <a href='http://en.wikipedia.org/wiki/Symbolic_link'>symbolic links</a> I&#8217;m using <a href='http://en.wikipedia.org/wiki/Hard_link'>hard links</a>. This means that both <code>~/.bashrc</code> and <code>~/.config/home/.bashrc</code> are actually pointing to the same file on disk. So I can update the darcs repository and the linked files out in the rest of my home directory will get updated too, but if I delete the repository, I&#8217;ll still have copies of the config.</p>
+
+<p>Last, instead of keeping a flat list of files like <code>~/.config/bashrc</code> and <code>~/.config/ssh_config</code>, I&#8217;m keeping the files in a directory with their exact file names and the directory structure that they&#8217;d be stored in under my home directory. This makes writing the linking script much easier.</p>
+
+<p>So with this structure in place I wrote an update script that makes directories and hard links so that what&#8217;s in my home directory mirrors what&#8217;s in my config repository. I even protected against files already existing with a friendly prompt (courtesy of <code>ln -i</code>).</p>
+
+<p>A darcs repository of my config, including the update script, is available <a href='http://www.alieniloquent.com/code/config/'>here</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/12/23/the-lambda-calculus.html" rel="bookmark" title="Permanent Link to The Lambda Calculus">The Lambda Calculus</a></h3>
+  <p class="date">December 23rd, 2007</p>
+  <div class="entry"><p>Earlier this fall I wrote a little functional programming language. However, the guts of it were not based on the <a href='http://en.wikipedia.org/wiki/Lambda_calculus'>lambda calculus</a>. I used more of a denotational semantics approach to the evaluation, which worked fine. But, I still wanted to implement an actual lambda calculus interpreter.</p>
+
+<p>So, now that I am done with school and have some free time, I threw a little something together. I used it as an introductory project to <a href='http://caml.inria.fr/'>OCaml</a>, and really enjoyed writing it.</p>
+
+<p>So what is the lambda calculus, you might ask?</p>
+
+<p>There are three basic concepts in lambda calculus. There are variables:</p>
+<div class='highlight'><pre><code class='text'>x
+</code></pre>
+</div>
+<p>There are abstractions:</p>
+<div class='highlight'><pre><code class='text'>fn x. x
+</code></pre>
+</div>
+<p>And there are applications:</p>
+<div class='highlight'><pre><code class='text'>f x
+</code></pre>
+</div>
+<p>Applications are left associative so:</p>
+<div class='highlight'><pre><code class='text'>f x y
+</code></pre>
+</div>
+<p>is the same as:</p>
+<div class='highlight'><pre><code class='text'>(f x) y
+</code></pre>
+</div>
+<p>So for a more complicated example from the REPL:</p>
+<div class='highlight'><pre><code class='text'>&gt; (fn f. fn x. f x) (fn y. y) z;
+z
+</code></pre>
+</div>
+<p>The first part declares a function which binds <code>f</code> and returns a function which binds <code>x</code> and returns the application of <code>f</code> to <code>x</code>. We pass to that the identity function <code>(fn y. y)</code> and the variable <code>z</code>. That all reduces to just <code>z</code>.</p>
+
+<p>You can download my code <a href='http://www.alieniloquent.com/code/lambda/'>here</a>. I will be posting snippets of it in future posts. I will also be blogging as I extend it to add more features.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/12/23/currying-function-parameters.html" rel="bookmark" title="Permanent Link to Currying Function Parameters">Currying Function Parameters</a></h3>
+  <p class="date">December 23rd, 2007</p>
+  <div class="entry"><p>One of the first things I wanted to do to improve the readability of my language was to add the currying of function parameters. Since it is such a common pattern to have three or four abstractions right in a row to bind variables, there is a syntax for expressing them more consisely.</p>
+
+<p>So this:</p>
+<div class='highlight'><pre><code class='text'>fn x. fn y. fn z. x y z
+</code></pre>
+</div>
+<p>Becomes this:</p>
+<div class='highlight'><pre><code class='text'>fn x y z. x y z
+</code></pre>
+</div>
+<p>Adding the code do this was nearly trivial, and all in the parser. First I wrote a function that given a list of variables and an expression for the body, would be able to construct the parse tree for a curried function:</p>
+<div class='highlight'><pre><code class='text'>let curry ids body =
+  List.fold_right (fun id expr -&gt; Abstraction(id, expr)) ids body
+</code></pre>
+</div>
+<p>Then I took the existing production for recognizing expressions:</p>
+<div class='highlight'><pre><code class='text'>expr:
+  aexprs {apply $1}
+| FN VAR PERIOD expr {Abstraction ($2, $4)}
+;
+</code></pre>
+</div>
+<p>And turned it into this:</p>
+<div class='highlight'><pre><code class='text'>expr:
+  aexprs {apply $1}
+| FN ids PERIOD expr {curry $2 $4}
+;
+
+ids:
+  VAR {[$1]}
+| VAR ids {$1::$2}
+;
+</code></pre>
+</div>
+<p>That <code>ids</code> production is using the OCaml <code>::</code> operator which performs the cons operation. So as I recurse on the right, I&#8217;m building up a list and consing each new id onto it all the way up.</p>
+
+<p>And just like that I&#8217;ve added currying to my language.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/12/23/blog-lift.html" rel="bookmark" title="Permanent Link to Blog Lift">Blog Lift</a></h3>
+  <p class="date">December 23rd, 2007</p>
+  <div class="entry"><p>You may have noticed that my layout changed a little. I got rid of my Google ads.</p>
+
+<p>I&#8217;ve noticed that when I paste code snippets or other bits of pre-formatted text that is narrower than 80 columns, I still get a horizontal scroll. That was because my content area was simply too narrow. I intend to be posting more code, so I started looking for ways to get some space.</p>
+
+<p>Changing the layout to only have one column on the right was a start. I was simply going to move the google ads down, but then Erica asked me how much money I was making off of them. The answer is not much at all. So I just got rid of them entirely.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/12/23/a-little-more-lambda.html" rel="bookmark" title="Permanent Link to A little more lambda">A little more lambda</a></h3>
+  <p class="date">December 23rd, 2007</p>
+  <div class="entry"><p><a href='http://en.wikipedia.org/wiki/Alonzo_Church'>Alonzo Church</a> invented the lambda calculus. He also figured out how to encode many kinds of data as lambda expressions. Take your simple booleans, for example.</p>
+
+<p>This is true:</p>
+<div class='highlight'><pre><code class='text'>fn x y. x
+</code></pre>
+</div>
+<p>And this is false:</p>
+<div class='highlight'><pre><code class='text'>fn x y. y
+</code></pre>
+</div>
+<p>That makes the identity function the if then else construct:</p>
+<div class='highlight'><pre><code class='text'>&gt; (fn p. p) (fn x y. x) a b;
+a
+&gt; (fn p. p) (fn x y. y) a b;
+b
+</code></pre>
+</div>
+<p>And similarly you can get a logical and:</p>
+<div class='highlight'><pre><code class='text'>&gt; (fn p. p) ((fn p q. p q p) (fn x y. x) (fn x y. x)) a b;
+a
+&gt; (fn p. p) ((fn p q. p q p) (fn x y. x) (fn x y. y)) a b;
+b
+&gt; (fn p. p) ((fn p q. p q p) (fn x y. y) (fn x y. x)) a b;
+b
+</code></pre>
+</div>
+<p>Fiddling around with these church booleans revealed several bugs in my code, which I&#8217;ve fixed. I&#8217;ve additionally added a new node to the parse tree to represent the () grouping that is typed into the code so that when it is formatted for display it looks better.</p>
+
+<p>You can get the newest code <a href='http://www.alieniloquent.com/code/lambda/'>here</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/11/19/samba-winbindd-invalid-request-length-2048.html" rel="bookmark" title="Permanent Link to Samba winbindd invalid request length: 2048">Samba winbindd invalid request length: 2048</a></h3>
+  <p class="date">November 19th, 2007</p>
+  <div class="entry"><p>An update came down from <a href='http://www.gentoo.org'>Gentoo</a> for Samba updating it to version 2.0.26a. We had been having trouble with a problem in 3.0.24 that had been fixed in a intervening release of Samba. So, naturally, I wanted to upgrade. But when I did, I got this mysterious error in my <code>log.winbindd</code>.</p>
+<div class='highlight'><pre><code class='text'>[2007/11/19 13:27:16, 0] nsswitch/winbindd.c:request_len_recv(517)
+  request_len_recv: Invalid request size received: 2084
+</code></pre>
+</div>
+<p>I have spent the entire day googling and yahooing and searching and grepping to no avail. <em>Nothing</em> I have tried worked. Now at one point I was reading and somebody said &#8220;reboot, some other services are using stale references to libnss_winbind.so.&#8221; I couldn&#8217;t imagine that was right, because if I rolled back to 3.0.24 everything worked again.</p>
+
+<p>Well, through a course of events I ended up with the following line in <code>/etc/nsswitch.conf</code>:</p>
+<div class='highlight'><pre><code class='text'>shadow: shadow
+</code></pre>
+</div>
+<p>As you can imagine, that didn&#8217;t work too well for my unix user that I keep on the box for when ADS is hosed. So I broke out the trusty install CD, rebooted, and fixed the file. I then rebooted and re-emerged samba. I <em>thought</em> I had put the mask in <code>/etc/portage/package.mask</code> to make sure it was 3.0.24 I was installing, but I hadn&#8217;t. Lo and behold everything worked.</p>
+
+<p>All I had to do was reboot.</p>
+
+<p>That was it.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/10/09/remember-ml-yacc-makes-error-correcting-parsers.html" rel="bookmark" title="Permanent Link to Remember ML-Yacc makes error-correcting parsers">Remember ML-Yacc makes error-correcting parsers</a></h3>
+  <p class="date">October 9th, 2007</p>
+  <div class="entry"><p>So I got my language <a href='http://blog.alieniloquent.com/2007/10/08/samuels-lambda-and-'>working</a>. But there are still some things I want to add to it. One thing that was bothering me was that both this code:</p>
+<div class='highlight'><pre><code class='text'>fn x =&gt; x
+</code></pre>
+</div>
+<p>and this code:</p>
+<div class='highlight'><pre><code class='text'>x =&gt; x
+</code></pre>
+</div>
+<p>parsed to the <em>same thing</em>.</p>
+
+<p>I banged my head against this. My grammar had the production right:</p>
+<div class='highlight'><pre><code class='text'>expr : ...
+     | FN ident RARROW expr (T.FnDef (ident,expr))
+     ...
+</code></pre>
+</div>
+<p>and my lexer produced the tokens just fine:</p>
+<div class='highlight'><pre><code class='text'>&lt;INITIAL&gt; &quot;fn&quot; =&gt; (Tokens.FN(!pos, !pos));
+&lt;INITIAL&gt; &quot;=&gt;&quot; =&gt; (Tokens.RARROW(!pos, !pos));
+</code></pre>
+</div>
+<p>So, I was confused. I downloaded the source for <a href='http://smlnj.org'>SML/NJ</a> in hopes that their grammar and lexer would shed insight on what I was (obviously) doing wrong. But, inasmuch as SL is like SML, the grammar and lexer were the same.</p>
+
+<p>Sleep beckoned, so I went. This morning I banged my head at it some more. Then once I started combing over the documentation, it hit me. ML-Yacc produces error-correcting parsers. It will perform single-token substitutions in order to get a valid parse. And, if you notice, it only has to make a single-token correction to get from the bad code to the good code.</p>
+
+<p>My solution? The same as SML/NJ&#8217;s, set the lookahead to zero for interactive sessions and fail fast, so that if you are trying stuff interactively (or from unit tests) it will be relentless about grammar. On the other hand, if you are parsing a file, my interpreter will be forgiving. After all, why should it fail the whole file if all you&#8217;re missing is <code>fn</code>?</p>
+
+<p>the-y-combinator/</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/10/08/samuels-lambda-and-the-y-combinator.html" rel="bookmark" title="Permanent Link to Samuel's Lambda and the Y Combinator">Samuel's Lambda and the Y Combinator</a></h3>
+  <p class="date">October 8th, 2007</p>
+  <div class="entry"><p>So I&#8217;m taking &#8220;Principles of Programming Languages&#8221; at UNO with <a href='http://faculty.ist.unomaha.edu/winter/'>Dr. Winter</a>. There is a group project, and he is letting me do the project on my own. The project is to make a small imperative (and <a href='http://en.wikipedia.org/wiki/Turing_complete'>Turing-complete</a>) language.</p>
+
+<p>Well, as you may or may not know, I&#8217;m crazy about functional languages. I love them. So, while I have to write an imperative language for the project, I decided to spend some of the precious free time I have writing a functional one instead. As of now, my language (Samuel&#8217;s Lambda, or SL for short) is Turing-complete.</p>
+
+<p>My test for this was that I could calculate the factorial using the most venerable of functional programming tools: <a href='http://en.wikipedia.org/wiki/Fixed_point_combinator'>the fixed point combinator</a> (a.k.a. the Y combinator).</p>
+
+<p>For my example of recursion, I&#8217;ll show you the factorial. What sort of discussion of recursion would this be if I didn&#8217;t?</p>
+<div class='highlight'><pre><code class='text'>let
+  val y = fn f =&gt;
+      (fn g =&gt; g g) (fn g =&gt; f (fn x =&gt; g g x))
+  val fac = fn f =&gt;
+            fn n =&gt;
+               if eq n 0 then 1
+               else multiply n (f (subtract n 1))
+in y fac 5
+end
+</code></pre>
+</div>
+<p>When run at the SML/NJ prompt:</p>
+<div class='highlight'><pre><code class='text'>- SLParser.evalPrintFile(&quot;examples/factorial.sl&quot;);
+120
+val it = () : unit
+</code></pre>
+</div>
+<p>It helps that I&#8217;m working with a functional language to start with. That makes implementing things such as closures and <code>let</code> nearly trivial. I&#8217;m going to add static type checking (sans-inferencing like ML after which the syntax has been modeled) and then I&#8217;ll be done with SL. It has been a fun little exercise.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/10/04/a-gentle-introduction-to-erlang.html" rel="bookmark" title="Permanent Link to A Gentle Introduction to Erlang">A Gentle Introduction to Erlang</a></h3>
+  <p class="date">October 4th, 2007</p>
+  <div class="entry"><p>I gave a talk at <a href='http://www.blainebuxton.com/odynug/'>ODYNUG</a> on Tuesday about one of my favorite dynamic languages: Erlang. It went pretty well, I think. Unlike my Lisp talk from last year, I don&#8217;t think I caused too many heads to explode.</p>
+
+<p>I&#8217;ve posted my slides and some example code <a href='http://www.alieniloquent.com/talks/erlang-101/'>here</a>.</p>
+
+<p>I&#8217;ll be giving a talk on ML on Febuary 5, 2008.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/09/14/review-haiku-shoot-em-up.html" rel="bookmark" title="Permanent Link to Review Haiku: Shoot Em Up">Review Haiku: Shoot Em Up</a></h3>
+  <p class="date">September 14th, 2007</p>
+  <div class="entry"><p>Movie: Shoot Em Up</p>
+
+<p>Hates a pussy with a gun</p>
+
+<p>After, I need a smoke</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/08/16/emacs-on-mac-option-key-as-meta.html" rel="bookmark" title="Permanent Link to Emacs on Mac: option key as meta">Emacs on Mac: option key as meta</a></h3>
+  <p class="date">August 16th, 2007</p>
+  <div class="entry"><p>I&#8217;m an Emacs user, and I run on a Mac. I just use GNU Carbon Emacs out of CVS.</p>
+
+<p>As long as I can remember, my command key mapped to the meta key in Emacs. This was particularly bothersome as it got my fingers in the habit of typing command-w to yank some text. But when I&#8217;m editing on a remote server in a Terminal window, that closes the window. Sometimes I manage to do it twice before I hit the option key instead.</p>
+
+<p>I used to have this in my <code>.emacs</code>, although I never really noticed it:</p>
+<div class='highlight'><pre><code class='text'>(when stesla-mac-p
+  (setq mac-command-key-is-meta nil))
+</code></pre>
+</div>
+<p>A week ago when I wanted to finally fix this and make my command key do something other than be meta and make my option key be my meta key, I began to baffle as to why it wasn&#8217;t that way already. See, Google told me that the code I had in my <code>.emacs</code> should have done what I want.</p>
+
+<p>Well, it turns out that it <em>used</em> to be how to do it. Emacs is cooler now, and lets you specify the behavior of all three special keys. So now what have is this:</p>
+<div class='highlight'><pre><code class='text'>(when stesla-mac-p
+  (setq mac-command-modifier nil)
+  (setq mac-option-modifier &#39;meta))
+</code></pre>
+</div>
+<p>This makes Emacs not recognize the command key as a modifier at all and use the option key as meta, which is how I like it.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/06/29/base32-011-released.html" rel="bookmark" title="Permanent Link to Base32 0.1.1 Released">Base32 0.1.1 Released</a></h3>
+  <p class="date">June 29th, 2007</p>
+  <div class="entry"><p>Quickly on the heels of the <a href='http://blog.alieniloquent.com/2007/06/28/base32-010-released/'>initial release</a> of my Base32 library, I have an update. I should have tried to compile it on Linux, as the GCC settings on my Gentoo box caught some silly things I had done.</p>
+
+<p>It&#8217;s all better now, and the gem can install on both Mac OS X and Gentoo Linux. I assume other Linuxes are probably fine, as are BSDs and other *NIXes.</p>
+
+<p>To download it go <a href='http://rubyforge.org/frs/?group_id=3938&amp;release_id=12678'>here</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/06/28/base32-010-released.html" rel="bookmark" title="Permanent Link to Base32 0.1.0 Released">Base32 0.1.0 Released</a></h3>
+  <p class="date">June 28th, 2007</p>
+  <div class="entry"><p>As you may know, I&#8217;ve been <a href='http://blog.alieniloquent.com/2007/06/05/base32-encoded-freedom/'>working</a> <a href='http://blog.alieniloquent.com/2007/06/07/for-those-about-to-base32/'>with</a> base32 encoding. Well, I decided to share my work with the world in the form of a library.</p>
+
+<p>This first release simply contains the code I needed for my original project, but I&#8217;ve packaged it up as a nice Ruby extension.</p>
+
+<p>You can visit the project page <a href='http://rubyforge.org/projects/base32'>here</a>.</p>
+
+<p>You can download the release <a href='http://rubyforge.org/frs/?group_id=3938&amp;release_id=12666'>here</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/06/07/for-those-about-to-base32.html" rel="bookmark" title="Permanent Link to For those about to base32">For those about to base32</a></h3>
+  <p class="date">June 7th, 2007</p>
+  <div class="entry"><p>I&#8217;ve scribbled this down so many times, I thought you all might want to benefit a little from my troubles.</p>
+<div class='highlight'><pre><code class='text'>|0000 0|000 11|11 111|1 2222| 2222 3|333 33|33 444|4 4444
+|0000 0|111 11|22 222|3 3333| 4444 4|555 55|66 666|7 7777
+</code></pre>
+</div>
+<p>That is a chart to help understand how five octets turn into eight base32-encoded bytes. It should be fairly self explanatory, but when I say that, I&#8217;m always wrong.</p>
+
+<p>The top row is the octets. I&#8217;ve each group of four represents four bits, and the numbers represent which octet it is. The bottom row represents the quintets, with the same numbering scheme. I spaced the digits the same, so you can see how they match up. The pipes are nice visual borders.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/06/05/base32-encoded-freedom.html" rel="bookmark" title="Permanent Link to Base32 Encoded Freedom">Base32 Encoded Freedom</a></h3>
+  <p class="date">June 5th, 2007</p>
+  <div class="entry"><p>So I&#8217;m writing the license-key generation code for the store-front for a shareware program my friend Tyler and I are preparing to release (more about that later). We&#8217;ve decided to use cryptography to reduce the likelihood that our licensing schema will be compromised (for relatively little effort on our part). We also decided to base32 encode the actual keys to make them easier to read.</p>
+
+<p>Well, the store-front is going to be a <a href='http://www.rubyonrails.com'>Rails</a> app, of course. Ruby has a module to <a href='http://ruby-doc.org/stdlib/libdoc/base64/rdoc/index.html'>base64</a> encode, but it doesn&#8217;t have one to base32 encode. So, I wrote one, and I did it test first (of course).</p>
+
+<p>The first four tests were easy. Really short strings, but they worked out most of the kinks. But, I wanted something that would boost my confidence further. So I wrote the following test which ended up being quite patriotic.</p>
+<div class='highlight'><pre><code class='text'>def test_constitution_preamble
+  plaintext =&lt;&lt;-EOT
+    We the people of the United States, in order to form a more perfect union,
+    establish justice, insure domestic tranquility, provide for the common
+    defense, promote the general welfare, and secure the blessings of liberty
+    to ourselves and our posterity, do ordain and establish this Constitution
+    for the United States of America.
+  EOT
+  encoded = %W(
+    EAQCAIBAEBLWKIDUNBSSA4DFN5YGYZJAN5TCA5DIMUQFK3TJORSWIICTORQXIZLTFQQGS3RA
+    N5ZGIZLSEB2G6IDGN5ZG2IDBEBWW64TFEBYGK4TGMVRXIIDVNZUW63RMBIQCAIBAEAQGK43U
+    MFRGY2LTNAQGU5LTORUWGZJMEBUW443VOJSSAZDPNVSXG5DJMMQHI4TBNZYXK2LMNF2HSLBA
+    OBZG65TJMRSSAZTPOIQHI2DFEBRW63LNN5XAUIBAEAQCAIDEMVTGK3TTMUWCA4DSN5WW65DF
+    EB2GQZJAM5SW4ZLSMFWCA53FNRTGC4TFFQQGC3TEEBZWKY3VOJSSA5DIMUQGE3DFONZWS3TH
+    OMQG6ZRANRUWEZLSOR4QUIBAEAQCAIDUN4QG65LSONSWY5TFOMQGC3TEEBXXK4RAOBXXG5DF
+    OJUXI6JMEBSG6IDPOJSGC2LOEBQW4ZBAMVZXIYLCNRUXG2BAORUGS4ZAINXW443UNF2HK5DJ
+    N5XAUIBAEAQCAIDGN5ZCA5DIMUQFK3TJORSWIICTORQXIZLTEBXWMICBNVSXE2LDMEXAU===).join
+  assert_equal(encoded, Base32.encode(plaintext))
+end
+</code></pre>
+</div></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/04/24/three-little-two-little-one-little-endian.html" rel="bookmark" title="Permanent Link to Three little, two little, one little-endian">Three little, two little, one little-endian</a></h3>
+  <p class="date">April 24th, 2007</p>
+  <div class="entry"><p>I recently found myself wanting a Cocoa class that represents a set of 8-bit bytes. Cocoa has NSCharacterSet, but that is for <code>unichar</code>, not <code>uint8_t</code>. So I wrote one. It was easy enough, I gave it an array of <code>UINT8_MAX</code> booleans and said that if a particular element in the array was <code>YES</code> then that byte was in the set, and not if the element was <code>NO</code>.</p>
+
+<p>Initially the class only knew how to answer questions of membership: is a byte in the set or not? But then I found a number of places where I was enumerating all possible values and testing for membership, so I figured adding a method that would return a <code>NSData</code> with just the bytes included in the set would be useful.</p>
+
+<p>So I wrote this:</p>
+<div class='highlight'><pre><code class='objc'><span class='o'>-</span> <span class='p'>(</span><span class='n'>NSData</span> <span class='o'>*</span><span class='p'>)</span> <span class='n'>dataValue</span>
+<span class='p'>{</span>
+  <span class='n'>NSMutableData</span> <span class='o'>*</span><span class='n'>result</span> <span class='o'>=</span> <span class='p'>[</span><span class='n'>NSMutableData</span> <span class='n'>data</span><span class='p'>];</span>
+  <span class='k'>for</span> <span class='p'>(</span><span class='kt'>unsigned</span> <span class='n'>i</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span> <span class='n'>i</span> <span class='o'>&lt;=</span> <span class='n'>UINT8_MAX</span><span class='p'>;</span> <span class='o'>++</span><span class='n'>i</span><span class='p'>)</span>
+    <span class='p'>{</span>
+      <span class='k'>if</span> <span class='p'>(</span><span class='n'>contains</span><span class='p'>[</span><span class='n'>i</span><span class='p'>])</span>
+        <span class='p'>[</span><span class='n'>result</span> <span class='nl'>appendBytes:</span> <span class='o'>&amp;</span><span class='n'>i</span> <span class='nl'>length:</span> <span class='mi'>1</span><span class='p'>];</span>
+    <span class='p'>}</span>
+  <span class='k'>return</span> <span class='n'>result</span><span class='p'>;</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>I had unit tests that proved it worked, and they all passed, so I checked in. All was good in the world.</p>
+
+<p>Five days later, I flip open my laptop and decide to use the program this code is part of. I always try to eat my own dog food, and I prefer the freshest dog food I can get. So, whenever I want to use this application, I delete it, update from our Subversion repository, and build it.</p>
+
+<p>Much to my surprise, when I built it on my laptop, some of those tests did not pass. I was expecting the <code>NSData</code> returned from <code>-dataValue</code> to have certain bytes in it. The <code>NSData</code> I actually got back did have the correct <em>number</em> of bytes, but they were all zeroes.</p>
+
+<p>I banged my head against it for about twenty minutes, until I had a flash of insight. My desktop machine at home is an iMac, and inside it is an Intel Core Duo processor. My laptop is a PowerBook, and inside it is a Motorola G4 processor. The Core Duo, like most other Intel processors, stores numbers in the little-endian format, whereas the G4 stores them in big-endian format.</p>
+
+<p><a href='http://en.wikipedia.org/wiki/Endianness'>Endianess</a> is a computer topic that makes a lot of programmers&#8217; heads hurt. Unfortunately, Cocoa programmers do have to think about this now. Since Apple switched from their old, big-endian, Motorola platform to their new, little-endian, Intel platform, applications that are meant to run on both have to be aware of byte-order issues.</p>
+
+<p>Computers store data in bytes, which are eight bits long. However, eight bits is only enough to store a number up to 255. In order to store larger numbers, computers just concatenate bytes together. A 16-bit number is comprised of two bytes, and a 32-bit number is comprised of four. The endianess of a system determines what order those bytes are stored in.</p>
+
+<p>When you read a decimal number like 4242, you read it from left to right. The most significant digit is the left-most digit. Similarly, when you read a binary number like 1000010010010, the most significant digit is the left-most digit. If we divide that number into bytes, 00010000 10010010, the left-most byte is called the most significant byte, or the high-order byte. The right- most byte is called the least significant byte, or the low-order byte.</p>
+
+<p>A big-endian processor, like the G4, stores numbers exactly like you&#8217;d read them. So if you read a 16-bit integer in big-endian order, the first byte you read is the high-order byte. Now, if the number is less than 255, for example 42, you&#8217;ll get this: 00000000 00101010.</p>
+
+<p>A little-endian processor, like the Core Duo, stores numbers just the opposite of how you&#8217;d expect. The first byte you read is the least significant byte, followed by the next most significant byte, and then so on. So when we read our binary number in we&#8217;ll get 10010010 00010000 instead of what we expected. Now, if we look at that small number again, you&#8217;d get this: 00101010 00000000.</p>
+
+<p>So, to bring this back to my bug. The <code>unsigned</code> type is actually an unsigned 32-bit integer. Since my code was manipulating a set of 8-bit numbers, every single number would fit into the low-order byte of that <code>unsigned</code>, thus leaving the other three bytes all zero.</p>
+
+<p>The line of code where I do this:</p>
+<div class='highlight'><pre><code class='objc'><span class='p'>[</span><span class='n'>data</span> <span class='nl'>appendBytes:</span> <span class='o'>&amp;</span><span class='n'>i</span> <span class='nl'>length:</span> <span class='mi'>1</span><span class='p'>]</span>
+</code></pre>
+</div>
+<p>Is a clever little trick I&#8217;ve used to avoid having to actually declare a one- byte array when I want to append just one byte. It works great if <code>i</code> is actually an <code>uint8_t</code>. It also works great if <code>i</code> is an <code>unsigned</code> and stored in little-endian format, since the first byte happens to be the byte I&#8217;m interested in. However, on a big-endian processor, that will reference the most significant byte of the number instead, and since <code>i</code> never gets any bigger than <code>UINT8_MAX</code> (which is 11111111 in binary), that byte will always be zero.</p>
+
+<p>So now the code looks like this:</p>
+<div class='highlight'><pre><code class='objc'><span class='o'>-</span> <span class='p'>(</span><span class='n'>NSData</span> <span class='o'>*</span><span class='p'>)</span> <span class='n'>dataValue</span>
+<span class='p'>{</span>
+  <span class='n'>NSMutableData</span> <span class='o'>*</span><span class='n'>result</span> <span class='o'>=</span> <span class='p'>[</span><span class='n'>NSMutableData</span> <span class='n'>data</span><span class='p'>];</span>
+  <span class='n'>uint8_t</span> <span class='n'>byte</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>];</span>
+  <span class='k'>for</span> <span class='p'>(</span><span class='kt'>unsigned</span> <span class='n'>i</span> <span class='o'>=</span> <span class='mi'>0</span><span class='p'>;</span> <span class='n'>i</span> <span class='o'>&lt;=</span> <span class='n'>UINT8_MAX</span><span class='p'>;</span> <span class='o'>++</span><span class='n'>i</span><span class='p'>)</span>
+    <span class='p'>{</span>
+      <span class='k'>if</span> <span class='p'>(</span><span class='n'>contains</span><span class='p'>[</span><span class='n'>i</span><span class='p'>])</span>
+        <span class='p'>{</span>
+          <span class='n'>byte</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>i</span><span class='p'>;</span>
+          <span class='p'>[</span><span class='n'>result</span> <span class='nl'>appendBytes:</span> <span class='n'>byte</span> <span class='nl'>length:</span> <span class='mi'>1</span><span class='p'>];</span>
+        <span class='p'>}</span>
+    <span class='p'>}</span>
+  <span class='k'>return</span> <span class='n'>result</span><span class='p'>;</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>The compiler knows to do the <em>correct</em> conversion between the 32-bit and 8-bit types when assigning from one to another, so the new code now works on both of my machines.</p>
+
+<p><strong>Update:</strong> The title is a joke that <a href='http://www.sperari.com'>Erica</a> made up when I told her about this bug. All blame for its terribleness should go to her, I just recognized how apropos it was for the post.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/04/05/the-true-meaning-of-ajax.html" rel="bookmark" title="Permanent Link to The true meaning of AJAX">The true meaning of AJAX</a></h3>
+  <p class="date">April 5th, 2007</p>
+  <div class="entry"><p>I&#8217;m reading <a href='http://pragmaticprogrammer.com/titles/rails2/index.html'>Agile Web Development With Rails</a> and I just have to share this most amusing quote:</p>
+
+<blockquote>
+<p>AJAX (which once stood for Asynchronous JavaScript and XML but now just means Making Browsers Suck Less)</p>
+</blockquote>
+
+<p>Thank you Dave and Dave for calling things like they really are.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/03/25/they-had-really-long-names.html" rel="bookmark" title="Permanent Link to They Had Really Long Names">They Had Really Long Names</a></h3>
+  <p class="date">March 25th, 2007</p>
+  <div class="entry"><p>Two years ago when my employer adopted Extreme Programming, we began to write automated tests for our code. My memory is fuzzy at this point, but as I recall we wanted to be able to write tests and keep the source files anywhere in our source tree, and then have our test runner automagically find them, or something like that. So when we created it we called it <code>MasterTestXMLReportApp</code> because it was cool enough to deserve such a long name.</p>
+
+<p>As time passed those tests got slower and slower, so we split them into two suites. One that was meant to be fast and one that was meant to be slow. The slow ones were run once a night. We called that suite <code>MasterTestNightlyXMLReportApp</code> because it ran every night.</p>
+
+<p>Fast forward to yesterday. The &#8220;nightly&#8221; tests haven&#8217;t run nightly in a long time. They just run continuously, albeit very slowly. I can never remember the name of the projects, and neither can any of my teammates. So finally we got fed up. We renamed them to <code>FastTests</code> and <code>SlowTests</code>.</p>
+
+<p>We held a little memorial service, and gave them a little plot on our 0.04 acres of whiteboard, complete with a headstone.</p>
+
+<p><img src='http://www.alieniloquent.com/images/riptests.jpg' alt='They had really long names' /></p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/01/02/hooking-up-a-delphi-progress-event-to-a-net-object.html" rel="bookmark" title="Permanent Link to Hooking up a Delphi progress event to a .NET object">Hooking up a Delphi progress event to a .NET object</a></h3>
+  <p class="date">January 2nd, 2007</p>
+  <div class="entry"><p>So we know how to create a DLL in C++ that exposes .NET code to the Win32 world. We also know how to consume that DLL from Delphi. We know how to instantiate an object, call methods on it, and destroy it. So now, let&#8217;s do something interesting. Let&#8217;s make a progress bar.</p>
+
+<p>Since this is just an example, we&#8217;re going to do something really simple. We&#8217;ll make an object that runs for a number of cycles and calls our event handler each cycle after sleeping for a little bit. Here&#8217;s the code for <code>Clock</code>:</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Example.h</span>
+
+<span class='n'>public</span> <span class='n'>ref</span> <span class='n'>class</span> <span class='n'>Clock</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+
+  <span class='n'>Clock</span><span class='p'>()</span><span class='o'>:</span>
+
+  <span class='n'>_progressCallback</span><span class='p'>(</span><span class='n'>gcnew</span> <span class='n'>ProgressCallback</span><span class='p'>(</span><span class='nb'>NULL</span><span class='p'>,</span> <span class='nb'>NULL</span><span class='p'>))</span> <span class='p'>{}</span>
+
+  <span class='o'>~</span><span class='n'>Clock</span><span class='p'>()</span> <span class='p'>{}</span>
+
+  <span class='kt'>void</span> <span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='n'>ProgressCallback</span> <span class='o'>^</span> <span class='n'>callback</span><span class='p'>)</span>
+  <span class='p'>{</span>
+    <span class='n'>_progressCallback</span> <span class='o'>=</span> <span class='n'>callback</span><span class='p'>;</span>
+  <span class='p'>}</span>
+
+  <span class='kt'>void</span> <span class='n'>Run</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>);</span>
+
+ <span class='nl'>private:</span>
+
+  <span class='n'>ProgressCallback</span> <span class='o'>^</span> <span class='n'>_progressCallback</span><span class='p'>;</span>
+<span class='p'>};</span>
+
+<span class='c1'>// Example.cpp</span>
+<span class='kt'>void</span> <span class='n'>Example</span><span class='o'>::</span><span class='n'>Clock</span><span class='o'>::</span><span class='n'>Run</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>for</span> <span class='p'>(</span><span class='kt'>int</span> <span class='n'>i</span> <span class='o'>=</span> <span class='mi'>1</span><span class='p'>;</span> <span class='n'>i</span> <span class='o'>&lt;=</span> <span class='n'>cycles</span><span class='p'>;</span> <span class='o'>++</span><span class='n'>i</span><span class='p'>)</span>
+    <span class='p'>{</span>
+      <span class='n'>Thread</span><span class='o'>::</span><span class='n'>Sleep</span><span class='p'>(</span><span class='mi'>250</span><span class='p'>);</span> <span class='c1'>// A noticeable pause</span>
+      <span class='n'>_progressCallback</span><span class='o'>-&gt;</span><span class='n'>Execute</span><span class='p'>(</span><span class='n'>i</span><span class='p'>,</span> <span class='n'>cycles</span><span class='p'>);</span>
+    <span class='p'>}</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Now the first thing to notice there is the <code>ref</code> keyword. This is how you let the compiler know this is a managed class. Next, you&#8217;re all probably wondering what <code>ProgressCallback</code> is. That is the class that takes care of all the magic behind simulating method pointers from Delphi.</p>
+
+<p>A brief aside to talk about just what method pointers are. In C and C++ you can declare a pointer type like this:</p>
+<div class='highlight'><pre><code class='c'><span class='k'>typedef</span> <span class='kt'>int</span> <span class='p'>(</span><span class='o'>*</span> <span class='n'>CALLBACK</span><span class='p'>)(</span><span class='kt'>int</span> <span class='n'>x</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>y</span><span class='p'>);</span>
+</code></pre>
+</div>
+<p>Then you can use that type like this:</p>
+<div class='highlight'><pre><code class='c'><span class='kt'>int</span> <span class='nf'>Apply</span><span class='p'>(</span><span class='n'>CALLBACK</span> <span class='n'>cb</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>x</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>y</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>cb</span> <span class='o'>==</span> <span class='nb'>NULL</span> <span class='o'>?</span> <span class='mi'>0</span> <span class='o'>:</span> <span class='n'>cb</span><span class='p'>(</span><span class='n'>x</span><span class='p'>,</span> <span class='n'>y</span><span class='p'>);</span>
+<span class='p'>}</span>
+
+<span class='kt'>int</span> <span class='nf'>Multiply</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>x</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>y</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>x</span> <span class='o'>*</span> <span class='n'>y</span><span class='p'>;</span>
+<span class='p'>}</span>
+
+<span class='n'>Apply</span><span class='p'>(</span><span class='n'>Multiply</span><span class='p'>,</span> <span class='mi'>6</span><span class='p'>,</span> <span class='mi'>7</span><span class='p'>);</span> <span class='c1'>// returns 42</span>
+</code></pre>
+</div>
+<p>You can do the exact same thing in Delphi like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>type</span> <span class='n'>TCallback</span> <span class='o'>=</span> <span class='k'>function</span><span class='p'>(</span><span class='n'>X</span><span class='o'>,</span> <span class='n'>Y</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>But Delphi also offers another kind of function pointer called a method pointer. You declare it like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>type</span> <span class='n'>TMethodCallback</span> <span class='o'>=</span> <span class='k'>function</span><span class='p'>(</span><span class='n'>X</span><span class='o'>,</span> <span class='n'>Y</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>:</span> <span class='kt'>Integer</span> <span class='k'>of</span> <span class='k'>object</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>Those two words <code>of object</code> make all the difference. What this does is it lets you use a pointer to a method on a specific instance of an object. When you call that method the <code>Self</code> pointer is set to the correct value so that you can access the state on the object. It is really powerful. This is typically how progress bars are driven in VCL applications. You just do something like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>type</span> <span class='n'>TProgressEvent</span> <span class='o'>=</span> <span class='k'>procedure</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span> <span class='k'>of</span> <span class='k'>object</span><span class='o'>;</span>
+<span class='c1'>// ...</span>
+
+<span class='k'>type</span> <span class='n'>TMyForm</span> <span class='o'>=</span> <span class='k'>class</span><span class='p'>(</span><span class='n'>TForm</span><span class='p'>)</span>
+  <span class='c1'>// ... stuff ...</span>
+  <span class='n'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+  <span class='c1'>// ... more stuff ...</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+
+<span class='c1'>// ... then somewhere in the implementation ...</span>
+<span class='k'>procedure</span> <span class='nc'>TForm1</span><span class='o'>.</span><span class='nf'>InitializeStuff</span><span class='o'>;</span>
+<span class='k'>begin</span>
+  <span class='c1'>// ... Initialize some things ...</span>
+  <span class='n'>FThingWithProgressEvent</span><span class='o'>.</span><span class='n'>OnProgress</span> <span class='o'>:=</span> <span class='n'>Progress</span><span class='o'>;</span>
+  <span class='c1'>// ... Initialize more things ...</span>
+<span class='k'>end</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>And then that method can do something such as adjust a progress bar or log to a file. It&#8217;s really slick.</p>
+
+<p>Well, we want to display a progress bar in our Delphi GUI that moves as our <code>Clock</code> ticks across. But we can only pass plain old procedure pointers (the kind without <code>of object</code>) to the DLL functions because the code in the DLL doesn&#8217;t know how to do the magic that makes method pointers so nice. So we&#8217;ll just have to make that magic happen ourselves by passing the object pointer in explicitly along with a procedure pointer that takes the object pointer in its parameter list. We can cast the pointer and then call a method on the object with the rest of the parameters.</p>
+
+<p>So now that we have the basic strategy in mind. Let me show you the code that encapsulates this method pointer idea:</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Example.h</span>
+
+<span class='n'>public</span> <span class='n'>ref</span> <span class='n'>class</span> <span class='n'>ProcedureOfObject</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+  <span class='n'>ProcedureOfObject</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>procedure</span><span class='p'>)</span><span class='o'>:</span>
+
+  <span class='n'>_object</span><span class='p'>((</span><span class='n'>IntPtr</span><span class='p'>)</span> <span class='n'>object</span><span class='p'>),</span> <span class='n'>_procedure</span><span class='p'>((</span><span class='n'>IntPtr</span><span class='p'>)</span> <span class='n'>procedure</span><span class='p'>)</span> <span class='p'>{}</span>
+
+ <span class='nl'>protected:</span>
+
+  <span class='n'>property</span> <span class='n'>bool</span> <span class='n'>HasNullPointers</span>
+  <span class='p'>{</span>
+    <span class='n'>bool</span> <span class='n'>get</span><span class='p'>()</span>
+    <span class='p'>{</span>
+      <span class='k'>return</span> <span class='n'>ObjectPointer</span> <span class='o'>==</span> <span class='nb'>NULL</span> <span class='o'>||</span>
+        <span class='n'>ProcedurePointer</span> <span class='o'>==</span> <span class='nb'>NULL</span><span class='p'>;</span>
+    <span class='p'>}</span>
+  <span class='p'>}</span>
+
+  <span class='n'>property</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>ObjectPointer</span>
+  <span class='p'>{</span>
+    <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>get</span><span class='p'>()</span> <span class='p'>{</span> <span class='k'>return</span> <span class='n'>_object</span><span class='o'>-&gt;</span><span class='n'>ToPointer</span><span class='p'>();</span> <span class='p'>}</span>
+  <span class='p'>}</span>
+
+  <span class='n'>property</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>ProcedurePointer</span>
+  <span class='p'>{</span>
+    <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>get</span><span class='p'>()</span> <span class='p'>{</span> <span class='k'>return</span> <span class='n'>_procedure</span><span class='o'>-&gt;</span><span class='n'>ToPointer</span><span class='p'>();</span> <span class='p'>}</span>
+  <span class='p'>}</span>
+
+ <span class='nl'>private:</span>
+
+  <span class='n'>IntPtr</span><span class='o'>^</span> <span class='n'>_object</span><span class='p'>;</span>
+  <span class='n'>IntPtr</span><span class='o'>^</span> <span class='n'>_procedure</span><span class='p'>;</span>
+<span class='p'>};</span>
+
+
+<span class='k'>typedef</span> <span class='kt'>void</span> <span class='p'>(</span><span class='o'>*</span> <span class='n'>PROGRESSEVENT</span><span class='p'>)(</span><span class='kt'>void</span> <span class='o'>*</span><span class='p'>,</span> <span class='kt'>int</span><span class='p'>,</span> <span class='kt'>int</span><span class='p'>);</span>
+
+<span class='n'>public</span> <span class='n'>ref</span> <span class='n'>class</span> <span class='n'>ProgressCallback</span> <span class='o'>:</span> <span class='n'>public</span> <span class='n'>ProcedureOfObject</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+  <span class='n'>ProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>procedure</span><span class='p'>)</span><span class='o'>:</span> <span class='n'>ProcedureOfObject</span><span class='p'>(</span><span class='n'>object</span><span class='p'>,</span> <span class='n'>procedure</span><span class='p'>)</span> <span class='p'>{}</span>
+  <span class='kt'>void</span> <span class='n'>Execute</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>current</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>max</span><span class='p'>);</span>
+<span class='p'>};</span>
+
+
+<span class='c1'>// Example.cpp</span>
+
+<span class='kt'>void</span> <span class='n'>Example</span><span class='o'>::</span><span class='n'>ProgressCallback</span><span class='o'>::</span><span class='n'>Execute</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>current</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>max</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>if</span> <span class='p'>(</span><span class='n'>this</span><span class='o'>-&gt;</span><span class='n'>HasNullPointers</span><span class='p'>)</span>
+    <span class='k'>return</span><span class='p'>;</span>
+  <span class='p'>((</span><span class='n'>Example</span><span class='o'>::</span><span class='n'>PROGRESSEVENT</span><span class='p'>)</span> <span class='n'>ProcedurePointer</span><span class='p'>)(</span><span class='n'>this</span><span class='o'>-&gt;</span><span class='n'>ObjectPointer</span><span class='p'>,</span> <span class='n'>current</span><span class='p'>,</span> <span class='n'>max</span><span class='p'>);</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Note that I store the pointers as <code>IntPtr</code> references. This is the type that all of the methods on <code>System::Runtime::InteropServices::Marshal</code> return pointers as. So, it&#8217;s useful to make your fields that way. You can always call <code>ToPointer()</code> on it.</p>
+
+<p>Now, the last bit that we need is to export stuff in the DLL. But you&#8217;ll notice that all of the classes I&#8217;ve made so far have been managed classes. We can&#8217;t send a pointer to a managed object out of the DLL, but we can send a pointer to an unmanaged object that has a reference to our managed object. So we make this wrapper:</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Example.h</span>
+
+<span class='n'>public</span> <span class='n'>class</span> <span class='n'>ClockWrapper</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+
+  <span class='n'>ClockWrapper</span><span class='p'>()</span><span class='o'>:</span> <span class='n'>_clock</span><span class='p'>(</span><span class='n'>gcnew</span> <span class='n'>Clock</span><span class='p'>())</span> <span class='p'>{}</span>
+
+  <span class='o'>~</span><span class='n'>ClockWrapper</span><span class='p'>()</span> <span class='p'>{}</span>
+
+  <span class='kt'>void</span> <span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='n'>PROGRESSEVENT</span> <span class='n'>callback</span><span class='p'>)</span>
+  <span class='p'>{</span>
+    <span class='n'>_clock</span><span class='o'>-&gt;</span><span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='n'>gcnew</span> <span class='n'>ProgressCallback</span><span class='p'>(</span><span class='n'>object</span><span class='p'>,</span> <span class='n'>callback</span><span class='p'>));</span>
+  <span class='p'>}</span>
+
+  <span class='kt'>void</span> <span class='n'>Run</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>)</span>
+  <span class='p'>{</span>
+    <span class='n'>_clock</span><span class='o'>-&gt;</span><span class='n'>Run</span><span class='p'>(</span><span class='n'>cycles</span><span class='p'>);</span>
+  <span class='p'>}</span>
+
+ <span class='nl'>private:</span>
+
+  <span class='n'>gcroot</span><span class='o'>&lt;</span><span class='n'>Clock</span> <span class='o'>^&gt;</span> <span class='n'>_clock</span><span class='p'>;</span>
+<span class='p'>};</span>
+</code></pre>
+</div>
+<p>So all that&#8217;s left is to export the DLL functions like before. Just to keep them separate I&#8217;ll make another delete method, even though it&#8217;s identical in every way except the name.</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Exports.h</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>ClockCreate</span><span class='p'>();</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>ClockDelete</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>);</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>ClockRun</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>);</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>ClockSetProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='n'>PROGRESSEVENT</span> <span class='n'>callback</span><span class='p'>);</span>
+
+<span class='cp'>// Exports.cpp</span>
+
+<span class='cp'>#define C(p) ((ClockWrapper *) p)</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='nf'>ClockCreate</span><span class='p'>()</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>new</span> <span class='n'>ClockWrapper</span><span class='p'>();</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>ClockDelete</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>delete</span> <span class='n'>clock</span><span class='p'>;</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>ClockRun</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>C</span><span class='p'>(</span><span class='n'>clock</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='n'>Run</span><span class='p'>(</span><span class='n'>cycles</span><span class='p'>);</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>ClockSetProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='n'>PROGRESSEVENT</span> <span class='n'>callback</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>C</span><span class='p'>(</span><span class='n'>clock</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='n'>object</span><span class='p'>,</span> <span class='n'>callback</span><span class='p'>);</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Then on the Delphi side:</p>
+<div class='highlight'><pre><code class='delphi'><span class='c1'>// interface</span>
+<span class='k'>type</span> <span class='n'>TForm1</span> <span class='o'>=</span> <span class='k'>class</span><span class='p'>(</span><span class='n'>TForm</span><span class='p'>)</span>
+   <span class='n'>edtCycles</span><span class='o'>:</span> <span class='n'>TEdit</span><span class='o'>;</span>
+   <span class='n'>btnCycle</span><span class='o'>:</span> <span class='n'>TButton</span><span class='o'>;</span>
+   <span class='n'>ProgressBar1</span><span class='o'>:</span> <span class='n'>TProgressBar</span><span class='o'>;</span>
+   <span class='k'>procedure</span> <span class='nf'>btnCycleClick</span><span class='p'>(</span><span class='n'>Sender</span><span class='o'>:</span> <span class='kt'>TObject</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>private</span>
+   <span class='k'>procedure</span> <span class='nf'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+<span class='c1'>// implementation</span>
+<span class='k'>type</span>
+   <span class='n'>TProgressEvent</span> <span class='o'>=</span> <span class='k'>procedure</span><span class='p'>(</span><span class='n'>AObject</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span> <span class='kp'>cdecl</span><span class='o'>;</span>
+   <span class='n'>PForm1</span> <span class='o'>=</span> <span class='o'>^</span><span class='n'>TForm1</span><span class='o'>;</span>
+
+<span class='k'>function</span> <span class='nf'>ClockCreate</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ClockDelete</span><span class='p'>(</span><span class='n'>AClock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ClockRun</span><span class='p'>(</span><span class='n'>AClock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACycles</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ClockSetProgressCallback</span><span class='p'>(</span><span class='n'>AClock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>AObject</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACallback</span><span class='o'>:</span> <span class='n'>TProgressEvent</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ProgressCallback</span><span class='p'>(</span><span class='n'>AObject</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span> <span class='kp'>cdecl</span><span class='o'>;</span>
+<span class='k'>begin</span>
+   <span class='n'>PForm1</span><span class='p'>(</span><span class='n'>AObject</span><span class='p'>)</span><span class='o'>.</span><span class='n'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='p'>)</span><span class='o'>;</span>
+   <span class='n'>Application</span><span class='o'>.</span><span class='n'>ProcessMessages</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nc'>TForm1</span><span class='o'>.</span><span class='nf'>btnCycleClick</span><span class='p'>(</span><span class='n'>Sender</span><span class='o'>:</span> <span class='kt'>TObject</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>var</span>
+   <span class='n'>Clock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span>
+<span class='k'>begin</span>
+   <span class='n'>Clock</span> <span class='o'>:=</span> <span class='n'>ClockCreate</span><span class='p'>()</span><span class='o'>;</span>
+   <span class='k'>try</span>
+      <span class='n'>ProgressBar1</span><span class='o'>.</span><span class='n'>Position</span> <span class='o'>:=</span> <span class='mi'>0</span><span class='o'>;</span>
+      <span class='n'>ClockSetProgressCallback</span><span class='p'>(</span><span class='n'>Clock</span><span class='o'>,</span> <span class='o'>@</span><span class='k'>Self</span><span class='o'>,</span> <span class='n'>ProgressCallback</span><span class='p'>)</span><span class='o'>;</span>
+      <span class='n'>ClockRun</span><span class='p'>(</span><span class='n'>Clock</span><span class='o'>,</span> <span class='nb'>StrToInt</span><span class='p'>(</span><span class='n'>edtCycles</span><span class='o'>.</span><span class='n'>Text</span><span class='p'>))</span><span class='o'>;</span>
+   <span class='k'>finally</span>
+      <span class='n'>ClockDelete</span><span class='p'>(</span><span class='n'>Clock</span><span class='p'>)</span><span class='o'>;</span>
+   <span class='k'>end</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nc'>TForm1</span><span class='o'>.</span><span class='nf'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>begin</span>
+   <span class='n'>ProgressBar1</span><span class='o'>.</span><span class='n'>Max</span> <span class='o'>:=</span> <span class='n'>AMax</span><span class='o'>;</span>
+   <span class='n'>ProgressBar1</span><span class='o'>.</span><span class='n'>Position</span> <span class='o'>:=</span> <span class='n'>ACurrent</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>Some things to note. First off, the <code>Progress</code> method on <code>TForm1</code> is <code>private</code>, and yet I call it from <code>ProgressCallback</code>. This is because of how scoping works in Delphi. Any code in the same unit as a <code>private</code> or <code>protected</code> method can call that method. In Delphi 2005, the keywords <code>strict
+private</code> and <code>strict protected</code> were introduced to prevent this ability, but in this case we actually <em>want</em> the behavior because we don&#8217;t want to expose that event to anybody else.</p>
+
+<p>Next, notice that the procedure pointer also has <code>cdecl</code> on it. This has to be this way because it&#8217;s a pointer that will be passed into the DLL. So, it needs to be declared with the same calliing convention that&#8217;ll be used on the other side.</p>
+
+<p>That&#8217;s how you hook up a Delphi progress bar to a .NET object. It isn&#8217;t much more work to use the <code>ProcedureOfObject</code> pattern and call that from a delegate on the .NET side, which is useful when you are hooking events on sub-objects.</p>
+
+<p>One big gotcha with this pattern that isn&#8217;t demonstrated in this code is hooking the callback in a constructor. The <code>Self</code> pointer does not point to what you think it does. So if you send that along to the other side and call back to it later, you&#8217;re referencing offsets off of something else entirely, and you will get access violations.</p>
+
+<p>So now we know how to make a .NET DLL that we can call into from the Win32 world. We know how to consume that in Delphi, and we know how to simulate Delphi&#8217;s method pointers. With these building blocks, you can map just about anything in the .NET world into your Delphi applications.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2007/01/01/calling-into-the-c-dll-from-delphi.html" rel="bookmark" title="Permanent Link to Calling into the C++ DLL from Delphi">Calling into the C++ DLL from Delphi</a></h3>
+  <p class="date">January 1st, 2007</p>
+  <div class="entry"><p>Before I get to the meat of this post, I want to make some ammendments and edits to the code from the last one. Today I was wrangling around and began to recall more of my C++, initializers in particular, so I&#8217;ve updated the <code>Example1</code> class to use them.</p>
+<div class='highlight'><pre><code class='c'><span class='n'>public</span> <span class='n'>class</span> <span class='n'>Example1</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+
+  <span class='n'>Example1</span><span class='p'>(</span><span class='k'>const</span> <span class='kt'>char</span> <span class='o'>*</span> <span class='n'>name</span><span class='p'>)</span> <span class='o'>:</span> <span class='n'>_name</span><span class='p'>(</span><span class='n'>gcnew</span> <span class='n'>String</span><span class='p'>(</span><span class='n'>name</span><span class='p'>))</span> <span class='p'>{}</span>
+  <span class='o'>~</span><span class='n'>Example1</span><span class='p'>()</span> <span class='p'>{}</span>
+  <span class='kt'>void</span> <span class='n'>ShowName</span><span class='p'>();</span>
+
+ <span class='nl'>private:</span>
+
+  <span class='n'>gcroot</span><span class='o'>&lt;</span><span class='n'>String</span> <span class='o'>^&gt;</span> <span class='n'>_name</span><span class='p'>;</span>
+<span class='p'>};</span>
+</code></pre>
+</div>
+<p>I also realize that I forgot to show the implementation side of that class, so here it is:</p>
+<div class='highlight'><pre><code class='c'><span class='cp'>// Example.cpp</span>
+<span class='cp'>#include &quot;stdafx.h&quot;</span>
+<span class='cp'>#include &quot;Example.h&quot;</span>
+
+<span class='n'>using</span> <span class='n'>namespace</span> <span class='n'>System</span><span class='o'>::</span><span class='n'>Windows</span><span class='o'>::</span><span class='n'>Forms</span><span class='p'>;</span>
+
+<span class='kt'>void</span> <span class='n'>Example</span><span class='o'>::</span><span class='n'>Example1</span><span class='o'>::</span><span class='n'>ShowName</span><span class='p'>()</span>
+<span class='p'>{</span>
+  <span class='n'>MessageBox</span><span class='o'>::</span><span class='n'>Show</span><span class='p'>(</span><span class='n'>_name</span><span class='p'>);</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>So there&#8217;s our DLL. Now, let&#8217;s use it from Delphi! I&#8217;m using Turbo Delphi for Win32 to do this. Go to File &gt; New &gt; &#8220;VCL Forms Application&#8221; and make your project. Make sure that it outputs to the same directory that the DLL does (or make the DLL output to the same directory this project does, which is what I do) for ease of edit-compile-run cycling.</p>
+
+<p>I&#8217;m going to drop a <code>TEdit</code> and a <code>TButton</code> on the main form and hook it up so that when we click the button it creates an <code>Example1</code>, shows it, and then deletes it. Here is the implementation section from the main unit in the delphi program:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>function</span> <span class='nf'>Example1Create</span><span class='p'>(</span><span class='n'>AName</span><span class='o'>:</span> <span class='kt'>PChar</span><span class='p'>)</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>Example1Delete</span><span class='p'>(</span><span class='n'>AExample</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>Example1ShowName</span><span class='p'>(</span><span class='n'>AExample</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nc'>TForm1</span><span class='o'>.</span><span class='nf'>btnDoItClick</span><span class='p'>(</span><span class='n'>Sender</span><span class='o'>:</span> <span class='kt'>TObject</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>var</span>
+  <span class='n'>Example</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span>
+<span class='k'>begin</span>
+  <span class='n'>Example</span> <span class='o'>:=</span> <span class='n'>Example1Create</span><span class='p'>(</span><span class='kt'>PChar</span><span class='p'>(</span><span class='n'>edtName</span><span class='o'>.</span><span class='n'>Text</span><span class='p'>))</span><span class='o'>;</span>
+  <span class='k'>try</span>
+     <span class='n'>Example1ShowName</span><span class='p'>(</span><span class='n'>Example</span><span class='p'>)</span><span class='o'>;</span>
+  <span class='k'>finally</span>
+     <span class='n'>Example1Delete</span><span class='p'>(</span><span class='n'>Example</span><span class='p'>)</span><span class='o'>;</span>
+  <span class='k'>end</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>The button handler is straight-forward and normal. The only interesting thing there is to see how the calls from the DLL get used. The lifetime management works just like anything else, you just aren&#8217;t going to use <code>FreeAndNil</code> like you would for most things.</p>
+
+<p>The interesting part is at the top where we import from the DLL, let&#8217;s look at one of those lines again:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>function</span> <span class='nf'>Example1Create</span><span class='p'>(</span><span class='n'>AName</span><span class='o'>:</span> <span class='kt'>PChar</span><span class='p'>)</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>Now this corresponds to the following line from <code>Exports.h</code>:</p>
+<div class='highlight'><pre><code class='c'><span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>Example1Create</span><span class='p'>(</span><span class='k'>const</span> <span class='kt'>char</span> <span class='o'>*</span> <span class='n'>name</span><span class='p'>);</span>
+</code></pre>
+</div>
+<p>Since it has a return type that is not void, it becomes a function (the others became procedures). The <code>void *</code> becomes <code>Pointer</code>, and the <code>const char *
+name</code> becomes <code>PChar</code> in Delphi. So what&#8217;s the rest of that garbage? The <code>cdecl</code> flag is there to tell the compiler what calling convention to use. If you just create the DLL in Visual Studio, it defaults to using <code>cdecl</code>. You can also use something like <code>stdcall</code>, but it&#8217;s not necessary here. The other part just tells Delphi which DLL to look for this external function in.</p>
+
+<p>So now we know how to call code from the DLL. Next time I&#8217;ll show you how to pass procedure pointers and even method pointers from Delphi into the DLL and have them get called properly for things like progress bars.</p></div>
+</div>
+
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

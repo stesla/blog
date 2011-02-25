@@ -1,0 +1,357 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: Hooking up a Delphi progress event to a .NET object</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         <div class="post">
+  <h3><a href="/2007/01/02/hooking-up-a-delphi-progress-event-to-a-net-object.html" title="Permalink for this post">Hooking up a Delphi progress event to a .NET object</a></h3>
+  <p class="date">January 2nd, 2007</p>
+  <div class="entry"><p>So we know how to create a DLL in C++ that exposes .NET code to the Win32 world. We also know how to consume that DLL from Delphi. We know how to instantiate an object, call methods on it, and destroy it. So now, let&#8217;s do something interesting. Let&#8217;s make a progress bar.</p>
+
+<p>Since this is just an example, we&#8217;re going to do something really simple. We&#8217;ll make an object that runs for a number of cycles and calls our event handler each cycle after sleeping for a little bit. Here&#8217;s the code for <code>Clock</code>:</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Example.h</span>
+
+<span class='n'>public</span> <span class='n'>ref</span> <span class='n'>class</span> <span class='n'>Clock</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+
+  <span class='n'>Clock</span><span class='p'>()</span><span class='o'>:</span>
+
+  <span class='n'>_progressCallback</span><span class='p'>(</span><span class='n'>gcnew</span> <span class='n'>ProgressCallback</span><span class='p'>(</span><span class='nb'>NULL</span><span class='p'>,</span> <span class='nb'>NULL</span><span class='p'>))</span> <span class='p'>{}</span>
+
+  <span class='o'>~</span><span class='n'>Clock</span><span class='p'>()</span> <span class='p'>{}</span>
+
+  <span class='kt'>void</span> <span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='n'>ProgressCallback</span> <span class='o'>^</span> <span class='n'>callback</span><span class='p'>)</span>
+  <span class='p'>{</span>
+    <span class='n'>_progressCallback</span> <span class='o'>=</span> <span class='n'>callback</span><span class='p'>;</span>
+  <span class='p'>}</span>
+
+  <span class='kt'>void</span> <span class='n'>Run</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>);</span>
+
+ <span class='nl'>private:</span>
+
+  <span class='n'>ProgressCallback</span> <span class='o'>^</span> <span class='n'>_progressCallback</span><span class='p'>;</span>
+<span class='p'>};</span>
+
+<span class='c1'>// Example.cpp</span>
+<span class='kt'>void</span> <span class='n'>Example</span><span class='o'>::</span><span class='n'>Clock</span><span class='o'>::</span><span class='n'>Run</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>for</span> <span class='p'>(</span><span class='kt'>int</span> <span class='n'>i</span> <span class='o'>=</span> <span class='mi'>1</span><span class='p'>;</span> <span class='n'>i</span> <span class='o'>&lt;=</span> <span class='n'>cycles</span><span class='p'>;</span> <span class='o'>++</span><span class='n'>i</span><span class='p'>)</span>
+    <span class='p'>{</span>
+      <span class='n'>Thread</span><span class='o'>::</span><span class='n'>Sleep</span><span class='p'>(</span><span class='mi'>250</span><span class='p'>);</span> <span class='c1'>// A noticeable pause</span>
+      <span class='n'>_progressCallback</span><span class='o'>-&gt;</span><span class='n'>Execute</span><span class='p'>(</span><span class='n'>i</span><span class='p'>,</span> <span class='n'>cycles</span><span class='p'>);</span>
+    <span class='p'>}</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Now the first thing to notice there is the <code>ref</code> keyword. This is how you let the compiler know this is a managed class. Next, you&#8217;re all probably wondering what <code>ProgressCallback</code> is. That is the class that takes care of all the magic behind simulating method pointers from Delphi.</p>
+
+<p>A brief aside to talk about just what method pointers are. In C and C++ you can declare a pointer type like this:</p>
+<div class='highlight'><pre><code class='c'><span class='k'>typedef</span> <span class='kt'>int</span> <span class='p'>(</span><span class='o'>*</span> <span class='n'>CALLBACK</span><span class='p'>)(</span><span class='kt'>int</span> <span class='n'>x</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>y</span><span class='p'>);</span>
+</code></pre>
+</div>
+<p>Then you can use that type like this:</p>
+<div class='highlight'><pre><code class='c'><span class='kt'>int</span> <span class='nf'>Apply</span><span class='p'>(</span><span class='n'>CALLBACK</span> <span class='n'>cb</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>x</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>y</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>cb</span> <span class='o'>==</span> <span class='nb'>NULL</span> <span class='o'>?</span> <span class='mi'>0</span> <span class='o'>:</span> <span class='n'>cb</span><span class='p'>(</span><span class='n'>x</span><span class='p'>,</span> <span class='n'>y</span><span class='p'>);</span>
+<span class='p'>}</span>
+
+<span class='kt'>int</span> <span class='nf'>Multiply</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>x</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>y</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>x</span> <span class='o'>*</span> <span class='n'>y</span><span class='p'>;</span>
+<span class='p'>}</span>
+
+<span class='n'>Apply</span><span class='p'>(</span><span class='n'>Multiply</span><span class='p'>,</span> <span class='mi'>6</span><span class='p'>,</span> <span class='mi'>7</span><span class='p'>);</span> <span class='c1'>// returns 42</span>
+</code></pre>
+</div>
+<p>You can do the exact same thing in Delphi like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>type</span> <span class='n'>TCallback</span> <span class='o'>=</span> <span class='k'>function</span><span class='p'>(</span><span class='n'>X</span><span class='o'>,</span> <span class='n'>Y</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>But Delphi also offers another kind of function pointer called a method pointer. You declare it like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>type</span> <span class='n'>TMethodCallback</span> <span class='o'>=</span> <span class='k'>function</span><span class='p'>(</span><span class='n'>X</span><span class='o'>,</span> <span class='n'>Y</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>:</span> <span class='kt'>Integer</span> <span class='k'>of</span> <span class='k'>object</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>Those two words <code>of object</code> make all the difference. What this does is it lets you use a pointer to a method on a specific instance of an object. When you call that method the <code>Self</code> pointer is set to the correct value so that you can access the state on the object. It is really powerful. This is typically how progress bars are driven in VCL applications. You just do something like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>type</span> <span class='n'>TProgressEvent</span> <span class='o'>=</span> <span class='k'>procedure</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span> <span class='k'>of</span> <span class='k'>object</span><span class='o'>;</span>
+<span class='c1'>// ...</span>
+
+<span class='k'>type</span> <span class='n'>TMyForm</span> <span class='o'>=</span> <span class='k'>class</span><span class='p'>(</span><span class='n'>TForm</span><span class='p'>)</span>
+  <span class='c1'>// ... stuff ...</span>
+  <span class='n'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+  <span class='c1'>// ... more stuff ...</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+
+<span class='c1'>// ... then somewhere in the implementation ...</span>
+<span class='k'>procedure</span> <span class='nc'>TForm1</span><span class='o'>.</span><span class='nf'>InitializeStuff</span><span class='o'>;</span>
+<span class='k'>begin</span>
+  <span class='c1'>// ... Initialize some things ...</span>
+  <span class='n'>FThingWithProgressEvent</span><span class='o'>.</span><span class='n'>OnProgress</span> <span class='o'>:=</span> <span class='n'>Progress</span><span class='o'>;</span>
+  <span class='c1'>// ... Initialize more things ...</span>
+<span class='k'>end</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>And then that method can do something such as adjust a progress bar or log to a file. It&#8217;s really slick.</p>
+
+<p>Well, we want to display a progress bar in our Delphi GUI that moves as our <code>Clock</code> ticks across. But we can only pass plain old procedure pointers (the kind without <code>of object</code>) to the DLL functions because the code in the DLL doesn&#8217;t know how to do the magic that makes method pointers so nice. So we&#8217;ll just have to make that magic happen ourselves by passing the object pointer in explicitly along with a procedure pointer that takes the object pointer in its parameter list. We can cast the pointer and then call a method on the object with the rest of the parameters.</p>
+
+<p>So now that we have the basic strategy in mind. Let me show you the code that encapsulates this method pointer idea:</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Example.h</span>
+
+<span class='n'>public</span> <span class='n'>ref</span> <span class='n'>class</span> <span class='n'>ProcedureOfObject</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+  <span class='n'>ProcedureOfObject</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>procedure</span><span class='p'>)</span><span class='o'>:</span>
+
+  <span class='n'>_object</span><span class='p'>((</span><span class='n'>IntPtr</span><span class='p'>)</span> <span class='n'>object</span><span class='p'>),</span> <span class='n'>_procedure</span><span class='p'>((</span><span class='n'>IntPtr</span><span class='p'>)</span> <span class='n'>procedure</span><span class='p'>)</span> <span class='p'>{}</span>
+
+ <span class='nl'>protected:</span>
+
+  <span class='n'>property</span> <span class='n'>bool</span> <span class='n'>HasNullPointers</span>
+  <span class='p'>{</span>
+    <span class='n'>bool</span> <span class='n'>get</span><span class='p'>()</span>
+    <span class='p'>{</span>
+      <span class='k'>return</span> <span class='n'>ObjectPointer</span> <span class='o'>==</span> <span class='nb'>NULL</span> <span class='o'>||</span>
+        <span class='n'>ProcedurePointer</span> <span class='o'>==</span> <span class='nb'>NULL</span><span class='p'>;</span>
+    <span class='p'>}</span>
+  <span class='p'>}</span>
+
+  <span class='n'>property</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>ObjectPointer</span>
+  <span class='p'>{</span>
+    <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>get</span><span class='p'>()</span> <span class='p'>{</span> <span class='k'>return</span> <span class='n'>_object</span><span class='o'>-&gt;</span><span class='n'>ToPointer</span><span class='p'>();</span> <span class='p'>}</span>
+  <span class='p'>}</span>
+
+  <span class='n'>property</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>ProcedurePointer</span>
+  <span class='p'>{</span>
+    <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>get</span><span class='p'>()</span> <span class='p'>{</span> <span class='k'>return</span> <span class='n'>_procedure</span><span class='o'>-&gt;</span><span class='n'>ToPointer</span><span class='p'>();</span> <span class='p'>}</span>
+  <span class='p'>}</span>
+
+ <span class='nl'>private:</span>
+
+  <span class='n'>IntPtr</span><span class='o'>^</span> <span class='n'>_object</span><span class='p'>;</span>
+  <span class='n'>IntPtr</span><span class='o'>^</span> <span class='n'>_procedure</span><span class='p'>;</span>
+<span class='p'>};</span>
+
+
+<span class='k'>typedef</span> <span class='kt'>void</span> <span class='p'>(</span><span class='o'>*</span> <span class='n'>PROGRESSEVENT</span><span class='p'>)(</span><span class='kt'>void</span> <span class='o'>*</span><span class='p'>,</span> <span class='kt'>int</span><span class='p'>,</span> <span class='kt'>int</span><span class='p'>);</span>
+
+<span class='n'>public</span> <span class='n'>ref</span> <span class='n'>class</span> <span class='n'>ProgressCallback</span> <span class='o'>:</span> <span class='n'>public</span> <span class='n'>ProcedureOfObject</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+  <span class='n'>ProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>procedure</span><span class='p'>)</span><span class='o'>:</span> <span class='n'>ProcedureOfObject</span><span class='p'>(</span><span class='n'>object</span><span class='p'>,</span> <span class='n'>procedure</span><span class='p'>)</span> <span class='p'>{}</span>
+  <span class='kt'>void</span> <span class='n'>Execute</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>current</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>max</span><span class='p'>);</span>
+<span class='p'>};</span>
+
+
+<span class='c1'>// Example.cpp</span>
+
+<span class='kt'>void</span> <span class='n'>Example</span><span class='o'>::</span><span class='n'>ProgressCallback</span><span class='o'>::</span><span class='n'>Execute</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>current</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>max</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>if</span> <span class='p'>(</span><span class='n'>this</span><span class='o'>-&gt;</span><span class='n'>HasNullPointers</span><span class='p'>)</span>
+    <span class='k'>return</span><span class='p'>;</span>
+  <span class='p'>((</span><span class='n'>Example</span><span class='o'>::</span><span class='n'>PROGRESSEVENT</span><span class='p'>)</span> <span class='n'>ProcedurePointer</span><span class='p'>)(</span><span class='n'>this</span><span class='o'>-&gt;</span><span class='n'>ObjectPointer</span><span class='p'>,</span> <span class='n'>current</span><span class='p'>,</span> <span class='n'>max</span><span class='p'>);</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Note that I store the pointers as <code>IntPtr</code> references. This is the type that all of the methods on <code>System::Runtime::InteropServices::Marshal</code> return pointers as. So, it&#8217;s useful to make your fields that way. You can always call <code>ToPointer()</code> on it.</p>
+
+<p>Now, the last bit that we need is to export stuff in the DLL. But you&#8217;ll notice that all of the classes I&#8217;ve made so far have been managed classes. We can&#8217;t send a pointer to a managed object out of the DLL, but we can send a pointer to an unmanaged object that has a reference to our managed object. So we make this wrapper:</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Example.h</span>
+
+<span class='n'>public</span> <span class='n'>class</span> <span class='n'>ClockWrapper</span>
+<span class='p'>{</span>
+ <span class='nl'>public:</span>
+
+  <span class='n'>ClockWrapper</span><span class='p'>()</span><span class='o'>:</span> <span class='n'>_clock</span><span class='p'>(</span><span class='n'>gcnew</span> <span class='n'>Clock</span><span class='p'>())</span> <span class='p'>{}</span>
+
+  <span class='o'>~</span><span class='n'>ClockWrapper</span><span class='p'>()</span> <span class='p'>{}</span>
+
+  <span class='kt'>void</span> <span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='n'>PROGRESSEVENT</span> <span class='n'>callback</span><span class='p'>)</span>
+  <span class='p'>{</span>
+    <span class='n'>_clock</span><span class='o'>-&gt;</span><span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='n'>gcnew</span> <span class='n'>ProgressCallback</span><span class='p'>(</span><span class='n'>object</span><span class='p'>,</span> <span class='n'>callback</span><span class='p'>));</span>
+  <span class='p'>}</span>
+
+  <span class='kt'>void</span> <span class='n'>Run</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>)</span>
+  <span class='p'>{</span>
+    <span class='n'>_clock</span><span class='o'>-&gt;</span><span class='n'>Run</span><span class='p'>(</span><span class='n'>cycles</span><span class='p'>);</span>
+  <span class='p'>}</span>
+
+ <span class='nl'>private:</span>
+
+  <span class='n'>gcroot</span><span class='o'>&lt;</span><span class='n'>Clock</span> <span class='o'>^&gt;</span> <span class='n'>_clock</span><span class='p'>;</span>
+<span class='p'>};</span>
+</code></pre>
+</div>
+<p>So all that&#8217;s left is to export the DLL functions like before. Just to keep them separate I&#8217;ll make another delete method, even though it&#8217;s identical in every way except the name.</p>
+<div class='highlight'><pre><code class='c'><span class='c1'>// Exports.h</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>ClockCreate</span><span class='p'>();</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>ClockDelete</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>);</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>ClockRun</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>);</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>ClockSetProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='n'>PROGRESSEVENT</span> <span class='n'>callback</span><span class='p'>);</span>
+
+<span class='cp'>// Exports.cpp</span>
+
+<span class='cp'>#define C(p) ((ClockWrapper *) p)</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='nf'>ClockCreate</span><span class='p'>()</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>new</span> <span class='n'>ClockWrapper</span><span class='p'>();</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>ClockDelete</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>delete</span> <span class='n'>clock</span><span class='p'>;</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>ClockRun</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>int</span> <span class='n'>cycles</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>C</span><span class='p'>(</span><span class='n'>clock</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='n'>Run</span><span class='p'>(</span><span class='n'>cycles</span><span class='p'>);</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>ClockSetProgressCallback</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>clock</span><span class='p'>,</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>object</span><span class='p'>,</span> <span class='n'>PROGRESSEVENT</span> <span class='n'>callback</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>C</span><span class='p'>(</span><span class='n'>clock</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='n'>SetProgressCallback</span><span class='p'>(</span><span class='n'>object</span><span class='p'>,</span> <span class='n'>callback</span><span class='p'>);</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Then on the Delphi side:</p>
+<div class='highlight'><pre><code class='delphi'><span class='c1'>// interface</span>
+<span class='k'>type</span> <span class='n'>TForm1</span> <span class='o'>=</span> <span class='k'>class</span><span class='p'>(</span><span class='n'>TForm</span><span class='p'>)</span>
+   <span class='n'>edtCycles</span><span class='o'>:</span> <span class='n'>TEdit</span><span class='o'>;</span>
+   <span class='n'>btnCycle</span><span class='o'>:</span> <span class='n'>TButton</span><span class='o'>;</span>
+   <span class='n'>ProgressBar1</span><span class='o'>:</span> <span class='n'>TProgressBar</span><span class='o'>;</span>
+   <span class='k'>procedure</span> <span class='nf'>btnCycleClick</span><span class='p'>(</span><span class='n'>Sender</span><span class='o'>:</span> <span class='kt'>TObject</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>private</span>
+   <span class='k'>procedure</span> <span class='nf'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+<span class='c1'>// implementation</span>
+<span class='k'>type</span>
+   <span class='n'>TProgressEvent</span> <span class='o'>=</span> <span class='k'>procedure</span><span class='p'>(</span><span class='n'>AObject</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span> <span class='kp'>cdecl</span><span class='o'>;</span>
+   <span class='n'>PForm1</span> <span class='o'>=</span> <span class='o'>^</span><span class='n'>TForm1</span><span class='o'>;</span>
+
+<span class='k'>function</span> <span class='nf'>ClockCreate</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ClockDelete</span><span class='p'>(</span><span class='n'>AClock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ClockRun</span><span class='p'>(</span><span class='n'>AClock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACycles</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ClockSetProgressCallback</span><span class='p'>(</span><span class='n'>AClock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>AObject</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACallback</span><span class='o'>:</span> <span class='n'>TProgressEvent</span><span class='p'>)</span><span class='o'>;</span>
+<span class='kp'>cdecl</span><span class='o'>;</span> <span class='kp'>external</span> <span class='s'>&#39;Example&#39;</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nf'>ProgressCallback</span><span class='p'>(</span><span class='n'>AObject</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span> <span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span> <span class='kp'>cdecl</span><span class='o'>;</span>
+<span class='k'>begin</span>
+   <span class='n'>PForm1</span><span class='p'>(</span><span class='n'>AObject</span><span class='p'>)</span><span class='o'>.</span><span class='n'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='p'>)</span><span class='o'>;</span>
+   <span class='n'>Application</span><span class='o'>.</span><span class='n'>ProcessMessages</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nc'>TForm1</span><span class='o'>.</span><span class='nf'>btnCycleClick</span><span class='p'>(</span><span class='n'>Sender</span><span class='o'>:</span> <span class='kt'>TObject</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>var</span>
+   <span class='n'>Clock</span><span class='o'>:</span> <span class='kt'>Pointer</span><span class='o'>;</span>
+<span class='k'>begin</span>
+   <span class='n'>Clock</span> <span class='o'>:=</span> <span class='n'>ClockCreate</span><span class='p'>()</span><span class='o'>;</span>
+   <span class='k'>try</span>
+      <span class='n'>ProgressBar1</span><span class='o'>.</span><span class='n'>Position</span> <span class='o'>:=</span> <span class='mi'>0</span><span class='o'>;</span>
+      <span class='n'>ClockSetProgressCallback</span><span class='p'>(</span><span class='n'>Clock</span><span class='o'>,</span> <span class='o'>@</span><span class='k'>Self</span><span class='o'>,</span> <span class='n'>ProgressCallback</span><span class='p'>)</span><span class='o'>;</span>
+      <span class='n'>ClockRun</span><span class='p'>(</span><span class='n'>Clock</span><span class='o'>,</span> <span class='nb'>StrToInt</span><span class='p'>(</span><span class='n'>edtCycles</span><span class='o'>.</span><span class='n'>Text</span><span class='p'>))</span><span class='o'>;</span>
+   <span class='k'>finally</span>
+      <span class='n'>ClockDelete</span><span class='p'>(</span><span class='n'>Clock</span><span class='p'>)</span><span class='o'>;</span>
+   <span class='k'>end</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+
+<span class='k'>procedure</span> <span class='nc'>TForm1</span><span class='o'>.</span><span class='nf'>Progress</span><span class='p'>(</span><span class='n'>ACurrent</span><span class='o'>,</span> <span class='n'>AMax</span><span class='o'>:</span> <span class='kt'>Integer</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>begin</span>
+   <span class='n'>ProgressBar1</span><span class='o'>.</span><span class='n'>Max</span> <span class='o'>:=</span> <span class='n'>AMax</span><span class='o'>;</span>
+   <span class='n'>ProgressBar1</span><span class='o'>.</span><span class='n'>Position</span> <span class='o'>:=</span> <span class='n'>ACurrent</span><span class='o'>;</span>
+<span class='k'>end</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>Some things to note. First off, the <code>Progress</code> method on <code>TForm1</code> is <code>private</code>, and yet I call it from <code>ProgressCallback</code>. This is because of how scoping works in Delphi. Any code in the same unit as a <code>private</code> or <code>protected</code> method can call that method. In Delphi 2005, the keywords <code>strict
+private</code> and <code>strict protected</code> were introduced to prevent this ability, but in this case we actually <em>want</em> the behavior because we don&#8217;t want to expose that event to anybody else.</p>
+
+<p>Next, notice that the procedure pointer also has <code>cdecl</code> on it. This has to be this way because it&#8217;s a pointer that will be passed into the DLL. So, it needs to be declared with the same calliing convention that&#8217;ll be used on the other side.</p>
+
+<p>That&#8217;s how you hook up a Delphi progress bar to a .NET object. It isn&#8217;t much more work to use the <code>ProcedureOfObject</code> pattern and call that from a delegate on the .NET side, which is useful when you are hooking events on sub-objects.</p>
+
+<p>One big gotcha with this pattern that isn&#8217;t demonstrated in this code is hooking the callback in a constructor. The <code>Self</code> pointer does not point to what you think it does. So if you send that along to the other side and call back to it later, you&#8217;re referencing offsets off of something else entirely, and you will get access violations.</p>
+
+<p>So now we know how to make a .NET DLL that we can call into from the Win32 world. We know how to consume that in Delphi, and we know how to simulate Delphi&#8217;s method pointers. With these building blocks, you can map just about anything in the .NET world into your Delphi applications.</p></div>
+  <p class="metadata alt">You may notice that I do not provide a space
+    for comments. If you want to start a conversation, you can
+    <a href="mailto:blog@alieniloquent.com">email me</a>, 
+    <a href="http://twitter.com/stesla">tweet at me</a>, or post
+    something on your own blog.</p>
+</div>
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

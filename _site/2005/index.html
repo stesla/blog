@@ -1,0 +1,627 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: 2005</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         
+<div class="post">
+  <h3><a href="/2005/12/13/hint-h2455-we-broke-your-string-constant.html" rel="bookmark" title="Permanent Link to Delphi Hint H2455: We Broke Your String Constant">Delphi Hint H2455: We Broke Your String Constant</a></h3>
+  <p class="date">December 13th, 2005</p>
+  <div class="entry"><p>So, Brian and I are going along writing code that was <em>supposed</em> to be <em>easy</em>. Then we run into a problem. Some of the super secure encryption we do to obfuscate some constants in our code wasn&#8217;t working right &#8211; in .NET. It worked fine in Win32. So, we put on our spelunking hats and settled into our harnesses and went down into the depths of our code.</p>
+
+<p>What did we find? We found hint H2455. It says &#8220;Narrowing given wide string constant lost information.&#8221; The helpful help says that if it encounters characters with ASCII values above 127 it <em>may</em> yes, I said may, replace them with a &#8217;?&#8217;. How nice of them.</p>
+
+<p>So we try declaring a typed constant as an AnsiString, but no, why would that work? The string literal is still WideString. We look at the assembly and sure enough, the byte 0x97 is getting replaced with 0x3F: &#8217;?&#8217;.</p>
+
+<p>What did we end up doing? We ditched the string constants. We use an <code>array of
+Byte</code> and we made a function that will make an AnsiString out of it. As a nice conclusion to this little vignette, that array is prettier to look at.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/12/12/on-measurement.html" rel="bookmark" title="Permanent Link to On Measurement">On Measurement</a></h3>
+  <p class="date">December 12th, 2005</p>
+  <div class="entry"><p>So my boss walks into the room and slaps a print-out on the wall with some tape. It says:</p>
+
+<blockquote>
+<p><em>Gilb&#8217;s Law</em>: Anything you need to quantify can be measured in some way that is superior to not measuring at all. <em>&#8211; (Tom Gilb)</em></p>
+
+<p><em>Kent&#8217;s corollary</em>: Any imperfect measurement can be abused during planning and decision-making by assuming a level of precision greater than what the measurement actually delivers.</p>
+</blockquote></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/10/26/now-powered-by-subversion.html" rel="bookmark" title="Permanent Link to Now powered by Subversion">Now powered by Subversion</a></h3>
+  <p class="date">October 26th, 2005</p>
+  <div class="entry"><p>I <a href='http://www.alieniloquent.com/2005/10/20/subversive-joy/'>previously</a> <a href='http://www.alieniloquent.com/2005/10/20/subversion-apache-windows/'>blogged</a> about Subversion at my workplace. I promised that I would write a blog post about how the conversion went. Many of you may think that I forgot. I didn&#8217;t. We just finished it today, and as I expected, I have things to share.</p>
+
+<p>Saturday evening I kicked off <a href='http://vss2svn.tigris.org/'>vss2svn</a> after installing all the things I needed to run it. I had done this before on a small repository, but it was long enough ago that I didn&#8217;t remember exactly what it was like. So I started it, and disconnected from VNC figuring it would take it a while. It did, indeed, take it a while. In fact, it still hadn&#8217;t done a <em>single thing</em> when I came in Monday morning. VSS has this need for a username to be specified. It will use your windows login if it&#8217;s a valid VSS user, but if it isn&#8217;t, the command line tool will prompt for one. The script ate that prompt, so I didn&#8217;t see it. That brings me to the first lesson.</p>
+
+<p><strong>Lesson #1: Login to windows as a user with a VSS account.</strong></p>
+
+<p>Monday, having guessed that was the problem, I fixed that by creating a VSS account for the user I was running as. Problem solved. The script ran and it built its database, and it told us what users we needed to have. I put all of those users in my password file and hit enter. Boom! It blew up. It gave some sort of error about not being able to import. After a good deal of time, it was discerned that the script was not properly forming the import command. It&#8217;s a good thing I know Perl.</p>
+
+<p><strong>Lesson #2: Download the perl script, not the executable, you <em>will</em> need to hack the source.</strong></p>
+
+<p>Having fixed the script I launched the process. It ran again. This is the point at which I start getting really annoyed at the fact that the script doesn&#8217;t pick things up where it left off. We are dealing with a very large codebase here, so it takes a while to analyze. Thank goodness I was running this on the machine where VSS and SVN are served and not over the network.</p>
+
+<p>So it starts going. It converts. It converts some more. We get through two hours and about 1500 revisions when, yes you guessed it, BOOM! It blows up. This time it is asking for a revision of a file that VSS doesn&#8217;t have. This is somewhat odd, because you&#8217;d think that&#8217;s what version control is for: to keep old revisions. Well, you see, Microsoft decided to add a feature to VSS that would allow you to keep all the revision history but only store the most recent version of the file. So, if you analyze the history to figure out commits and then ask for an old revision&#8230;you get nothing. Try to add a file that doesn&#8217;t exist to Subversion, and you get an error.</p>
+
+<p><strong>Lesson #3: VSS has a lot of retarded [mis]features.</strong></p>
+
+<p>Ruby to the rescue! We write a script to figure out how many of these files exist. We run it. Wow, that&#8217;s a lot of files. We look at all of them, and determine that we don&#8217;t care about their revision history anyway. So we&#8217;ll just &#8220;delete&#8221; them all from VSS and then re-add them. We&#8217;ve got a command line tool. It can perform both operations. Excellent! We&#8217;ll just write another Ruby script. If only things were so simple.</p>
+
+<p>Given that it&#8217;s Microsoft &#8211; the same company that said nobody would need more than 640k of memory &#8211; I don&#8217;t find it surprising that our script didn&#8217;t work. I think somebody said &#8220;nobody will ever want to script VSS.&#8221; You see, when you &#8220;delete&#8221; a file from VSS, you don&#8217;t actually delete the file. You simply set the file aside in a pile of files that you don&#8217;t play with any more, but it&#8217;s still there, even though you don&#8217;t play anymore. If you try to add a file with the same name in the VSS GUI, it will say &#8220;You used to play with this file, would you like to just play with the file you used to have, or would you rather play with this new file instead?&#8221; If you try the same thing using <code>ss.exe</code> (the CLI), it simply says &#8220;You already have a file with that name, sucker.&#8221; Stupid program.</p>
+
+<p><strong>Lesson #4: ss.exe sucks</strong></p>
+
+<p>Once I readded all of those files by hand, and later discovered that ss.exe put them somewhere else that was nowhere near where we asked it to, I kicked off the script again. It ran, and ran, and ran, and ran. Then it ran and ran and ran and ran. We started it Monday afternoon and it finished Wednesday morning. It did, however, convert successfully.</p>
+
+<p><strong>Lesson #5: 1,000,000ish lines of code and 8ish years of history = 2 days to convert</strong></p>
+
+<p>So, today we fixed up our buildscript (which was easyish) and our cruise control, and we got everybody switched over. Our shop is now powered by Subversion.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/10/20/subversive-joy.html" rel="bookmark" title="Permanent Link to Subversive Joy">Subversive Joy</a></h3>
+  <p class="date">October 20th, 2005</p>
+  <div class="entry"><p>A year and a half ago, when I started working at my company, one of the first things I saw was the version control they used: Visual Source Safe. My immediate reaction was, &#8220;Why don&#8217;t we ditch this crap and use a real version control tool like Subversion, or at least CVS.&#8221; Unsurprisingly, the response was, &#8220;We&#8217;d love to ditch this crap, but we can&#8217;t afford to right now, and we don&#8217;t know what we want to switch to anyway.&#8221; So began our journey.</p>
+
+<p>The first task set before us was to decide which version control we wanted to switch to. There was <a href='http://sourcegear.com/vault/'>Vault</a>, which would have theoretically been a drop-in replacement. I like <a href='http://www.notalegend.com'>Eric</a>, but I don&#8217;t like the VSS/Vault paradigm. Another contender was <a href='http://www.borland.com/starteam/'>StarTeam</a>, since we&#8217;re a Delphi shop, but it is expensive. There were a few other contenders as well, but they all had one thing in common: they cost money. I sat in the corner as this list was assembled and kept piping up, &#8220;What about Subversion? It&#8217;s fast, it&#8217;s fully- featured, and it&#8217;s free.&#8221; It was added to the list, but not as a serious contender for starters.</p>
+
+<p>Then I bought <a href='http://www.pragmaticprogrammer.com/titles/svn/index.html'>Pragmatic Version Control Using Subversion</a>, and devoured it. I hadn&#8217;t even known how cool Subversion was, and now I <em>really</em> wanted to use it. The first thing I did upon completing the book was give it to the senior engineer in charge of deciding what we were going to move to. He worked his way through the book and agreed with me: it was cool. Finally, Subversion won the Jolt award last year, so it was decided. Needless to say, I was excited.</p>
+
+<p>That was months ago. We were in the middle of a big development push and couldn&#8217;t afford the time to port everything over. So, it was decided when we released, we&#8217;d switch. Well, that time came and went in late August, and we are still on VSS. We have, however, finally been feeling severe pain about merging and various other activities in version control. So, I finally got the go ahead to start working on it. Today I set up our Subversion server and got it ready for prime time usage (pending blog post about how). Tomorrow I will actually move our source tree into Subversion. Next week, we&#8217;ll cut over. I am very excited.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/10/20/subversion-apache-windows.html" rel="bookmark" title="Permanent Link to Subversion + Apache + Windows">Subversion + Apache + Windows</a></h3>
+  <p class="date">October 20th, 2005</p>
+  <div class="entry"><p>I&#8217;ve always set up Subversion and Apache on Unix systems. Heck, aside from work, I generally don&#8217;t use Windows. However, at work, it&#8217;s all Windows on our production boxes. So, naturally, we needed our version control to run on a Windows box.</p>
+
+<p>I started out reading Brian&#8217;s <a href='http://blog.briankohrs.com/2005/09/20/guide-to-installing-the-subverison-http-module-on-windows/'>guide</a> to installing everything. Now, I didn&#8217;t use his one-click installer, but I followed the rest. Notably, I believe the system account on our server didn&#8217;t pay attention to the path I had set system-wide, as it could not load the Subversion modules unless I gave it absolute paths for everything. But I got that working. It was interesting to note that when I had Apache installed, the Subversion installer actually offerred to install and configure the modules for me. I had Subversion access through HTTP.</p>
+
+<p>Since we were going to be keeping our source code in this, I wanted to make sure it was secure. Only authorized people should be able to access the repository. I don&#8217;t want to administer a password database, and furthermore nobody wants to remember two passwords, so I wanted to hook into our Windows domain authentication. The way to do this is <a href='http://www.deadbeef.com/index.php/2004/03/29/mod_auth_sspi'>mod_auth_sspi</a>. I spent about thirty minutes tracking down that module, as apparently the original author no longer publishes it. Furthermore, I could only find the source.</p>
+
+<p>Finding the source was only a third of the battle, though. Getting it built and installed each took another thirty each. The Makefile is not very generic. You have to edit lots of paths to get things to work, and it doesn&#8217;t even define <code>$(RC)</code> even though it uses it. But, I finally got it to compile. Then came the adventure of installing it. I copied the module to the right place and added the right line to the config. Apache won&#8217;t start. I run it by hand from the command line, and it tells me it can&#8217;t find the file, despite it being right there next to all the others it can find just fine. I spent most of thirty minutes googling, and finally realized that it could find <em>my</em> file just fine. It was a DLL that my module loaded it couldn&#8217;t find. Namely, <code>msvcr71.dll</code>. I copied that in, and everything worked hunky dory.</p>
+
+<p>My last concern was backing up our repository. Currently we just do a disk backup of our VSS repository. I don&#8217;t think we&#8217;ve ever had to restore from one of those, and I&#8217;m not entirely sure it would work. But, I do know that straight disk copy out of an active Subversion is bad, since it&#8217;s database files. So, I go looking about how to back it up. There&#8217;s a script that comes in the source tree called <code>hot-backup.py</code>. I installed Python and tried to run it. No luck. It wasn&#8217;t written with Windows in mind. I had to spend most of an hour poking and prodding it. It turns out that <code>os.spawnl</code> doesn&#8217;t read from the path environment (on purpose) but <em>does not</em> need or want the path to the executable quoted, but <code>os.popen3</code> does read from the environment and <em>does</em> need and want the path to the executable quoted. Once I got that all figured out, I put it in the scheduler and hopefully it will run tonight during the wee hours backing up my nearly empty repository.</p>
+
+<p>More soon about moving the source over. It&#8217;s very exciting.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/10/19/postgresql.html" rel="bookmark" title="Permanent Link to PostgreSQL">PostgreSQL</a></h3>
+  <p class="date">October 19th, 2005</p>
+  <div class="entry"><p>So I&#8217;m working on a website for <a href='http://www.sperari.com'>Erica</a>. She wants some custom coding done and some database goodness, so naturally she asked me to do it.</p>
+
+<p>Being The Ruby Guy, I decided to do it in Rails. I also decided to use <a href='http://www.mysql.com'>MySQL</a>, as it is what I know. Well, I ran into some snags, and I still don&#8217;t know what was causing them. Suffice it to say, MySQL was just not working. So, I decided to give <a href='http://www.postgresql.org'>PostgreSQL</a> a try.</p>
+
+<p>Now, I&#8217;ve always know that PostgreSQL had more features than MySQL. I&#8217;ve heard that it&#8217;s generally better than MySQL. Yet, I&#8217;ve always been afraid to try it. It has been a completely irrational fear, of course, but fear nonetheless. Well, since I found myself needing a different database, I bit the bullet.</p>
+
+<p>It was about damn time. Building PostgreSQL from source was a breeze. I&#8217;ve built MySQL from source, and it&#8217;s a pain in the ass. Setting up my database was also a breeze. It is also a pain in the ass for MySQL. So PostgreSQL has two counts of not being a a pain in the ass, and MySQL has none.</p>
+
+<p>Then it comes time to think about database users. I&#8217;ve always thought it was a little silly that MySQL conflates granting privileges to users with creating users. PostgreSQL doesn&#8217;t do that. You create users and then you assign them privileges, as it should be.</p>
+
+<p>The command line shell for PostgreSQL also is easier to explore and learn than the one for MySQL. The built-in help is nice, and the online manual is <em>much</em> easier to read.</p>
+
+<p>So, all told, I have a new favorite database.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/10/18/ruby-talk.html" rel="bookmark" title="Permanent Link to Ruby Talk">Ruby Talk</a></h3>
+  <p class="date">October 18th, 2005</p>
+  <div class="entry"><p>I know, I know. It&#8217;s been a while since I last blogged (9 days, and longer since it was anything of content). I&#8217;ve been busy! Every so often I think to myself &#8220;Do I want to blog about what I&#8217;m doing, or just do it.&#8221; Between work, school, home-ownership, and sleeping&#8230;there&#8217;s not much time to do all the things I find fun. Sadly, blogging seems to fall to the wayside.</p>
+
+<p>But, I am getting better about sharing with other people. For the third time in two months, I gave a talk about Ruby at a user group meeting here in Omaha. This time it was <a href='http://www.ojug.org/'>OJUG</a>, and I gave them Jim Weirich&#8217;s OSCON 2005 talk, <a href='http://onestepback.org/articles/10things/'>&#8220;10 Things Java Programmers Should Know About Ruby&#8221;</a> (yay for creative commons). Well, at least I gave a talk using Jim&#8217;s slides, as they were just perfect.</p>
+
+<p>I&#8217;ve really enjoyed doing this, so I&#8217;m going to put this out there. If you are a group in the Omaha area, and would like to have me come talk about Ruby, shoot me an email. I&#8217;m cheap. All I need is some free food, and I&#8217;m your man.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/10/09/new-phone-number.html" rel="bookmark" title="Permanent Link to New Phone Number">New Phone Number</a></h3>
+  <p class="date">October 9th, 2005</p>
+  <div class="entry"><p>Well, we sat down to do some budgeting, and one of the things that got trimmed was our cell-phone service. The timing was very good: our contract just ended last week. So, we no longer have our cell phones. If you had my (or <a href='http://www.sperari.com'>Erica</a>&#8217;s) phone number before, just post a comment or send me an email and I&#8217;ll let you know what the new number is.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/09/21/first-lawn-mowing-post.html" rel="bookmark" title="Permanent Link to First Lawn Mowing Post!">First Lawn Mowing Post!</a></h3>
+  <p class="date">September 21st, 2005</p>
+  <div class="entry"><p>Well, I was going to do it Saturday morning (really early before it got hot). Then I thought, hey I can do it Thursday after I&#8217;m done with class but before I go pick up Erica. Then, tonight, I couldn&#8217;t wait. I pulled out the lawn- mower that my co-worker has loaned to me and mowed my front lawn. It&#8217;s not that big. It&#8217;s actually kind of awkwardly shaped due to the large (12-feet in diameter) evergreen tree taking up much of the area.</p>
+
+<p>It was kind of dark by the time I got mowing, but I think I did a fair job. We&#8217;ll see tomorrow, I suppose. I&#8217;ll be mowing the back tomorrow afternoon.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/09/21/division-of-responsibility.html" rel="bookmark" title="Permanent Link to Division of Responsibility">Division of Responsibility</a></h3>
+  <p class="date">September 21st, 2005</p>
+  <div class="entry"><p>So I was looking at a C# class that looked something like this:</p>
+<div class='highlight'><pre><code class='c'><span class='n'>class</span> <span class='n'>FooFactory</span>
+<span class='p'>{</span>
+  <span class='n'>private</span> <span class='n'>BazCollection</span> <span class='n'>_bazzen</span><span class='p'>;</span>
+  <span class='n'>private</span> <span class='n'>QuxCollection</span> <span class='n'>_quxxen</span><span class='p'>;</span>
+
+  <span class='c1'>// ...constructors, other methds, etc...</span>
+
+  <span class='n'>public</span> <span class='n'>Foo</span> <span class='nf'>BuildFoo</span><span class='p'>(</span><span class='n'>Bar</span> <span class='n'>bar</span><span class='p'>)</span>
+  <span class='p'>{</span>
+    <span class='k'>return</span> <span class='n'>new</span> <span class='n'>Foo</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>,</span> <span class='n'>_bazzen</span><span class='p'>,</span> <span class='n'>_quxxen</span><span class='p'>.</span><span class='n'>FindQuxForBar</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>));</span>
+  <span class='p'>}</span>
+
+  <span class='c1'>// ...more stuff...</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Now that smells to me. Take a moment and see if you can sniff it out. I&#8217;ll wait.</p>
+
+<p>That&#8217;s right. We&#8217;re passing in <code>bar</code> and then also passing in something that we use <code>bar</code> to get. But that&#8217;s not all. I didn&#8217;t show it in the snippet, but inside Foo the way we use the BazCollection is <em>also</em> indexed by <code>bar</code>. So, we have this object and sometimes it indexes into a collection and sometimes the objects that construct it index into a collection for it. The responsibilities are muddled. Sometimes a Foo indexes in and sometimes it doesn&#8217;t.</p>
+
+<p>The power that objects give us is to wrap up data and the responsibilities associated with that data into a nice little bundle. That power doesn&#8217;t do us a lot of good, though, if we don&#8217;t actually use it. In a case like this the responsibility of which object should be indexing into the collection is spread onto two objects, and only should be in one.</p>
+
+<p>Now, one refactor that we could do would be to just pass the collection in for the Qux as well:</p>
+<div class='highlight'><pre><code class='c'><span class='n'>public</span> <span class='n'>Foo</span> <span class='nf'>BuildFoo</span><span class='p'>(</span><span class='n'>Bar</span> <span class='n'>bar</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>new</span> <span class='n'>Foo</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>,</span> <span class='n'>_bazzen</span><span class='p'>,</span> <span class='n'>_quxxen</span><span class='p'>);</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>This refactor is not the one I would choose, though, as now it is even more complicated to construct a Foo. Specifically if I want to test my Foo (which I do, of course). The foo is only ever interested in a single Baz and a single Qux, so it&#8217;s just extra overhead to have to create a collection for each. That brings me to the next refactoring that I might try:</p>
+<div class='highlight'><pre><code class='c'><span class='n'>public</span> <span class='n'>Foo</span> <span class='nf'>BuildFoo</span><span class='p'>(</span><span class='n'>Bar</span> <span class='n'>bar</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>new</span> <span class='n'>Foo</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>,</span> <span class='n'>_bazzen</span><span class='p'>.</span><span class='n'>FindBazForBar</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>),</span> <span class='n'>_quxxen</span><span class='p'>.</span><span class='n'>FindQuxForBar</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>));</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>This has the advantage of making Foo&#8217;s responsibility very clear. It is meant to bring the bar, baz, and qux together. But, that call-site still stinks. In fact, it reeks more with that original odor. At this point, it would be worthwhile to see what Foo actually needs the Bar for and further factor that out. Maybe we can have something like this:</p>
+<div class='highlight'><pre><code class='c'><span class='n'>public</span> <span class='n'>Foo</span> <span class='nf'>BuildFoo</span><span class='p'>(</span><span class='n'>Bar</span> <span class='n'>bar</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>new</span> <span class='n'>Foo</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>.</span><span class='n'>name</span><span class='p'>,</span> <span class='n'>bar</span><span class='p'>.</span><span class='n'>id</span><span class='p'>,</span> <span class='n'>_bazzen</span><span class='p'>.</span><span class='n'>FindBazForBar</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>),</span> <span class='n'>_quxxen</span><span class='p'>.</span><span class='n'>FindQuxForBar</span><span class='p'>(</span><span class='n'>bar</span><span class='p'>));</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>That way we remove the dependence on Bar completely from the Foo, and push it into the FooFactory. Maybe we will create an object that encapsulates those parameters. In fact, maybe this factory is that object. But one thing is for sure, this code is better separated and easier to test and use than the original.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/09/15/first-post.html" rel="bookmark" title="Permanent Link to First Post">First Post</a></h3>
+  <p class="date">September 15th, 2005</p>
+  <div class="entry"><p>Today has been a very long day. To sum it all up, I&#8217;ll simply tell you what I&#8217;m doing now: blogging from my front porch. That&#8217;s right, my front porch. I love wifi. We closed on our house today. We&#8217;ve got internet hooked up. Our bed is moved. Our cats are moved. All of our dirty laundry is moved, and being cleaned by means of our new (to us) washer and dryer.</p>
+
+<p>Closing went very smoothly. It went much more smoothly than everybody had led me to expect. I think it&#8217;s a big conspiracy amongst homeowners to make new home-buyers feel like they&#8217;re going through some big ordeal. Trust me, I know just how big a deal this should be. 3715 pages to sign and 3024 pages to initial and 1207 pages to sign confirming that I initialed the 3024 pages and 237 pages to initial confirming I signed the 3715 pages, that&#8217;s hardly any paperwork at all. It went by in less than 45 minutes.</p>
+
+<p>It&#8217;s getting late, so, in short: first post from our new house!</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/09/13/rails-talk.html" rel="bookmark" title="Permanent Link to Rails Talk">Rails Talk</a></h3>
+  <p class="date">September 13th, 2005</p>
+  <div class="entry"><p>I gave a talk about <a href='http://www.rubyonrails.com'>Ruby on Rails</a> at the <a href='http://blainebuxton.com/ostug/index.html'>Omaha Smalltalk User Group</a> tonight. It went rather well. I&#8217;ve posted my <a href='http://www.alieniloquent.com/docs/RubyOnRails.pdf'>slides</a> for anybody that would like them.</p>
+
+<p>The talk was mostly focused on the Ruby for Smalltalkers portion, but that was largely because Rails made my demo go so fast that I had to find something to fill the time with. It was kind of fun, actually, showing everybody around the Todo project I had made. I haven&#8217;t really done any serious railing since version 0.10, and a lot has changed since then. So it was just as exciting for me to open up some of the files and see how they did things as it was for the rest of the group.</p>
+
+<p>I&#8217;ve been so busy lately taking classes and buying a house, so I wasn&#8217;t as prepared as I would have liked to be. But, everybody seemed to enjoy the talk and take away something valuable from it, so I&#8217;m happy with the talk. I really enjoyed it, and I think I&#8217;m going to try and do more things like this.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/09/12/ocfit-on-tigris.html" rel="bookmark" title="Permanent Link to OCFit on Tigris">OCFit on Tigris</a></h3>
+  <p class="date">September 12th, 2005</p>
+  <div class="entry"><p>An astute reader may notice the new category and link in my sidebar. <a href='http://ocfit.tigris.org'>OCFit</a> is a project I&#8217;ve been working on for a few weeks (well, really just a couple of weekends over the last few weeks). It is intended to be a replacement for <a href='http://fit.c2.com'>Fit</a> for Cocoa developers. I started it because I could not find the Objective C implementation of Fit, and when I did, I just could not bring myself to use it. I&#8217;ve set out to write a program that follows the spirit of Fit, but is idiomatic to Objective C.</p>
+
+<p>Right now the framework only provides PrimitiveFixture and ColumnFixture. I will be implementing ActionFixture soon.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/09/01/mage-the-awakening.html" rel="bookmark" title="Permanent Link to Mage: the Awakening">Mage: the Awakening</a></h3>
+  <p class="date">September 1st, 2005</p>
+  <div class="entry"><p>I&#8217;ve waited and waited and waited. Now the waiting is finally over. I have in my possession a copy of <a href='http://www.amazon.com/exec/obidos/tg/detail/-/1588464180'>Mage: the Awakening</a>, and I&#8217;m stoked. I would have said something yesterday, when I actually bought it, but I was too busy reading.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/31/about-subversion.html" rel="bookmark" title="Permanent Link to About Subversion">About Subversion</a></h3>
+  <p class="date">August 31st, 2005</p>
+  <div class="entry"><p>Around my office, I&#8217;m generally the guy who knows the most about the non- windows and open source worlds. That&#8217;s where I come from, and that&#8217;s what I stay the most current with. So, when we started looking for a version control system to replace Visual Source Safe, I immediately started selling <a href='http://subversion.tigris.org'>Subversion</a>. I succeeded.</p>
+
+<p>Today I gave a lunch-time presentation about Subversion to the whole team. It was just a short talk with a brief history and a high-level overview of the features. If you&#8217;re interested, you can download the <a href='http://www.alieniloquent.com/docs/WhatIsSubversion.pdf'>slides</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/23/the-progammers-litany.html" rel="bookmark" title="Permanent Link to The Programmer's Litany">The Programmer's Litany</a></h3>
+  <p class="date">August 23rd, 2005</p>
+  <div class="entry"><p>Over the past two years I&#8217;ve hopped around from blogging tool to blogging tool, and many of my blog posts have fallen to the wayside. Pleasantly to my surprise, <em>somebody</em> was backing them up for me. Yay for the <a href='http://www.archive.org'>Internet Wayback Machine</a>. So, Sherman, it&#8217;s time we take a trip back to&#8230;May 4, 2004 on this very blog&#8230;</p>
+
+<p>With apologies to Frank Herbert:</p>
+
+<blockquote>
+<p>I must not prematurely optimize. Premature optimization is the mind-killer. Premature optimization is the little-death that brings total obliteration. I will face my desire to prematurely optimize. I will permit it to pass over me and through me. And when it has gone past I will turn the inner eye to see its path. Where the desire has gone there will be nothing. Only I will remain.</p>
+</blockquote></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/16/cocoa-rails-cool.html" rel="bookmark" title="Permanent Link to Cocoa + Rails = Cool!">Cocoa + Rails = Cool!</a></h3>
+  <p class="date">August 16th, 2005</p>
+  <div class="entry"><p>Apparently, the folks at VitalSource have used Rails in a <a href='http://blogs.pragprog.com/cgi-bin/pragdave.cgi/Random/VitalSource.html'>client application</a>.</p>
+
+<p>Now that I think of it, with WebKit, it was only a matter of time until this happened.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/09/generics-shmemerics.html" rel="bookmark" title="Permanent Link to Generics shmemerics">Generics shmemerics</a></h3>
+  <p class="date">August 9th, 2005</p>
+  <div class="entry"><p>It&#8217;s no secret that the next version of Java will have generics, as will the next version of C#. This is nothing incredibly new. C++ has had templates since the dawn of time and they&#8217;ve always made code unreadable and needlessly complex (okay, so I&#8217;m a dynamic language nut). It basically amounts to wanting all the neat tricks that dynamic typing gives without any of the programmer niceties (like trusting that the programmer knows what she&#8217;s doing).</p>
+
+<p>Over on <a href='http://www.blainebuxton.com/weblog'>Blaine Buxton&#8217;s blog</a> he posted about <a href='http://www.blainebuxton.com/weblog/2005/08/huh.html'>Java generics</a> and the <em>recommended</em> naming for the generic types:</p>
+
+<blockquote>
+<p>A note on naming conventions. We recommend that you use pithy (single character if possible) yet evocative names for formal type parameters. It’s best to avoid lower 3 case characters in those names, making it easy to distinguish formal type parameters from ordinary classes and interfaces. Many container types use E, for element, as in the examples above.</p>
+</blockquote>
+<div class='highlight'><pre><code class='java'><span class='kd'>public</span> <span class='kd'>interface</span> <span class='nc'>List</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>&gt;</span>
+<span class='o'>{</span>
+  <span class='kt'>void</span> <span class='nf'>add</span><span class='o'>(</span><span class='n'>E</span> <span class='n'>x</span><span class='o'>);</span>
+  <span class='n'>Iterator</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>&gt;</span> <span class='n'>iterator</span><span class='o'>();</span>
+<span class='o'>}</span>
+
+<span class='kd'>public</span> <span class='kd'>interface</span> <span class='nc'>Iterator</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>&gt;</span>
+<span class='o'>{</span>
+  <span class='n'>E</span> <span class='nf'>next</span><span class='o'>();</span>
+  <span class='kt'>boolean</span> <span class='nf'>hasNext</span><span class='o'>();</span>
+<span class='o'>}</span>
+</code></pre>
+</div>
+<p>In the comments over on Blaine&#8217;s blog, this guy named Issac (who&#8217;s mission it appears to be to disagree with everything Blaine says) said:</p>
+
+<blockquote>
+<p>Everyone knows better than to use single letter names for classes and interfaces - so when we see a single letter name, we can be confident the parameter is not a class or an interface but is a formal type parameter.</p>
+</blockquote>
+
+<p>Isaac clearly have a very narrow definition of &#8220;everyone&#8221; or a very narrow sample of code to draw from. I see terrible naming in every language and it makes code harder to read every time. I see the single letter and have to spend the split second saying to myself &#8220;E, what a terrible class name, nobody in their right mind would name a class that. Oh, right, that&#8217;s the name of the generic class.&#8221;</p>
+
+<p>The cognitive dissonance only becomes worse when you want to make a class generic on more than one axis. When you have something like:</p>
+<div class='highlight'><pre><code class='java'><span class='kd'>public</span> <span class='kd'>interface</span> <span class='nc'>Matrix</span><span class='o'>&lt;</span><span class='n'>E</span><span class='o'>,</span> <span class='n'>F</span><span class='o'>&gt;</span>
+<span class='o'>{</span>
+  <span class='n'>add</span><span class='o'>(</span><span class='n'>E</span> <span class='n'>x</span><span class='o'>,</span> <span class='n'>F</span> <span class='n'>y</span><span class='o'>);</span>
+  <span class='c1'>//... more methods in E and F ...</span>
+<span class='o'>}</span>
+</code></pre>
+</div>
+<p>When does it stop? How are we supposed to make &#8220;evocative&#8221; names when we only have one letter to choose from? Sure, we can take the class name we would&#8217;ve used and use the first letter, but then we are limited to only 26 names. It might very well get confusing when we use E to mean Element in one place but use it to mean Enumerator in another.</p>
+
+<p>Now, if I actually give the thing a name, like ElementClass, I can say &#8220;Oh, right, that&#8217;s the class of whatever element is in here.&#8221; Heck, I don&#8217;t even need to think that hard, it just <em>reads</em> that way. It may seem like a small win, but it&#8217;s a huge win to somebody coming into the code from outside.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/06/core-data.html" rel="bookmark" title="Permanent Link to Core Data">Core Data</a></h3>
+  <p class="date">August 6th, 2005</p>
+  <div class="entry"><p>A week ago I read <a href='http://wilshipley.com/blog/WWDC_Student_Talk.pdf'>this presentation</a> by <a href='http://wilshipley.com/blog'>Wil Shipley</a> (of Omni and Delicious Library fame). It has inspired me. I&#8217;m going to write a Cocoa program that does something useful and then sell it.</p>
+
+<p>Cocoa is fantastic. It makes things so easy. The best part is, Apple is always making things easier for developers. One of their latest technologies, <a href='http://developer.apple.com/macosx/coredata.html'>Core Data</a>, makes things orders of magnitude easier for developers. I just put together a prototype in under two hours (most of which was poking around documentation since I&#8217;m new to using Core Data). I had to write maybe ten lines of code, and that&#8217;s because I was doing something a little out of the CD paradigm. That code will probably go away soon.</p>
+
+<p>My application already knows how to serialize its data, with zero lines of code from me telling it how. It knows how to add and remove records from a collection and refresh the UI for it, with zero lines of code. Core Data and Cocoa Bindings are just awesome.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/05/house-pictures.html" rel="bookmark" title="Permanent Link to House Pictures">House Pictures</a></h3>
+  <p class="date">August 5th, 2005</p>
+  <div class="entry"><p>Erica has blogged some <a href='http://www.sperari.com/archives/2005/08/05/house-house-house/'>pictures</a> of the house we&#8217;re buying. Note the porch funiture that we got into the contract!</p>
+
+<p>For those of you who know Omaha, the house is <a href='http://maps.google.com/maps?q=5844+Corby+St,+Omaha,+68104&amp;spn=0.032290,0.057974&amp;hl=en'>here</a> right outside of downtown Benson.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/04/the-many-values-of-true.html" rel="bookmark" title="Permanent Link to The many values of True">The many values of True</a></h3>
+  <p class="date">August 4th, 2005</p>
+  <div class="entry"><p>So Brian and I are refactoring some code. One of the things we want to do is get rid of a property that exposes an implemenation-specific detail and replace it with a boolean method that made the single check that those details were used for. Naturally, this is in code well-covered with tests (_well_ covered, thank goodness), and they let us know right away when we made a stupid mistake.</p>
+
+<p>Before our refactor:</p>
+<div class='highlight'><pre><code class='c'><span class='n'>Assert</span><span class='p'>.</span><span class='n'>Equals</span><span class='p'>(</span><span class='mi'>1</span><span class='p'>,</span> <span class='n'>object</span><span class='p'>.</span><span class='n'>Detail</span><span class='p'>,</span> <span class='s'>&quot;Details don&#39;t match&quot;</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>After our refactor:</p>
+<div class='highlight'><pre><code class='c'><span class='n'>Assert</span><span class='p'>.</span><span class='n'>Equals</span><span class='p'>(</span><span class='n'>object</span><span class='p'>.</span><span class='n'>hasDetail</span><span class='p'>(</span><span class='mi'>1</span><span class='p'>),</span> <span class='s'>&quot;Details don&#39;t match&quot;</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>That is a perfectly valid test&#8230;syntactically. However it results in the following error message:</p>
+<div class='highlight'><pre><code class='text'>&quot;True&quot; does not equal &quot;Details don&#39;t match&quot;
+</code></pre>
+</div>
+<p>Now, those error messages are there for a reason: for us to ignore them. Brian and I spent at least five minutes scratching our head and stepping through the test before we noticed the Equals. Sure enough, had we bothered to read the message, it would&#8217;ve been only 30 seconds to our green bar.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/04/step-four-sign-the-contract.html" rel="bookmark" title="Permanent Link to Step Four: Sign the Contract">Step Four: Sign the Contract</a></h3>
+  <p class="date">August 4th, 2005</p>
+  <div class="entry"><p>I&#8217;m trying to blog more, so here&#8217;s an update on the house. We got a counter- offer last night and had negotiated to an agreement we all liked by 1100 this morning. By noon they had signed it and I had signed it and it was all locked in. We got them to agree to sell us the washer, drier, and some furniture we liked (on top of the other appliances they were already planning to sell us). It&#8217;s so exciting. Now all the real work begins (including the cashflow management to make sure we have the money to pay things when we need to up until closing).</p>
+
+<p>We put the closing date at September 15th, so we should have two weeks to move in after we close. We&#8217;ll be moving during school, but it&#8217;ll be before it gets cold. Altogether, a good deal, I think.</p>
+
+<p>I&#8217;m so stoked.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/03/step-three-make-an-offer.html" rel="bookmark" title="Permanent Link to Step Three: Make an Offer">Step Three: Make an Offer</a></h3>
+  <p class="date">August 3rd, 2005</p>
+  <div class="entry"><p>You might be wondering what happened to steps one and two. Step one is: decide you want to buy a house and learn some things about it. We already did that, and I didn&#8217;t muster the gumption to blog about it. Step two is: look at houses and find one you really like. We just did that this last week, and once again, I&#8217;m a lazy bum and didn&#8217;t blog about it. So that brings us to the step that we just completed and that I <em>am</em> blogging about.</p>
+
+<p>We went to look at our house again (a very cute, two story house in Benson) today with <a href='http://www.procrasti-nate.com'>Nate</a> and Erica&#8217;s Mom. They both loved it. So do we. So, we went over to our realtor&#8217;s office right away and signed our life away initial offer. We should hear back on the offer by tomorrow around 1700, and we&#8217;ll take it from there.</p>
+
+<p>Exciting times these are.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/08/03/agile-manifesto-explained.html" rel="bookmark" title="Permanent Link to Agile Manifesto: Explained">Agile Manifesto: Explained</a></h3>
+  <p class="date">August 3rd, 2005</p>
+  <div class="entry"><p>A link to an article titled, <a href='http://www.unixwiz.net/archives/2005/07/agile_programmi_1.html'>&#8220;Agile Programming: How to doom your software project&#8221;</a> by <a href='http://www.unixwiz.net/blog/'>Steve Friedl</a> was pasted into my IM window this evening. Steve wrote an excellent piece about <a href='http://www.unixwiz.net/techtips/be-consultant.html'>being a consultant</a> back in January, and I enjoyed it quite thoroughly.</p>
+
+<p>Seeing as I work in an agile shop, I was drawn to the title of this article like a moth to a flame. It seems that Steve found the <a href='http://www.agilemanifesto.org/'>agile manifesto</a>, and misunderstood each line item. Now, it&#8217;s really not his fault. The manifesto could use a companion document that explains it, or perhaps it should be rewritten such that it elaborates. But, the end result was that Steve came away thinking that all of us agile guys have had a bunch of kool- aid and are about to plunge our companies into deep pits of failure with these kooky ideas. This just isn&#8217;t true (well, except the kool-aid, but I mean, that talking pitcher is just so charismatic, I have to drink from its head). So I am here to explain the four points and hopefully allay any misconceptions you might have about them.</p>
+
+<p><strong>&#8220;[We value] <em>individuals and interactions</em> over processes and tools&#8221;</strong></p>
+
+<p>Steve seems to interpret this to mean that agile practitioners would rather throw people at a problem than find a good tool for it. That is simply not true. Even cursory research into agile practices (including surfing the <a href='http://www.agilealliance.com/home'>Agile Alliance</a>, which Steve linked) would reveal a heavy preference toward tool usage. In fact, agile practitioners strive to automate as much as they can so that they can focus on the hard problems.</p>
+
+<p>The idea behind this principle is that our teams should place a higher value on our people than on which tools or processes that we use. The people that comprise a team are the most expensive, and most valuable resources that the business will put into producing software, and so it is important that they are valued. Individuals should be given the power to get things done the best way that they can. They should be given a license to be creative and innovate.</p>
+
+<p>The people on a software team are the most important part. If the tools are getting in the way, then they need to be replaced. If the process is slowing things down, then it needs to be revised. Tools and processes are a means for the people on the team to get to and end. Each engineer should be able to get to those ends by the best, most efficient way they can.</p>
+
+<p>Steve also says that in his experience, &#8220;a lot more projects have been sunk by not-enough-tools than by not-enough-interaction.&#8221; I&#8217;d wager that when he thinks of interaction, he thinks of meetings that last hours&#8211;nearly useless meetings that mostly serve to bore all those in attendance. That is, indeed, not going to help a project succeed. Thankfully, that&#8217;s not what agile practioners mean.</p>
+
+<p>Agile practioners realize that developing software is not a technical business, at its core. It is a social business. It is about providing people a way to do something that they couldn&#8217;t do before. It is about making things easier for people to do. It is about enabling people to interact with technology.</p>
+
+<p>At its core, software is all about individuals and interactions. Whether its a user interacting with his computer, a salesperson interacting with her client, a programmer interacting with his customer, or a programmer interacting with the code, software is all about individuals and interactions. Agile practitioners realize this and strive to make the interactions efficient and enjoyable so that the individuals can do more and enjoy themselves.</p>
+
+<p><strong>&#8220;[We value] <em>working software</em> over comprehensive documentation&#8221;</strong></p>
+
+<p>This is an easy one to misunderstand, and maybe Steve didn&#8217;t. There are two schools of thought when it comes to specifications: they are either redundant information that is duplicated in the code, or they are essential tools to communicating what the software is supposed to do. Whether or not Steve understood the manifesto, he clearly adheres to the latter school.</p>
+
+<p>Agile practitioners realized that they were writing documentation that described how the program was supposed to behave and then they were writing code that described how the program was supposed to behave. Yes, you read that correctly. That is all code is: a description of how the program is supposed to behave. It&#8217;s expressed in very precise terms with very specific grammar, but it is a description of the program&#8217;s behaviour nonetheless.</p>
+
+<p>What&#8217;s more, because we&#8217;re writing everything down twice (or more, depending on your process), there are two (or more) places that have to change if those behaviours have to change. And, unless you&#8217;ve got some magic voo-doo that I don&#8217;t know about, there&#8217;s nothing that <em>forces</em> you to keep your documentation in sync (even the best literate code tools don&#8217;t care if your documentation comments are out of sync with the real behavior).</p>
+
+<p>The solution is to make your specification out of code. Write tests using technical-facing tools like <a href='http://c2.com/cgi/wiki?TestingFramework'>these</a> and write tests using business-facing tools like <a href='http://fit.c2.com/'>this</a>. Use these tests to specify exactly what the behavior is: if the tests pass, the program works. What&#8217;s more, these tests actually <em>use</em> the code and <em>inspect</em> its behavior. So, if its behavior changes, the tests will know automatically. Furthermore, the tests serve as examples of how to use the code. With tests like these, you don&#8217;t really need a specification document anymore.</p>
+
+<p>We all know that we should strive to remove duplication from our code. That&#8217;s why we refactor and that&#8217;s why we design. Agile practitioners strive to remove duplication from our processes as well. The less we duplicate information, the more efficiently we can change and the more quality those changes will have. This is what we mean when we say we value working software over comprehensive documentation.</p>
+
+<p><strong>&#8220;[We value] <em>customer collaboration</em> over contract negotiation.&#8221;</strong></p>
+
+<p>Steve&#8217;s right. Customers never know what they want. What he&#8217;s wrong about is that negotiating a contract up-front is the way to find out what they want. The truth is that the only way for a customer to find out what they want, and more importantly what they <em>need</em>, is to <em>use the software</em>. This is why agile teams place such a high priority on delivering working software quickly.</p>
+
+<p>What&#8217;s more, agile teams tend to deliver their software in small increments and put in the features that are the absolutely most important first. I bet that if you asked a customer to come up with the list of features that would have to be in the product to make it have <em>any</em> business value at all, they wouldn&#8217;t have a hard time (&#8220;a text editor must be able to display text files, change text, and save text files&#8221;). Once you have this super-simple, barely valuable product <em>in the customer&#8217;s hands</em> they can give you good feedback as to what should go in next. Working this way, the customer gets exactly what they need and they get it as quickly as they can. It also allows their understanding of what they need to grow <em>while they have a working program</em>.</p>
+
+<p>Give me a customer who wouldn&#8217;t want to have a working program that delivers business value after two or three weeks, and I&#8217;ll eat the paper you printed this out on (assuming, of course, you printed this out).</p>
+
+<p><strong>&#8220;[We value] <em>responding to change</em> over following a plan&#8221;</strong></p>
+
+<p>Steve returns once again to software specifications. We know what agile practitioners think of duplicating data, but that is all about documenting what the software does. How are we supposed to decide how to get from now to a time when it does these things? We plan. But built into that plan is the <em>expectation of change</em>.</p>
+
+<p>Agile methods build in the assumption that change will happen and it will happen often. So Steve&#8217;s sentiment that &#8220;hopefully one has built a [software] system that tolerates change,&#8221; is reduced to &#8220;one built a software system that tolerates change.&#8221; Assume that there will be technical changes and ensure that your software is easy to change by keeping it well factored and easy to understand. Assume that there will be business changes so deliver software in short cycles.</p>
+
+<p>Agile software development is all about embracing change and expecting it. As the old adage goes: the only constant thing in software is change. Learn it, love it, live it.</p>
+
+<p>I&#8217;m certainly not the first person to say these things, and I probably won&#8217;t be the last. I hope reading this has shed a little light on what that manifesto really means, but the best way is to get out there and <em>do it</em>. Try an agile method on a project and see how you like it. If it works for you, great. If it doesn&#8217;t work for you, great, now you know. Sitting around and speculating gets you nowhere.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/27/a-bit-of-a-cough.html" rel="bookmark" title="Permanent Link to A bit of a cough">A bit of a cough</a></h3>
+  <p class="date">July 27th, 2005</p>
+  <div class="entry"><p>So for the last week and a half I&#8217;ve had this cough, and it just won&#8217;t go away. I haven&#8217;t had any sinus problems, and I really haven&#8217;t had any breathing problems. I just cough a lot. Most of the time I don&#8217;t cough up anything. Monday I went to the doctor.</p>
+
+<p>The doctor looked me over, and listened to me breath with the stethoscope. Then, he told me, &#8220;well, son, you&#8217;ve got a cough.&#8221; Thanks, tell me something I didn&#8217;t know. His diagnosis was that I had some sort of viral irritation in my throat (which, as everybody knows, is where the coughing reflex lives) and that there wasn&#8217;t a whole lot we could do about it. He prescribed some anti- inflammatory drug for me to take in the morning and suggested I take some Tussin DM in the evening (&#8220;You&#8217;ll have to take a whole slug, though&#8211;3 teaspoons at least&#8221;).</p>
+
+<p>The drugs are helping. The cough isn&#8217;t as bothersome now. But, hoo boy, I can&#8217;t wait for it to actually be gone.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/26/totalled.html" rel="bookmark" title="Permanent Link to Totalled">Totalled</a></h3>
+  <p class="date">July 26th, 2005</p>
+  <div class="entry"><p>Well, I got a call from State Farm and the little <a href='http://www.alieniloquent.com/2005/07/15/interesting-times-indeed/'>accident</a> I had, will indeed total out my poor little Rio. I&#8217;m getting the full retail value for the vehicle, and thankfully I have gap insurance for my car loan, as I don&#8217;t think that will entirely cover the amount I owe.</p>
+
+<p>Next month I&#8217;ll be shopping for a new vehicle. If I can find a pickup that I can afford, I think I&#8217;ll go with that. I want the ability to move things around.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/24/daylight-savings-stupidity.html" rel="bookmark" title="Permanent Link to Daylight-Savings Stupidity">Daylight-Savings Stupidity</a></h3>
+  <p class="date">July 24th, 2005</p>
+  <div class="entry"><p>I&#8217;ve posted about this in the past (although, the posts aren&#8217;t around any more). I&#8217;ve always thought that DST was just silly, but apparently I&#8217;m in the minority, as Congress has just passed a <a href='http://www.cnn.com/2005/POLITICS/07/22/congress.daylighttime.ap/index.html'>bill to extend DST by four weeks</a>.</p>
+
+<p>Yay! Let&#8217;s give the people <em>more</em> of a stupid thing. Of all the great ideas Ben Franklin had, why, why, <em>why</em> did anybody listen to this one?</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/21/an-alarming-experience.html" rel="bookmark" title="Permanent Link to An Alarming Experience">An Alarming Experience</a></h3>
+  <p class="date">July 21st, 2005</p>
+  <div class="entry"><p>I&#8217;m never the first person to work. There&#8217;s always somebody here before me. Even when I get in early there&#8217;s somebody here already. Until today.</p>
+
+<p>How do I know I was the first person in the office? As soon as I stepped in I heard the klaxon of the alarm go off down the hall. You see, the first person that comes into the office in the morning has to disable the alarm. Since I&#8217;m never the first person (until now), I figured it had already been disabled.</p>
+
+<p>That was just tons of fun.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/18/harry-potter.html" rel="bookmark" title="Permanent Link to Harry Potter">Harry Potter</a></h3>
+  <p class="date">July 18th, 2005</p>
+  <div class="entry"><p>So I bought went to Borders Saturday to buy the latest Harry Potter, and discovered that I should have reserved a copy ahead of time. They weren&#8217;t going to sell the normal edition to me until Monday. However, I could purchase the <a href='http://www.amazon.com/exec/obidos/tg/detail/-/0439791324'>deluxe edition</a>, and still read it over the weekend. After consulting with Erica, I decided to go for it.</p>
+
+<p>And then I read. All day. Until 0300 Sunday morning. But, I finished it. It was good. I can&#8217;t wait for book seven (although, it&#8217;s not like I have a choice in the whole waiting deal). I&#8217;ll post more about the book later, but for now, just know it was good.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/15/photographic-evidence.html" rel="bookmark" title="Permanent Link to Photographic Evidence">Photographic Evidence</a></h3>
+  <p class="date">July 15th, 2005</p>
+  <div class="entry"><p>Here is a <a href='http://www.flickr.com/photos/ericatesla/sets/596007/'>gallery</a> of the pictures <a href='http://www.sperari.com'>Erica</a> took of my <a href='http://www.alieniloquent.com/2005/07/15/interesting-times-indeed/'>car accident</a></p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/15/interesting-times-indeed.html" rel="bookmark" title="Permanent Link to Interesting Times, Indeed">Interesting Times, Indeed</a></h3>
+  <p class="date">July 15th, 2005</p>
+  <div class="entry"><p>So, a couple weeks ago, my friend Joe got in a <a href='http://excastle.com/blog/archive/2005/07/01/1863.aspx'>car accident</a>. Erica and I went and helped him and his wife out that afternoon. Little did we know that the car accident virus was being passed on to us.</p>
+
+<p>I got rear-ended on the way home from work. I was traveling east on 72nd near Dodge (right by where I live) and the traffic was backed up (which it frequently is there). I came to a stop, and the guy behind me thought I was moving. The result? My bumper was bent so far under my car it rubs up against the rear wheel. Not exactly drivable.</p>
+
+<p>Nobody was hurt. The guy was nice. I&#8217;m still waiting to talk to his insurance people, but I&#8217;m sure things will work out just fine. Not exactly my idea of fun.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/14/baby-stepping.html" rel="bookmark" title="Permanent Link to Baby Stepping">Baby Stepping</a></h3>
+  <p class="date">July 14th, 2005</p>
+  <div class="entry"><p>The product I work on is big. It has hundreds of thousands of lines of code. There are some objects in that code that are used all over the place. A lot of those objects are actually kept as global instances. This, of course, creates all sorts of problems about data being synchronized and memory being freed. The solution, of course, is to not use global objects.</p>
+
+<p>While not using global objects is the solution to the general problem, it is not easy in the least to make that change. There are hundreds of places where these objects are used and each place is a little different. So, it would be fairly costly to go in and fix them all, and it wouldn&#8217;t show any visible business value.</p>
+
+<p>So how does one approach the problem? With baby steps. Each time I am in a piece of code that uses one of these global references, I look at it to see if I could pass in an object as a parameter to the method instead. If I can, then I make that change. I just pass in the global at the call site, so it&#8217;s still using the global object. But, now that method has been severed from <em>depending</em> on the global object. If you conscientiously do this as you go through the code, leaving it a little better every time, then eventually those hundreds of references will become a handful. Once you only have a handful of references, you probably don&#8217;t need a global any more.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/12/rss-fixed.html" rel="bookmark" title="Permanent Link to RSS Fixed">RSS Fixed</a></h3>
+  <p class="date">July 12th, 2005</p>
+  <div class="entry"><p>My feeds should be back up and running. An upgrade to the install of WordPress on our server tromped on my .htaccess file, and so my rewrite rules got trashed. They are all up and running again, sorry for the time. I think most people will have missed one post unless they come and read my site by hand.</p>
+
+<p>To those on LiveJournal who may very well get a big flood because of this, I&#8217;m sorry. Use a better RSS reader. <em>grin</em></p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/12/once-and-only-once-really.html" rel="bookmark" title="Permanent Link to Once and only once, really.">Once and only once, really.</a></h3>
+  <p class="date">July 12th, 2005</p>
+  <div class="entry"><p>The product that my company sells is very data intense. The data is stored in a database. Of course, from time to time we have to make schema changes to that database, so we have a program that does this for us.</p>
+
+<p>In previous versions of the software most of this was done in Delphi code. However, now that we run on a database that has good SQL support, we realized we could just run queries to get 99% of what we wanted done. To take this a step further, we could just write a SQL script that does all the work and not have to recompile any code for the schema updater to do the right thing.</p>
+<div class='highlight'><pre><code class='text'>[2.1]
+ALTER TABLE ...
+
+[2.2]
+DROP TABLE ...
+CREATE TABLE ...
+
+[2.7]
+INSERT INTO ...
+</code></pre>
+</div>
+<p>You get the idea. The program would then check the database to see if it was on the latest version and it would run any relevant SQL snippets on it in order to bring it up to date. For each section it ran it would increment the version of the data to that version, run the SQL, and move on. Of course, after it runs the last one that brings the data up to the last version. Neato, right? If only it were that simple.</p>
+
+<p>The problem was that our code has a symbolic constant which is [supposed to] always be set to the latest data version. The schema updater assumes that there will always be a section in the SQL script for the latest version and that will match the symbolic constant in the source code. However, if the symbolic constant is incremented but the SQL script is not changed, the data is never brought up to the &#8220;latest&#8221; version, as the updater only increases the version number for each section in the script.</p>
+
+<p>The &#8220;latest&#8221; version number is defined in two different places: the script and the constant. The version is set to the value in the script, but validated against the constant. This is the cause for the problem. Now, I am biased toward the script being the One True Source, but in truth it only matters that there is only <em>One</em> True Source.</p>
+
+<p>Either the schema updater should set the database version to the value used by the symbolic constant or it should check it against the last version in the script. That way a single change will drive both pieces of functionality, and they&#8217;ll always be in sync.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/07/06/up-for-air.html" rel="bookmark" title="Permanent Link to Up For Air">Up For Air</a></h3>
+  <p class="date">July 6th, 2005</p>
+  <div class="entry"><p>It&#8217;s been over a month since I last posted. There have been a couple of times I&#8217;ve considered writing something, but I&#8217;ve been to tired or busy to do it. Between work and school I&#8217;ve been pretty drained, and what little energy I&#8217;ve had left has been directed toward reading and housework.</p>
+
+<p>I just reread all of the Harry Potter books. I, of course, did this in anticipation of the <a href='http://www.amazon.com/exec/obidos/tg/detail/-/0439784549'>next one</a> which comes out a week from Saturday. It only took me about two weeks to get through all five, and now I&#8217;m primed and ready to jump into book six.</p>
+
+<p>The other notable book that I&#8217;ve read recently is <a href='http://www.xprogramming.com'>Ron Jeffries&#8217;</a> book, <a href='http://www.amazon.com/exec/obidos/ASIN/0735619492'>Extreme Programming Adventures in C#</a>. It is absolutely fantastic. I had glanced over it a number of times at the book store as I don&#8217;t normally buy C# books, but when Ron was last out at our shop he offered me a copy from his personal stock, and I couldn&#8217;t turn him down (if i&#8217;d ever bothered to look close enough at the spine to see he&#8217;d written it, I&#8217;d&#8217;ve already bought it). I have learned a lot from the book, and so has <a href='http://excastle.com/blog/archive/2005/07/01/1865.aspx'>Joe</a> since I made him read it.</p>
+
+<p>I hope to start writing more frequently, but I&#8217;m not going to make any promises. Work has been really intense lately (in a good way), and I haven&#8217;t been opening up my powerbook much at all when I get home. I&#8217;ve got a few weeks before classes start up again, so hopefully I&#8217;ll find some time.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/05/31/takin-care-of-business.html" rel="bookmark" title="Permanent Link to Takin' Care of Business">Takin' Care of Business</a></h3>
+  <p class="date">May 31st, 2005</p>
+  <div class="entry"><p>So, <a href='http://www.sperari.com'>Erica</a> and I have both been feeling a little constrained in our apartment. It&#8217;s a studio apartment, and we have a lot of stuff. Granted, the whole reason we moved into a studio was to force ourselves to get rid of a lot of stuff, and we did. But now we&#8217;ve got lots of stuff we want to keep. Not to mention, the apartment is small. So, when our lease is up this fall, we may consider moving.</p>
+
+<p>But, we&#8217;ve been renting for five years, and don&#8217;t really want to continue. I want a yard that I can grill in without having to drive out to the state park. Erica wants a basement she can setup as a photo studio. And, we&#8217;d both like to be secure in the knowledge that we aren&#8217;t throwing our money into a black hole every month. So, we are looking into buying a house.</p>
+
+<p>Now, the first step we&#8217;re taking in this endeavor is fixing our credit. Or, rather, fixing our credit reports. Our credit isn&#8217;t stellar, but at the same time, what the credit bureaus are saying about us isn&#8217;t exactly true. As I write this, Erica is making phone calls to creditors that we&#8217;ve never heard of before and getting things straightened out.</p>
+
+<p>One thing is for certain, we&#8217;re not rushing into this. We&#8217;re staying in the apartment until the lease is up, which gives us all summer to shop for houses and financing. I fully intend to look around at least five houses that I won&#8217;t buy, if not ten, before I get really serious about buying. With school and all, we&#8217;ll have to start looking early.</p>
+
+<p>Stay tuned for more as it comes along.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/05/28/in-the-zone.html" rel="bookmark" title="Permanent Link to In The Zone">In The Zone</a></h3>
+  <p class="date">May 28th, 2005</p>
+  <div class="entry"><p>Tonight was amazing. I was amazing. Well, at least I amazed myself.</p>
+
+<p>Before I tell you what amazed me, let me fill you in on the background. I&#8217;ve been stalling on my latest project for a week now because I&#8217;ve had a mental roadblock on how to refactor it to a place where I can add the next feature Meg (my Customer) wants. I knew that the code was not in a place to add it, but just could not find the path to salvation.</p>
+
+<p>When I got home from work, I had some time to kill, so I pulled out my powerbook and started refactoring. It was absolutely inspired. I just started extracting little methods. I renamed a class. I renamed some methods on the class. Just a handful of teensy little changes like that and all of the sudden my code made so much more sense. Simply renaming the class and extracting a couple of methods had revealed the design that I&#8217;d been looking for.</p>
+
+<p>I went to dinner.</p>
+
+<p>When we got back from dinner I set in to refactor more, and I&#8217;ve been refactoring all night. It&#8217;s been more of the same: teensy little changes. I&#8217;ll rename a method, or move it. I&#8217;ve removed three parameters from the constructor of an object that had no real reason to ask for them, and that made my code a lot prettier because I had to fish those parameters down everywhere I constructed the object.</p>
+
+<p>I think that the code is finally in a state that I can add the feature Meg wants, but beyond that, it&#8217;s in a much better state than it was this morning.</p>
+
+<p>It&#8217;s also worth noting that I&#8217;ve been doing this project test first, so I have a safety net under me as I make all these broad changes. I&#8217;ve got a good test- bed and that makes all of this possible.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2005/05/23/back-at-long-last.html" rel="bookmark" title="Permanent Link to Back at long last">Back at long last</a></h3>
+  <p class="date">May 23rd, 2005</p>
+  <div class="entry"><p>I&#8217;ve been gone for quite some time. Well, not gone, but not blogging. The blog has, in fact, been gone.</p>
+
+<p>In short, <a href='http://www.arete.cc/2005/05/23/arete-returns/'>Arete was hacked</a>. Tyler and I had to reinstall. That is a blog post all on its own. We finally were back up and running with most things about a week and a half ago. But, for whatever reason, Rouhgcut wouldn&#8217;t work.</p>
+
+<p>It seems something changed from Rails 0.10 to 0.12 that broke it. So my blog remained down, as I didn&#8217;t want to bother fixing it. I&#8217;m now using WordPress, and I think I&#8217;ll stay with it. While I don&#8217;t like PHP, I do like blog software that Just Works and requires Very Little Effort On My Part. Despite all my posturing, writing code for my blog doesn&#8217;t excite me very much, and so what language the blogging tool is written in isn&#8217;t nearly as important.</p>
+
+<p>I&#8217;ll be importing all of my old entries (well the ones that were in roughcut, at least) very soon.</p></div>
+</div>
+
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>

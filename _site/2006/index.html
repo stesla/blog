@@ -1,0 +1,1061 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Alieniloquent: 2006</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css" />
+</head>
+<body>
+ <div id="doc" class="yui-t4">
+   <div id="hd" class="content">
+     <h1 id="title"><a href="http://www.alieniloquent.com/">Alieniloquent</a></h1>
+     <ul id="navigation">
+       <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
+       <li><a href="http://github.com/stesla">code</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+     </ul>
+     <br/>
+   </div>
+   <div id="bd">
+     <div id="yui-main">
+       <div class="yui-b">
+         
+<div class="post">
+  <h3><a href="/2006/12/31/exposing-net-code-in-a-dll-via-c.html" rel="bookmark" title="Permanent Link to Exposing .NET code in a DLL via C++">Exposing .NET code in a DLL via C++</a></h3>
+  <p class="date">December 31st, 2006</p>
+  <div class="entry"><p>At my work, we do both Delphi for Win32 and .NET. Most of our .NET coding is in C#, though, so we can&#8217;t just cross-compile. We have a number of .NET components that would be nice to use on the Win32 side (such as zip libraries), and we know its supposed to be possible, but none of us have ever gotten into the nitty gritty of actually doing it. Now, programming for Windows isn&#8217;t my favorite thing in the world. But, I do love a good technical challenge. Especially one that requires me to dust off a language I haven&#8217;t used in a while. This will be the first of a few articles documenting the things I&#8217;m learning from doing this.</p>
+
+<p>The strategy that I&#8217;ll be using is to write a DLL in C++ that will allow the Delphi code to call into the .NET code. Microsoft&#8217;s C++ allows you to mix unmanaged and managed code fairly easily, so it makes for a very good glue layer in situations like this.</p>
+
+<p>So, to start off, let&#8217;s make the Visual Studio project for the DLL. I&#8217;m using Visual Studio 2005 for this, and I&#8217;ll use the C++ CLR template entitled &#8220;Class Library.&#8221; I&#8217;ll give it a name &#8220;Example&#8221; and hit go. This makes most of the files that you need. Delete the class that it creates (&#8220;Class1&#8221;) and make a new one like this:</p>
+<div class='highlight'><pre><code class='c'><span class='cp'>// Example.h</span>
+<span class='cp'>#include &lt;vcclr.h&gt;</span>
+
+<span class='cp'>#pragma once</span>
+
+<span class='n'>using</span> <span class='n'>namespace</span> <span class='n'>System</span><span class='p'>;</span>
+
+<span class='n'>namespace</span> <span class='n'>Example</span> <span class='p'>{</span>
+  <span class='n'>public</span> <span class='n'>class</span> <span class='n'>Example1</span>
+  <span class='p'>{</span>
+  <span class='nl'>public:</span>
+
+    <span class='n'>Example1</span><span class='p'>(</span><span class='k'>const</span> <span class='kt'>char</span> <span class='o'>*</span> <span class='n'>name</span><span class='p'>)</span>
+      <span class='p'>{</span>
+        <span class='n'>_name</span> <span class='o'>=</span> <span class='n'>gcnew</span> <span class='n'>String</span><span class='p'>(</span><span class='n'>name</span><span class='p'>);</span>
+      <span class='p'>}</span>
+
+    <span class='o'>~</span><span class='n'>Example1</span><span class='p'>()</span>
+      <span class='p'>{</span>
+      <span class='p'>}</span>
+
+    <span class='kt'>void</span> <span class='n'>ShowName</span><span class='p'>();</span>
+
+  <span class='nl'>private:</span>
+
+    <span class='n'>gcroot</span><span class='o'>&lt;</span><span class='n'>String</span> <span class='o'>^&gt;</span> <span class='n'>_name</span><span class='p'>;</span>
+  <span class='p'>};</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>A couple things to note about the above code. The <code>Example1</code> class is an <em>unmanaged</em> class, but the <code>_name</code> field is a managed object. The <code>gcroot</code> class takes care of telling the garbage collector about the managed string object.</p>
+
+<p>Next, we need to export some DLL functions so that we can call them from Delphi:</p>
+<div class='highlight'><pre><code class='c'><span class='cp'>// Exports.h</span>
+<span class='cp'>#define DLLAPI extern &quot;C&quot; __declspec(dllexport)</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='n'>Example1Create</span><span class='p'>(</span><span class='k'>const</span> <span class='kt'>char</span> <span class='o'>*</span> <span class='n'>name</span><span class='p'>);</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>Example1Delete</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>example</span><span class='p'>);</span>
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='n'>Example1ShowName</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>example</span><span class='p'>);</span>
+</code></pre>
+</div>
+<p>The important thing to notice here is the <code>DLLAPI</code> define. You need to put it before each function you want to export. We have to extern the functions as C-style functions so that their names don&#8217;t get mangled in the symbol table.</p>
+<div class='highlight'><pre><code class='c'><span class='cp'>// Exports.cpp</span>
+<span class='cp'>#include &quot;stdafx.h&quot;</span>
+<span class='cp'>#include &quot;Example.h&quot;</span>
+<span class='cp'>#include &quot;Exports.h&quot;</span>
+
+<span class='n'>using</span> <span class='n'>namespace</span> <span class='n'>Example</span><span class='p'>;</span>
+
+<span class='cp'>#define E1(p) ((Example1 *) p)</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='o'>*</span> <span class='nf'>Example1Create</span><span class='p'>(</span><span class='k'>const</span> <span class='kt'>char</span> <span class='o'>*</span> <span class='n'>name</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='k'>return</span> <span class='n'>new</span> <span class='n'>Example1</span><span class='p'>(</span><span class='n'>name</span><span class='p'>);</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>Example1Delete</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>example</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>delete</span> <span class='n'>example</span><span class='p'>;</span>
+<span class='p'>}</span>
+
+<span class='n'>DLLAPI</span> <span class='kt'>void</span> <span class='nf'>Example1ShowName</span><span class='p'>(</span><span class='kt'>void</span> <span class='o'>*</span> <span class='n'>example</span><span class='p'>)</span>
+<span class='p'>{</span>
+  <span class='n'>E1</span><span class='p'>(</span><span class='n'>example</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='n'>ShowName</span><span class='p'>();</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Note the macro defined to do the cast. We only have to do the cast in one place right now, but as you expose more methods on the object, you&#8217;ll have to cast for every one. The macro makes it easier.</p>
+
+<p>So to summarize what we have so far. In the DLL we have an unmanaged class which can access the managed classes in .NET. Then we expose functions which can create instances, destroy them, and call methods on them. These return pointers which the caller must manage. The pointers are passed into all of the functions which invoke methods, and those functions cast and then call.</p>
+
+<p>In my next post I&#8217;ll show how to consume this DLL from Delphi.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/09/21/movie-reviews-all-the-kings-men.html" rel="bookmark" title="Permanent Link to Movie Reviews: All the King's Men">Movie Reviews: All the King's Men</a></h3>
+  <p class="date">September 21st, 2006</p>
+  <div class="entry"><p>When I first saw the trailer for this movie, I didn&#8217;t think I&#8217;d ever see it. The story didn&#8217;t seem like the kind I tend to enjoy. But, when a friend of mine offered to give me some free tickets I figured it was worth seeing for free, and it&#8217;s a good thing I did. This way I can tell you about how terrible the movie is, and hopefully save you some cash.</p>
+
+<p>The budget for the film was $55 million. A fairly small budget by Hollywood standards, but in the same range as the last three films I saw: The Covenant ($20 million), Snakes on a Plane ($36 million), World Trade Center ($65 million). I liked all of those films, but I didn&#8217;t like this one, and I think it really comes down to how the budget was spent.</p>
+
+<p>Two places the producers clearly did <em>not</em> spend their budget was on cinematography or editing. In no fewer than four scenes I saw the head of a boom mic bouncing along the top of the screen, and in one scene I saw the mic and its boom in their entirety. This isn&#8217;t like a car in Lord of the Rings. This is just shoddy movie-making.</p>
+
+<p>Another place they clearly did not spend their money was writing. I&#8217;m sure that the book this movie was based on was a fine novel. I know there was a real story about Huey Long, whom this story is loosely about. Somehow, though, the writers for this film failed to caputre any real plot. None. None at all.</p>
+
+<p>I think where they spent almost all their money was on casting. The movie had an amazing cast: Sir Anthony Hopkins, Jude Law, Kate Blanchett, Mark Ruffalo, Sean Penn, and James Gandolfini. Those are some big names, and I&#8217;m sure they all had nice fat paychecks for their performances. The performances were even decent, although Penn summoned memories of Snatch with his thick, unintelligible accent.</p>
+
+<p>So, if you want to play spot-the-mic, or want to see if you can find the plot, go see this movie. But, if you want to enjoy the two hours you&#8217;ll spend watching it, go do something else.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/09/21/drawing-graphs-and-automata-in-latex.html" rel="bookmark" title="Permanent Link to Drawing graphs and automata in LaTeX">Drawing graphs and automata in LaTeX</a></h3>
+  <p class="date">September 21st, 2006</p>
+  <div class="entry"><p>I am currently enrolled in a class entitled &#8220;Automata, Computability, and Formal Languages&#8221; at <a href='http://www.unomaha.edu'>UNO</a>. It&#8217;s a neat class. The professor requires us to submit our homework in both hard and soft copies. Naturally, he suggests we use <a href='http://ctan.org/what_is_tex.html'>LaTeX</a> to typeset our homework.</p>
+
+<p>Given that this is a class on automata, I end up drawing a lot of state diagrams to represent the machines I have to design for the problems. I wanted a nice way to draw these and put them in to my LaTeX document. The first thing I did was check to see if <a href='http://www.omnigroup.com/applications/omnigraffle/'>OmniGraffle</a> exported to EPS, and it did. LaTeX can read EPS, so I was okay if I couldn&#8217;t find anything better.</p>
+
+<p>With a solution in hand, I started to look and see if there was anything I could use to typeset these graphs right in the LaTeX source itself. Preferably something designed for drawing finite state-machines, even. What I found was <a href='http://www.lsv.ens-cachan.fr/~gastin/gastex/gastex.html'>GasTeX</a>. It is a decently cool package.</p>
+
+<p>The following source code from their samples page:</p>
+<div class='highlight'><pre><code class='text'>\begin{figure}[H]
+  \begin{center}
+    \unitlength=4pt
+    \begin{picture}(15, 28)(0,-10)
+    \gasset{Nw=5,Nh=5,Nmr=2.5,curvedepth=3}
+    \thinlines
+    \node(A0)(7.5,0){$0$}
+    \node[Nmarks=i,iangle=90](A1)(0,13){$1$}
+    \node[Nmarks=if,iangle=90,fangle=90](A2)(15,13){$2$}
+    \drawloop[loopangle=180](A1){$a$}
+    \drawloop[loopangle=0](A2){$b$}
+    \drawedge(A1,A2){$a$}
+    \drawedge(A2,A1){$b$}
+    \drawedge(A2,A0){$a$}
+    \gasset{curvedepth=-3}
+    \drawedge[ELside=r](A1,A0){$b$}
+    \drawloop[loopangle=270](A0){$a, b$}
+    \end{picture}
+  \end{center}
+  \caption{La complétion de l&#39;automate.}
+\end{figure}
+</code></pre>
+</div>
+<p>Generates this graph (which I have scaled down):</p>
+
+<p><img src='http://blog.alieniloquent.com/images/gastex-example.jpg' alt='Example of GasTeX output' /></p>
+
+<p>One note about this snippet, though, is that I did not have to use the <code>center</code> environment to center the figures. Instead I used the <code>\centering</code> directive inside my <code>figure</code> environment, and that worked nicely.</p>
+
+<p>It&#8217;s nice to use and it makes pretty graphs. I&#8217;ll be using it for the rest of the semester, that&#8217;s for sure!</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/09/14/making-active-directory-liveable-for-linux.html" rel="bookmark" title="Permanent Link to Making Active Directory liveable for Linux">Making Active Directory liveable for Linux</a></h3>
+  <p class="date">September 14th, 2006</p>
+  <div class="entry"><p>So my employer&#8217;s network is a Windows network. This isn&#8217;t terribly unusual. Our department&#8217;s version control server, however, is a Linux box. We didn&#8217;t want to have to have more than one password, so back when I set it up, I took the time to figure out how to get it to authenticate to Active Directory for us. It&#8217;s really cool, actually. <a href='http://samba.org'>Samba</a> is really awesome.</p>
+
+<p>However, we have had a few problems. The thing is that every so often, our Linux server was being removed from the Windows domain. So then we couldn&#8217;t authenticate users, and so we couldn&#8217;t check out our source code. Obviously, that causes problems.</p>
+
+<p>It turns out that adding one line to the <code>[global]</code> section of my <code>smb.conf</code> file is what is needed to solve the problem. See, the Windows boxes check in with the Active Directory controller once a day to update their machine ID. My server was not doing this. I&#8217;ve found, over time, that there are a lot of options for making Samba play well in a Windows network that aren&#8217;t really defaulted like they should be. Below is what I added to make it update like the others.</p>
+<div class='highlight'><pre><code class='text'>machine password timeout = 86400 # one day
+</code></pre>
+</div>
+<p>Another interesting thing, was that despite my not telling it to, Samba was advertising the machine as a domain controller. So I had to add the line below to disable that (despite the docs saying I shouldn&#8217;t have to).</p>
+<div class='highlight'><pre><code class='text'>domain master = no
+</code></pre>
+</div>
+<p>In addition to the rest of the configuration for Samba to work with Active Directory, and I think we may finally have it working all the way.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/09/04/podcast.html" rel="bookmark" title="Permanent Link to Podcast">Podcast</a></h3>
+  <p class="date">September 4th, 2006</p>
+  <div class="entry"><p>So I decided to start a pod cast. Check it out: <a href='http://www.agilemac.com/'>The Agile Mac</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/09/01/j3testing-10.html" rel="bookmark" title="Permanent Link to J3Testing 1.0">J3Testing 1.0</a></h3>
+  <p class="date">September 1st, 2006</p>
+  <div class="entry"><p>I decided to make my J3TestCase code into an actual framework. This way I don&#8217;t have to copy the files each time I want to use the class.</p>
+
+<p>I&#8217;ve put up a disk image with <a href='http://www.alieniloquent.com/code/J3Testing-1.0.dmg'>binaries</a> and one with <a href='http://www.alieniloquent.com/code/J3Testing-Source-1.0.dmg'>source</a>.</p>
+
+<p>The source is worth looking at, especially to see how I made targets to automatically build those disk images.</p>
+
+<p>These replace the old J3TestCase code I had posted, and I&#8217;ve removed that tarball. So, sorry if I broke that link. This is a much better way to deploy anyway.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/31/quirky-behavior-in-stringgsub.html" rel="bookmark" title="Permanent Link to Quirky Behavior in <code>String#gsub</code>">Quirky Behavior in <code>String#gsub</code></a></h3>
+  <p class="date">August 31st, 2006</p>
+  <div class="entry"><p>At my office I develop in Delphi. We use Delphi 2006. As far as IDEs go, it&#8217;s not that great. For example, when you tell the Delphi 2006 IDE to do a build all (something you&#8217;d think developers do quite frequently), it has a very annoying behavior: it eats up scads of memory. In fact when the build all operation completes on our project group, Delphi has laid claim to over 1GB of memory, and it won&#8217;t let it go until you quit the application. But, this post isn&#8217;t about Delphi or its buggy IDE. It&#8217;s about ruby. More specifically, it&#8217;s about a quirk (read: bug) in ruby.</p>
+
+<p>The <a href='http://ruby-doc.org/core/classes/String.html'><code>String</code></a> class in ruby has a method called <code>gsub</code>. This method takes two parameters and each can take two types of object. The first parameter can either be a Regexp or a String, and it represents what is to be replaced. The second can either be a String or a block, and supplies the value with which to replace it. This seems perfectly natural.</p>
+
+<p>Now, if you&#8217;ve ever used regular expressions, you probably know about back- references. When you use the grouping operator in a regular expression (e.g. <code>^a(ab)b$</code>) it stores a numbered back-reference to the matched value of each group. In ruby you can reference these with the special variables <code>$1</code>, <code>$2</code>, and so on. But, if you are passing a string as the replacement, it will only be interpolated once and those back-references won&#8217;t be correct. So, what <code>gsub</code> does is let you put in <code>\1</code> and <code>\2</code> instead.</p>
+
+<p>That behavior is awesome, and exactly what you want, if you&#8217;re matching a regular expression. But if you&#8217;re just matching a string literal, there is absolutely no reason to do it. In fact, if all you&#8217;re doing is matching a string literal those back-references will all be the empty string.</p>
+
+<p>So, how do I know all this? Well, because Delphi 2006&#8217;s build all operation bites, we wrote a ruby script to replace it. This script has to do file-name manipulation and all sorts of other string manipulation in order to get all of the correct compiler options. One of the things it does is replace strings like <code>$(CodeBase)</code> with a path such as <code>c:\svn\trunk</code>. Well, we have separate code bases for our branches, and they have names like <code>c:\svn\2006</code>. You see that <code>\2</code> there? Yeah, that one, right in the middle of the path. Even though the script was matching a string literal, <code>gsub</code> was replacing back- references. Since the path happened to have a <code>\2</code> in it, it would end up coming out of gsub as <code>c:\svn006</code>, and that certainly wasn&#8217;t right.</p>
+
+<p>Thankfully, there is a simple work around. Instead of providing a string for the replacement, we can provide a block. That block gets called every time and the value that it returns is <em>exactly</em> what gets used as the replacement.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/30/yagni-byte-order-conversion-explained.html" rel="bookmark" title="Permanent Link to YAGNI: byte-order conversion explained">YAGNI: byte-order conversion explained</a></h3>
+  <p class="date">August 30th, 2006</p>
+  <div class="entry"><p>In my <a href='http://blog.alieniloquent.com/2006/08/29/yagni-byte-order-conversion/'>previous post</a> I talked about this problem I ran into with byte- ordering and tests failing. Brian and Joe both felt that I left them hanging by going into all the technical details of what my problem was and not going into the technical details of why I shouldn&#8217;t have used <code>htons</code> to start with. Rather than editing the other post, here&#8217;s a new one.</p>
+
+<p>The code that I was using <code>htons</code> in was my SOCKS5 implementation. For those who aren&#8217;t familiar with SOCKS5, it is a proxying protocol. The computer connects to the proxy and sends it a hostname and port for the actual connection. The proxy then makes the connection and relays packets for the remainder of the session.</p>
+
+<p>Some of you may be guessing what I was calling <code>htons</code> on already: the port to be serialized. Here are the two offending lines of code:</p>
+<div class='highlight'><pre><code class='objc'><span class='p'>[</span><span class='n'>buffer</span> <span class='nl'>append:</span><span class='p'>(</span><span class='mh'>0xFF00</span> <span class='o'>&amp;</span> <span class='n'>htons</span><span class='p'>(</span><span class='n'>port</span><span class='p'>))</span> <span class='o'>&gt;&gt;</span> <span class='mi'>8</span><span class='p'>];</span>
+<span class='p'>[</span><span class='n'>buffer</span> <span class='nl'>append:</span><span class='p'>(</span><span class='mh'>0x00FF</span> <span class='o'>&amp;</span> <span class='n'>htons</span><span class='p'>(</span><span class='n'>port</span><span class='p'>))];</span>
+</code></pre>
+</div>
+<p>That <code>buffer</code> was then, in turn, written out across the socket to the server (or inspected by unit tests). But, since I was extracting each byte individually the byte-order didn&#8217;t matter since <code>0xFF00</code> will be in the same byte order as <code>port</code> every time.</p>
+
+<p>I hope this explains things a little better.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/30/regular-periodical-content.html" rel="bookmark" title="Permanent Link to Regular Periodical Content">Regular Periodical Content</a></h3>
+  <p class="date">August 30th, 2006</p>
+  <div class="entry"><p>So I&#8217;ve been thinking about starting some sort of periodic content: perhaps a regular themed article here or a podcast. I would like to take advantage of what readers I do have to see what people would like to hear me talk about.</p>
+
+<p>Here are some topics that I&#8217;ve thought about doing:</p>
+
+<ul>
+<li>
+<p>Things about programming they don&#8217;t teach you in college</p>
+</li>
+
+<li>
+<p>Agile methods</p>
+</li>
+
+<li>
+<p>Test-first design</p>
+</li>
+
+<li>
+<p>Refactoring</p>
+</li>
+
+<li>
+<p>Cocoa programming</p>
+</li>
+
+<li>
+<p>Ruby programming</p>
+</li>
+
+<li>
+<p>Lisp programming</p>
+</li>
+</ul>
+
+<p>There&#8217;s no particular order to those, as I find them all very interesting. It&#8217;s possible that I could end up doing a mishmash of all of them.</p>
+
+<p>Please leave a comment with a topic you&#8217;d like to hear me talk about!</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/29/yagni-byte-order-conversion.html" rel="bookmark" title="Permanent Link to YAGNI: byte-order conversion">YAGNI: byte-order conversion</a></h3>
+  <p class="date">August 29th, 2006</p>
+  <div class="entry"><p>So I have this project, and it compiles for the Mac on both PPC and i386 architectures. Naturally, I have unit tests for this project.</p>
+
+<p>One of the things that I&#8217;ve had to write for this is a simple SOCKS5 implementation (because of issues with Apple&#8217;s implementation). As part of this I had to do some manipulation of a port number and get the high and low bytes.</p>
+
+<p>I&#8217;ve done this sort of thing before. That&#8217;s what <code>htons</code> and friends are for. So naturally, I went ahead and put this in where I thought it mattered and went on my merry way. On my ppc powerbook, my tests all passed.</p>
+
+<p>Yesterday, when I ran the unit tests on my intel mac for the first time, I discovered that a test failed. It was failing because of some byte-order problem. After troubleshooting it, I narrowed it down to the <code>htons</code> calls. It turns out I did not need them.</p>
+
+<p>See the thing is, on a ppc, things are already in network byte-order so <code>htons</code> does absolutely nothing. However, on i386 host byte-order is <em>different</em> from network byte-order. So the reason it worked on ppc was that it was essentially as if I hadn&#8217;t done it.</p>
+
+<p>It turns out that the particular thing I was doing didn&#8217;t need the conversion to work correctly. I removed it, and everything worked peachy on both machines.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/29/linker-warning-bind_at_load.html" rel="bookmark" title="Permanent Link to Linker warning: -bind_at_load">Linker warning: -bind_at_load</a></h3>
+  <p class="date">August 29th, 2006</p>
+  <div class="entry"><p>Apple has had Intel machines for about a year. When they came out with the new architecture, they came up with the idea of a universal binary. It is a binary that will run natively on either the PPC or Intel architectures. None of the apps I work on have been compiled as universal binaries until today.</p>
+
+<p>I just got my iMac yesterday, and it&#8217;s beautiful. The most interesting thing about it, though, is that it is an Intel machine. So naturally, when I got my projects all set up on it, I finally had to bite the bullet and make things work cross-platform.</p>
+
+<p>That meant I had to recompile some frameworks to be universal binaries themselves. I also had to twiddle some build options. It was all well documented, and easy enough. But then I ran into a weird error that I couldn&#8217;t figure out:</p>
+<div class='highlight'><pre><code class='text'>/usr/bin/ld: warning suggest use of -bind_at_load, as lazy binding may result in errors or different symbols being used
+
+symbol _atan2f used from dynamic library
+
+/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/../../../libSystem.dylib(floating.o) not from earlier dynamic library /usr/lib/libmx.A.dylib(single module)
+</code></pre>
+</div>
+<p>After much searching, I finally found an <a href='http://lists.apple.com/archives/Cocoa-dev/2005/May/msg00474.html'>article</a>, and it explained what I needed to do. All I had to do was add <code>-lSystem</code> to my linking flags.</p>
+
+<p>Now all I have to do is fix my one byte-order issue, and the program is all better.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/29/the-grandiloquent-dictionary.html" rel="bookmark" title="Permanent Link to The Grandiloquent Dictionary">The Grandiloquent Dictionary</a></h3>
+  <p class="date">August 29th, 2006</p>
+  <div class="entry"><p>So I was looking up an actual dictionary definition of &#8220;alieniloquent&#8221; today. I had one at some time in the past, but it&#8217;s a hard word to find in dictionaries, and that&#8217;s why I picked it for my domain. I finally found this website, the <a href='http://www.islandnet.com/~egbird/dict/dict.htm'>Grandiloquent Dictionary</a>, and it has my word in it.</p>
+
+<dl>
+<dt>alieniloquent</dt>
+
+<dd>Speaking discursively or straying from one&#8217;s point.</dd>
+</dl>
+
+<p>So for those of you who were wondering, there you go.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/25/advertisements.html" rel="bookmark" title="Permanent Link to Advertisements">Advertisements</a></h3>
+  <p class="date">August 25th, 2006</p>
+  <div class="entry"><p>Erica has been doing this sort of thing for a while, but I haven&#8217;t been into my site enough to really care. Now that I&#8217;m doing more with my site, I decided it was time to get on the bandwagon. I&#8217;ve added some advertisements over on the far right column, and I&#8217;ll see how I feel about it in a month or two. I&#8217;ll probably add some Amazon items and maybe other stuff too.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/24/project-goals.html" rel="bookmark" title="Permanent Link to Project Goals">Project Goals</a></h3>
+  <p class="date">August 24th, 2006</p>
+  <div class="entry"><p>Erica posted her <a href='http://www.sperari.com/archives/2006/08/24/creative-goals/'>creative goals</a>, and I figured I&#8217;d do the same.</p>
+
+<ul>
+<li>
+<p>I&#8217;m working on a Mac app that will interface with <a href='http://www.google.com/calendar/'>Google Calendar</a> and iCal to help schedule free time. It&#8217;ll be ideal for students who want to plan their homework or freelance workers who need to break up their day. Erica&#8217;s going to be cutting her Cocoa teeth on this project with me, but I&#8217;m doing most of the backend work.</p>
+</li>
+
+<li>
+<p>There are a couple of <a href='http://rubyonrails.com/'>Ruby on Rails</a> projects I&#8217;d like to play with.</p>
+</li>
+
+<li>
+<p>I think it is high time I revisit <a href='http://ocfit.tigris.org/'>OCFit</a> and get more done there.</p>
+</li>
+
+<li>
+<p>I want to post more frequently and with some sort of theme. I think it&#8217;ll be largely programming focused.</p>
+</li>
+
+<li>
+<p>I would like to find more <a href='http://www.alieniloquent.com/talks/'>speaking engagements</a>.</p>
+</li>
+</ul>
+
+<p>So those are a few things that I&#8217;m looking at doing aside from work and school this semester.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/23/new-design.html" rel="bookmark" title="Permanent Link to New design">New design</a></h3>
+  <p class="date">August 23rd, 2006</p>
+  <div class="entry"><p>Well, it only took me one night. I&#8217;ll probably be tweaking for weeks now, but I got the main thrust of theming done.</p>
+
+<p>I really have to compliment the <a href='http://www.wordpress.org'>Wordpress</a> guys. Setting up a theme for their system can be as easy or as difficult as the particular designer wants. Their theme system is definitely the way to go for live blog redesigns, though: I could switch back to the other theme with a couple of mouse clicks. Very easy.</p>
+
+<p>Let me know what you think of the design.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/23/cocoa-google-yay.html" rel="bookmark" title="Permanent Link to Cocoa + Google = Yay!">Cocoa + Google = Yay!</a></h3>
+  <p class="date">August 23rd, 2006</p>
+  <div class="entry"><p>So, I&#8217;m going to be writing an app to interface with <a href='http://www.google.com/calendar/'>Google Calendar</a>, so I need to learn how to speak the <a href='http://code.google.com/apis/gdata/index.html'>Google Data APIs</a>. The first part of this is being able to authenticate using their client login protocol.</p>
+
+<p>I figured I&#8217;d throw together a simple little Cocoa app that just has text inputs for all the things that need to be sent and then I could do that. I figured once I had the code written, I could extract it out into a class that I could use in my real app.</p>
+
+<p>I spent 30 minutes remembering how to throw the GUI together (I&#8217;m a bit rusty).</p>
+
+<p>I spent an hour or so understanding the NSURL API and figuring out how to <a href='http://inessential.com/?comments=1&amp;postid=1935'>url encode</a> in Cocoa (it turns out there isn&#8217;t anything in the Foundation classes).</p>
+
+<p>I spent another fifteen minutes not understanding why it told me my authentication was bad, despite it being correct, and then realizing I wasn&#8217;t actually <em>sending</em> my authentication information (or any part of the request). It only took five minutes to fix it.</p>
+
+<p>I now get a successful response back from Google when I log in using my little login testing application. How cool is that?</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/22/pardon-the-mess.html" rel="bookmark" title="Permanent Link to Pardon the mess">Pardon the mess</a></h3>
+  <p class="date">August 22nd, 2006</p>
+  <div class="entry"><p>For those who actually read my site at my site, please pardon my mess. I&#8217;m redesigning my site, and I have much less regard for how it looks than some, so I&#8217;m just going to piddle with it live.</p>
+
+<p>On the up side, if you&#8217;re the kind that obsessively refreshes my blog, you can see how I design web pages.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/22/completely-recovered.html" rel="bookmark" title="Permanent Link to Completely Recovered">Completely Recovered</a></h3>
+  <p class="date">August 22nd, 2006</p>
+  <div class="entry"><p>Between my trash folder and cached copies of my pages on <a href='http://www.google.com/'>Google</a>, I was able to recover all of the content I had deleted. I took advantage of this opportunity to redesign the <a href='http://www.alieniloquent.com'>site</a>.</p>
+
+<p>I made a new design, and I like this one much better anyway. So, it all ended well in the end.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/21/oops.html" rel="bookmark" title="Permanent Link to Oops">Oops</a></h3>
+  <p class="date">August 21st, 2006</p>
+  <div class="entry"><p>So I&#8217;m in my web directory, doing some stuff, and I notice the twiddle backup files that Emacs leaves when I edit remotely. They bug me. So I did the following command to remove them.</p>
+<div class='highlight'><pre><code class='text'>find . -name *.~?~ -print -o -exec rm {} \;
+</code></pre>
+</div>
+<p>Some of you probably think that&#8217;s just greek. But others are cringing just as I did when I saw it remove all of the files in my directory. Sooooo, the other parts of the site are broken until tonight when I can fix them.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/16/a-million-lines-eighteen-months.html" rel="bookmark" title="Permanent Link to A Million Lines, Eighteen Months">A Million Lines, Eighteen Months</a></h3>
+  <p class="date">August 16th, 2006</p>
+  <div class="entry"><p>I just got back to the office after giving a talk to the <a href='http://www.omahaspin.org'>Omaha SPIN</a> group. It was a report on the experiences we&#8217;ve had and the lessons we&#8217;ve learned at my current employer over a year and a half of using agile methods.</p>
+
+<p>If you&#8217;d like to look at my slides, they&#8217;re <a href='http://www.alieniloquent.com/talks/profitstars-xp/ProfitstarsExperienceReport.pdf'>here</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/15/code-survival.html" rel="bookmark" title="Permanent Link to Code Survival">Code Survival</a></h3>
+  <p class="date">August 15th, 2006</p>
+  <div class="entry"><p>While <a href='http://blog.briankohrs.com/'>Brian</a> and I were pairing today, we also found an offensive bit of code.</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>property</span> <span class='py'>P</span><span class='o'>:</span> <span class='kt'>Pointer</span> <span class='kp'>read</span> <span class='nf'>FP</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>This was a <em>public</em> property on a class. It had no meaningful name, and was of the least-specific type in the system. (I&#8217;m prefer dynamic languages, but if you&#8217;re <em>going</em> to use a type system, <em>use</em> it.)</p>
+
+<p>Some quick grepping revealed that the property was never used, and deleting it and doing a build all confirmed it. We felt much better.</p>
+
+<p>But, simply deleting it was not enough. We had to find out who had put this terrible code into our codebase. Using <code>svn blame</code> to track back the revisions, we discovered it was put in on revision 3 back in 1996 when the file was first added to Visual Source Safe.</p>
+
+<p>We were no longer very surprised at the naming of the variable. The department&#8217;s naming standards were not the same ten years ago. What we <em>were</em> surprised to discover is that the property (well, it was a public field back then) wasn&#8217;t ever used in revision 3.</p>
+
+<p>The field had <em>never</em> been used.</p>
+
+<p>You know you have a big ball of mud when a public field named P survives for ten years on a class that is a vital part of your system even though it is never used anywhere in the code.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/15/extract-comments.html" rel="bookmark" title="Permanent Link to Extract Comments">Extract Comments</a></h3>
+  <p class="date">August 15th, 2006</p>
+  <div class="entry"><p>So <a href='http://blog.briankohrs.com/'>Brian</a> and I were pairing today, and we were refactoring some legacy code. The method we were looking at was over 200 lines long, and it had comments sprinkled throughout to make it semi-readable.</p>
+
+<p>We highlighted a huge block of this method and hit the magic keystrokes to Extract Method using Delphi 2006&#8217;s automated refactoring tools. It extracted all of the code just fine, but it also removed some of the comments.</p>
+
+<p>Note that I say <em>some</em> of the comments were removed. Some of them were not. There was no pattern that I could discern as to which comments were removed or which were left alone. It&#8217;s almost as if the refactoring tools read the name of the new method, read the content of the comment and said, &#8220;Nah, you don&#8217;t need the comment any more, the name is enough.&#8221;</p>
+
+<p>That&#8217;s definitely not the kind of thing I want my computer doing for me. Bad Delphi!</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/15/the-51st-state.html" rel="bookmark" title="Permanent Link to The 51st State">The 51st State</a></h3>
+  <p class="date">August 15th, 2006</p>
+  <div class="entry"><p>So I was browsing a company&#8217;s website today, and out of curiosity I clicked on their map to show where all their locations are. I was expecting to see lots of little dots representing their offices, but what I saw was so much more.</p>
+
+<p>This company has gotten the scoop on <em>all</em> of the major news services. It has a <a href='http://www.alieniloquent.com/images/lower51.gif'>map</a> of the contiguous 51 states.</p>
+
+<p><img src='http://www.alieniloquent.com/images/northwest.gif' alt='the Northwest' /></p>
+
+<p>Here you can see a cutout of the Northwest area of the country. If you look closely you&#8217;ll see the new borders between East and West Idaho and East and West Montana. Rumor has it that Idaho has split over whether or not to put a potato on the back of their commemorative quarter, and nobody knows what&#8217;s up with Montana.</p>
+
+<p><img src='http://www.alieniloquent.com/images/floridabama.gif' alt='Florida' /></p>
+
+<p>This other section shows the fifty-third, and newest state: Floridabama. Nobody&#8217;s quite sure why they formed. They don&#8217;t even have their own constitution. Almost all of the land has been sold to development companies to build retirement communities and casinos. That&#8217;s right: retirement casinos.</p>
+
+<p>Note: I did <em>not</em> make these images. I have altered them to protect the innocent, but I really did find this while surfing.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/14/wordpress-204.html" rel="bookmark" title="Permanent Link to WordPress 2.0.4">WordPress 2.0.4</a></h3>
+  <p class="date">August 14th, 2006</p>
+  <div class="entry"><p>I&#8217;ve been waffling about trying <a href='http://www.typosphere.org/'>Typo</a> as my blogging engine. But, I ended up coming to the same conclusion I came last time I switched away from Wordpress.</p>
+
+<p>I don&#8217;t care enough about my blog to code for it. So I don&#8217;t need to blog with Ruby, because I&#8217;m not going to be coding for my blog. So, I&#8217;ve done what I should have done a long time ago: I upgraded to the latest version of <a href='http://wordpress.org/'>WordPress</a>.</p>
+
+<p>The posting interface certainly is sexy. It also comes with a plugin for spam filtering out of the box, so I don&#8217;t need the one I was using any more. The primary reason I did this, though, is that I&#8217;m going to be getting into making a new template for my blog to integrate with the <a href='http://www.alieniloquent.com'>rest of the site</a>, and I wanted to be on the latest version for the templating stuff.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/08/08/new-main-page.html" rel="bookmark" title="Permanent Link to New main page">New main page</a></h3>
+  <p class="date">August 8th, 2006</p>
+  <div class="entry"><p>Hey all. I have a story to tell you about <a href='http://subversion.tigris.org'>Subversion</a> and firewalls, but it will have to wait for tomorrow as I am dead tired.</p>
+
+<p>But, I did want to share with you the fruits of my last thirty minutes or so. I have produced a new main page for <a href='http://www.alieniloquent.com'>www.alieniloquent.com</a>. This is going to grow into place for me to put all sorts of things I want to share with the internet.</p>
+
+<p>I moved my <a href='http://www.alieniloquent.com/talks/lisp-intro'>lisp talk</a> materials under a new directory where I will be putting all of my presentation materials.</p>
+
+<p>I also created a place to put <a href='http://www.alieniloquent.com/code'>code</a>. In there I&#8217;ve put <a href='http://www.alieniloquent.com/code/j3testcase.tar.bz2'>J3TestCase</a>: a wrapper arount OCUnit . It makes it behave more like the xUnit frameworks I&#8217;m accustomed to, ObjcUnit in particular. Just drop the two files into your project where ever you want, and you can use the class to descend your test cases from.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/07/31/migration-complete.html" rel="bookmark" title="Permanent Link to Migration Complete">Migration Complete</a></h3>
+  <p class="date">July 31st, 2006</p>
+  <div class="entry"><p>I&#8217;ve completed the migration of my website from the www host to the blog host. Now I&#8217;ll be using the namespace under www for hosting other things. I did not put in the fancy 404 handler like I had thought I might. It turns out that just a handful of rewrite rules caught all the links I cared to preserve.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/07/31/lisp-talk-update.html" rel="bookmark" title="Permanent Link to Lisp talk update">Lisp talk update</a></h3>
+  <p class="date">July 31st, 2006</p>
+  <div class="entry"><p>I was making sure everything was in order for my talk tomorrow for <a href='www.blainebuxton.com/odynug/'>ODYNUG</a>, and I discovered that the venue has changed.</p>
+
+<p>Apparently Cafe Gelato, where ODYNUG has been having its meetings, went out of business. So my talk will be at the <a href='http://www.panerabread.com/'>Panera</a> at <a href='http://maps.google.com/maps?q=13410%20W%20Maple%20Rd&amp;ie=UTF-8&amp;oe=UTF-8&amp;client=firefox-a&amp;rls=org.mozilla:en-US:official&amp;sa=N&amp;tab=wl'>132nd and Maple</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/07/26/intro-to-lisp.html" rel="bookmark" title="Permanent Link to Intro to Lisp">Intro to Lisp</a></h3>
+  <p class="date">July 26th, 2006</p>
+  <div class="entry"><p>Right now I&#8217;m in my hotel room in Minneapolis. I&#8217;m here for <a href='http://www.agile2006.org'>Agile 2006</a> because my work sent me. Joe went into how we are all <a href='http://excastle.com/blog/archive/2006/07/24/5714.aspx'>lucky bastards</a>. I may blog more about the conference, but maybe not.</p>
+
+<p>I&#8217;ve been spending most of the week writing lisp code. I&#8217;m giving a talk next Tuesday (August 1st) at the <a href='http://www.blainebuxton.com/odynug/'>ODYNUG</a> meeting. It&#8217;s an introductory course on lisp. I&#8217;ll be covering some history of lisp, a programmer&#8217;s guide to the language, and then some practical examples. We&#8217;ll even write some code together.</p>
+
+<p>The location and time is at the link above. If you have a laptop with wireless, bring it. There is no projector, but I will be sharing my desktop via VNC. I will also post all of my code up here on my website after the talk.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/07/17/i-suck-at-the-internet.html" rel="bookmark" title="Permanent Link to I suck at the internet">I suck at the internet</a></h3>
+  <p class="date">July 17th, 2006</p>
+  <div class="entry"><p>Well, don&#8217;t I just suck at the internet?</p>
+
+<p>I&#8217;m thinking about moving my blog over to <a href='http://www.typosphere.org'>Typo</a> but first I needed to delete the 11,000 some odd spam comments that I had. It was too hefty a task to do manually, so I dipped into the database. I, of course, was confident that I could do it safely. So, why would I back up the comment table? Naturally, I did not do it safely and deleted <em>all</em> of my comments instead.</p>
+
+<p>So, I didn&#8217;t mean to delete all of your comments on purpose. I&#8217;m sorry. But, they&#8217;re all gone.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/07/17/firefox-extensions.html" rel="bookmark" title="Permanent Link to Firefox Extensions">Firefox Extensions</a></h3>
+  <p class="date">July 17th, 2006</p>
+  <div class="entry"><p>I recently decided to throw together simple little <a href='http://www.mozilla.com/firefox'>Firefox</a> extension. It&#8217;s pretty neat how <a href='http://www.xulplanet.com'>XUL</a> works. However, setting everything up can be a bit disorienting. Fortunately I found a good <a href='http://kb.mozillazine.org/Getting_started_with_extension_development'>guide</a>. Between the content on that page, and the content that it links to, I figured out everything I needed to know in order to get my extension working.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/07/13/uri-changing.html" rel="bookmark" title="Permanent Link to URI Changing">URI Changing</a></h3>
+  <p class="date">July 13th, 2006</p>
+  <div class="entry"><p>I have moved my blog. It is now <a href='http://blog.alieniloquent.com'>here</a>. Most of you are probably getting to this notice via my old URI. Please update. All you need to do is change &#8220;www&#8221; to &#8220;blog&#8221; and you&#8217;re set.</p>
+
+<p>I&#8217;ve set up a rewrite rule that will redirect from the old URI scheme to the new one. As this is a permanent relocation, that redirect will eventually go away (I want to use the www space for other things). At that point I will probably set up a smart 404 handler that will try to preserve links as best as it can, but please update them anyway.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/07/06/a-lapse.html" rel="bookmark" title="Permanent Link to A Lapse">A Lapse</a></h3>
+  <p class="date">July 6th, 2006</p>
+  <div class="entry"><p>Oops.</p>
+
+<p>My domain was due to expire on July 4th, 2006. Silly me, I got all caught up in the holiday and forgot to do that. So, that&#8217;s where my site (and email) have been the last couple of days.</p>
+
+<p>All better now.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/06/06/go-my-renewed-obsession.html" rel="bookmark" title="Permanent Link to Go: My Renewed Obsession">Go: My Renewed Obsession</a></h3>
+  <p class="date">June 6th, 2006</p>
+  <div class="entry"><p>Lately I haven&#8217;t been playing much <a href='http://www.worldofwarcraft.com'>WoW</a>, but I have been playing a lot of <a href='http://en.wikipedia.org/wiki/Go_(board_game)'>Go</a>. It&#8217;s a mentally challenging game, and I can look forward to a lifetime of learning and fun. Jessica is going to be giving me a <a href='http://en.wikipedia.org/wiki/Goban'>goban</a> for my birthday, and that has increased my interest in playing the game.</p>
+
+<p>I first started playing go when I was a teenager. I played it on <a href='http://games.yahoo.com/'>Yahoo! Games</a>. I enjoyed it. I was better at go than I was at chess. But, I got distracted.</p>
+
+<p>The next time I got serious about the game was a couple of years ago. I downloaded a program similar to <a href='http://www.sente.ch/software/goban/'>Goban</a> (the one I use now), and started playing against <a href='http://www.gnu.org/software/gnugo/'>GnuGo</a>. I also played a little on the <a href='http://kgs.kiseido.com/'>KGS</a>.</p>
+
+<p>At that time I found two very awesome resources: <a href='http://senseis.xmp.net/'>Sensei&#8217;s Library</a>, and <a href='http://www.goproblems.com/'>goproblems.com</a>.</p>
+
+<p>Sensei&#8217;s Library is a wiki devoted to go. Its maintainers have even gone so far as to create wiki markup that gets formatted as images of go positions (complete with ways to annotate the board). It is an indispensable resource for any go player.</p>
+
+<p>Goproblems.com is a site full of exercises. People upload scenarios designed to teach and then one can work through all of the exercises using a Java applet. The site has time trials at different <a href='http://senseis.xmp.net/?Rank'>ranks</a> from 30 kyu all the way to 6 dan. I have learned a lot from the exercises here.</p>
+
+<p>Naturally, when I started playing again, I started frequenting these sites again. I noticed a banner on one of them for the <a href='http://gtl.xmp.net/'>Go Teaching Ladder</a>. This is a phenomenal resource. Weaker players can record their games in <a href='http://senseis.xmp.net/?SGF'>SGF</a> and then submit them for a review by stronger players. Most of the reviewers are at least 15kyu or stronger, and some of them are very good teachers. The best part is that all of the reviews are available for download. So, one can go download an SGF and watch somebody else&#8217;s game along with comments by a stronger player as to what would have worked better.</p>
+
+<p>I read a half-dozen games last night, and it has already improved my 9x9 game significantly, and now I don&#8217;t feel like a chump when I play 19x19 (a full- sized board). I&#8217;m sure I could have read it somewhere else, but there&#8217;s something powerful about reading the proverbs and strategies in the comments of an actual game. It puts the proverbs in context.</p>
+
+<p>I&#8217;m sure I will be blogging more about go in the future. It&#8217;s not pink, but it is my obsession.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/05/18/bad-boy-scout.html" rel="bookmark" title="Permanent Link to Bad Boy Scout">Bad Boy Scout</a></h3>
+  <p class="date">May 18th, 2006</p>
+  <div class="entry"><p>I know I haven&#8217;t been posting, and it&#8217;s mostly been because I&#8217;ve been busy. Sometimes, it was because I just didn&#8217;t know what I wanted to post. Regardless, I haven&#8217;t been keeping up with any form of my blogging resolution for over a month.</p>
+
+<p>This last week has been a really intense week, and has given me something worth coming out of my blogging cocoon for: love. I want to write about it and share it with the people who read my blog. If you&#8217;re just here for the technical stuff, you should probably skip this post.</p>
+
+<p>A few months back, Erica was surfing around on <a href='http://www.okcupid.com'>OkCupid</a> and found a couple of really cool people. They happened to be a couple and they happened to be here in Omaha. We all went out for dinner and realized that we all had a lot in common. We got together a couple more times after that, and decided to get together on a regular basis for a Mage game once the semester was over.</p>
+
+<p>The more we&#8217;ve hung out with <a href='http://really-really.blogspot.com'>Jessica</a> and Michael, the more we&#8217;ve realized we have in common. The four of us share so many references and pseudo-inside jokes it&#8217;s just not funny. Beyond that we have many of the same quirks and hobbies. It is really uncanny how similar we all are.</p>
+
+<p>Last Thursday Jessica invited us out to karaoke at her bar, and Erica and I went. We all had a blast. Friday night Jessica came over and we all just hung out. Saturday we went out to karaoke again, and we ended up having a slumber party at the Bibliotesla. In fact, out of the days since last Thursday, we&#8217;ve all hung out on every one of them except Tuesday, and we all chatted online that night. It&#8217;s been very intense.</p>
+
+<p>Now, what relevance does this have? Why am I blogging about it? Well, like I said, this post is about love. Some of you may know, and the rest of you will find out now: I am <a href='http://en.wikipedia.org/wiki/Polyamory'>polyamorous</a>. For those of you who don&#8217;t want to follow the link, it essentially means that I do not restrict myself to having only one loving relationship at a time. For the longest time, I have only had one, but I have always been open to the idea of more.</p>
+
+<p>I&#8217;ve always been of the belief that the relationships that last are the ones you aren&#8217;t looking for. Erica and I just happened. We weren&#8217;t planned. We both got swept up in a whirlwind and fell for each other hard. We were married within one year of meeting each other, and we&#8217;re working on our sixth year of marriage now. This week is reminding me of the beginning of the summer during which she and I met.</p>
+
+<p>Jessica and I have so much in common, it&#8217;s ridiculous. Before I met Erica, I never thought I&#8217;d find somebody that had as much in common with me as she does. After I met her, I was convinced the feat was unrepeatable. I was wrong, and I&#8217;ve never been happier to be wrong about anything. What&#8217;s more, Michael and I <em>also</em> have ridiculous amounts of things in common (and Erica shares many things with both of them too). It is really as if we found copies of us that are sufficiently different so as to be interesting and engaging.</p>
+
+<p>The motto of the Boy Scouts is &#8220;Be Prepared.&#8221; I totally wasn&#8217;t prepared for any of this. I had just thought that we had found awesome friends and gaming buddies. All of this ran me over like a freight train filled with anvils, but I wouldn&#8217;t have it any other way.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/04/15/violin-siren.html" rel="bookmark" title="Permanent Link to Violin Siren">Violin Siren</a></h3>
+  <p class="date">April 15th, 2006</p>
+  <div class="entry"><p>So we were at Jonesy&#8217;s Dinner Den on Maple eating our food (which was very good) and watching the five o&#8217;clock news on their TV. The weather guy was going on about the possible tornado cells that were west of Omaha and moving easterly. In the background KVNO was playing some classical music.</p>
+
+<p>That&#8217;s when we heard the sirens. Everybody paused and looked up at everybody else, and then the woodwinds kicked in. They weren&#8217;t sirens after all, just violins. It was a tense second, and then everybody laughed.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/21/revisionist-goals.html" rel="bookmark" title="Permanent Link to Revisionist Goals">Revisionist Goals</a></h3>
+  <p class="date">March 21st, 2006</p>
+  <div class="entry"><p>I&#8217;ve been doing Atkins since Thursday. I&#8217;m past the energy slump and back to normal. It takes a little more effort to be as lazy as I like to about cooking and also do this diet, but the new grill helps. Mmm, steak.</p>
+
+<p>The sleeping goal, not so much. The first week I managed. Since then I have not. I am still shooting for 0500, but I have not been succeeding for various reasons. Most of them have to do with the fact that when I get up at 0500, there&#8217;s nothing I can think of that sounds better than crawling back into bed. I&#8217;m awake, sure. I&#8217;m not tired. But, the siren song of my sheets is calling to me.</p>
+
+<p>The diet is providing some motivation to get up earlier: breakfast. I like to start the day with at least four pieces of bacon and two eggs. That takes some time to cook right, and so I need to give myself that time. That means I can&#8217;t snooze until the last minute and get a sandwich at McDonalds any more. So, I&#8217;m working on it.</p>
+
+<p>Blogging hasn&#8217;t happened every day. Sometimes I&#8217;ve forgotten. Sometimes I&#8217;ve procrastinated it until I fall asleep. Sometimes I haven&#8217;t had anything I felt I could squeeze a blog post out of. But, I&#8217;m falling short of my every-day goal.</p>
+
+<p>I am, however, a believer in adjusting goals to be realistic. I do this at my job all of the time. When we realize that a software task is impossible, we figure out how to make it possible and still get as much value as we can. Blogging daily probably isn&#8217;t impossible, just improbable. The value I wanted to get out of it was to write regularly. Based on that fact, I&#8217;m going to scale back to blogging a minimum of three times a week, and more if I feel moved to.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/17/dvds-and-world-of-warcraft.html" rel="bookmark" title="Permanent Link to DVDs and World of Warcraft">DVDs and World of Warcraft</a></h3>
+  <p class="date">March 17th, 2006</p>
+  <div class="entry"><p>That is what I&#8217;ve been doing the last few days. I&#8217;ve been watching DVDs and playing WoW, and clearly not blogging. What&#8217;s more, I&#8217;ve had a few ideas for blog posts (although, I can&#8217;t remember exactly what they were now). Ah, well, I&#8217;ll live. Just not my best week for the blogging goal. I&#8217;ll do better.</p>
+
+<p>We rented North Country. I can&#8217;t say that I recommend it. Other than that I&#8217;ve been busy watching Season 4 of Gilmore Girls, and that I can definitely recommend. It&#8217;s one of my favorite shows (no, I don&#8217;t watch it on TV, just on DVD, like most television shows I watch). Season 5 is sitting on my shelf just itching to be played.</p>
+
+<p>Tuesday I did my first instance in WoW with a pick-up group. It went rather well. I had a blast, and I am looking forward to doing it again. I haven&#8217;t been playing a lot lately, but all of the sudden I felt like it, and I had some fun. So I&#8217;ve been doing some of that the last couple of nights (since I don&#8217;t have classes this week).</p>
+
+<p>Tonight I expect to be more of the same, I&#8217;ll probably finish Season 4 and maybe run an instance.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/13/when-i-grow-up-i-want-to-be-a-fireman.html" rel="bookmark" title="Permanent Link to When I Grow Up, I Want To Be A Fireman">When I Grow Up, I Want To Be A Fireman</a></h3>
+  <p class="date">March 13th, 2006</p>
+  <div class="entry"><p>Life is full of tough decisions. It is, in fact, itself a series of decisions, and many of them are tough. So far, I&#8217;ve had a mix of them. The funny thing is, I made a lot of decisions that are hard for most people with ease.</p>
+
+<p>I dropped out of college. I got married, and have remained blissfully so. I picked up all of my earthly posessions and moved a state away to seek out better fortune. I left a steady job for a new, better, shinier job, and then did it again three months later (and have been in that position for the last two years). I just bought a house six months ago.</p>
+
+<p>I read. I know that many people stress out and toil over those kinds of decisions, and all of them have just come to me. When I needed to make a decision, I just did it. Yeah, it was stressful, but the right choice came to me. But now, I&#8217;m sitting here in my house and I&#8217;m thinking about the future. I&#8217;ve got everything (mostly) planned out through my graduation, which will be in Spring of 2010. That&#8217;s right, boys and girls, I have another six semesters after this one before I graduate (wow, it&#8217;s into the single digits at least).</p>
+
+<p>I&#8217;m not sure what I want to do after I finish school. I&#8217;m already employed, and as much as I love my job, I don&#8217;t want to work there forever. I want to start a business, but hell if I know what. I&#8217;ve considered graduate school, but I frequently reconsider (and then reconsider reconsidering). When I get my degree in four years, I&#8217;ll be done with the part of my life that&#8217;s been planned.</p>
+
+<p>A few years ago, that would have seemed like forever (indeed, I remember thinking just that), but now that seems like it will be just around the corner. I feel unprepared. I wish I could find that resolve that I had as a young child when I said I wanted to be an astronaut, and then a fireman, and then a chemist, and then and then and then.</p>
+
+<p>I&#8217;m sure I&#8217;ll decide when the time comes, but it&#8217;s this waiting that&#8217;s killing me.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/12/grills-and-receptacles-part-deux.html" rel="bookmark" title="Permanent Link to Grills and Receptacles, part Deux">Grills and Receptacles, part Deux</a></h3>
+  <p class="date">March 12th, 2006</p>
+  <div class="entry"><p>Two weekends in a row this has been the topic du jour. It&#8217;s like grilling and electrical work go together. Like chocolate and mint, or swearing and hockey.</p>
+
+<p>This afternoon I had the house to myself for a blessed hour and a half. I took that golden opportunity to shut all the power off in the house and install my new circuit, and it worked! Well, after a little coaxing. Once the breaker was installed and I turned the power back on, I discovered I had miswired one of the receptacles. They are all GFCI receptacles, so they just wouldn&#8217;t reset the right way. A little work and I got it all taken care of. So I&#8217;ve got more power in my basement and the server migration is ready for phase two: getting the nice internet pipe in the basement.</p>
+
+<p>Today also illustrated for me <em>just</em> how nice having a natural gas grill out on the deck is. I can go out there, fire it up and throw down some food any time I want. If it&#8217;s smoky, the main floor of the house won&#8217;t get filled, and all of the food has that delicious flame-licked taste. I made burgers, salmon, and garlic bread on the grill today. I&#8217;m of the opinion that most everything is better when cooked over actual fire.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/11/the-abstract-concept-of-abstraction.html" rel="bookmark" title="Permanent Link to The Abstract Concept of Abstraction">The Abstract Concept of Abstraction</a></h3>
+  <p class="date">March 11th, 2006</p>
+  <div class="entry"><p>So, last weekend, we bought a <a href='http://www.alieniloquent.com/2006/03/05/of-grills-and-receptacles/'>grill</a>. Yesterday we got the gas line installed in our house so that we could use the grill. Naturally, I was planning on having steaks for dinner.</p>
+
+<p>Long about 0930, I get a call from Erica while I&#8217;m at work. &#8220;Hey honey, I know you&#8217;re excited about grilling. I&#8217;m excited about hanging out with my friends. Can I have some of my physics-major friends over?&#8221; I figured, sure, why not? They&#8217;re my friends too. The more the merrier.</p>
+
+<p>Well, there were more. I ended up cooking for twelve people. Pleasantly, my grill has <em>plenty</em> of room to cook on. I cooked steaks for most people, chicken breasts for a couple, burgers for a couple and lots of veggies (bell peppers, squash, tomatoes, zucchini, and onions). It was all really very good.</p>
+
+<p>Party continued. Margaritas were had. We burned the chiminea again, and I ended up watching the fire burn down while everybody else played Outburst. I enjoyed that. Then we all played charades until midnight when I went to bed. I assume the party continued after that, but I&#8217;m not sure how long because despite their volume, I was out cold in five minutes.</p>
+
+<p>So, that&#8217;s why there was no blogging yesterday. I spent from about 1700 - 0000 entertaining. It was fun, though. Expect more bloggy goodness from me today.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/09/watching-the-flames.html" rel="bookmark" title="Permanent Link to Watching the flames">Watching the flames</a></h3>
+  <p class="date">March 9th, 2006</p>
+  <div class="entry"><p>When we bought this house, we made sure to ask for the cast-iron chiminea that the previous owners had. They let us have it (along with a lot of other stuff). That was back in September. We were very excited because it was still the right season to burn the chiminea, but we never did.</p>
+
+<p>Tonight we had company over and since the weather was nice enough (I look at the weather widget and see it&#8217;s only 4 degrees above freezing, I guess I have a weird definition of nice enough) we decided to eat out on the deck and start up a fire. The wood was wet, although imperceptibly so, as it had been in the chiminea since the aborted attempt at burning back in early November. But, after a bit of work, I got a nice fire going.</p>
+
+<p>Three hours later, I&#8217;ve finally come in from the deck to go to bed. It was enjoyable watching the fire burn down. I forgot how much I enjoy watching the flames dance back and forth. Watch the glow of the wood as it sits there and smolders. The smell of the smoke from good wood. The (little bit of) radiant heat. It reminded me of my Boy Scout days just a little.</p>
+
+<p>We&#8217;ll be burning a lot this spring.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/08/inexplicable-key-chord-572.html" rel="bookmark" title="Permanent Link to Inexplicable Key-Chord #572">Inexplicable Key-Chord #572</a></h3>
+  <p class="date">March 8th, 2006</p>
+  <div class="entry"><p>There&#8217;s a plugin for the Delphi IDE called GExperts. This plugin provides a metric ton of addons. The one that we use it for here at my office is Grep. In most ways it is superior to Delphi&#8217;s find-in-files functionality. There are two key-chords associated with grep: Alt-Shift-S to bring up the search screen and Alt-Ctrl-R to bring up the search results.</p>
+
+<p>That&#8217;s great. The problem is, I do one way more than the other. So I remember the correct <a href='http://www.catb.org/jargon/html/B/bucky-bits.html'>bucky bits</a> for grepping, but I frequently forget the correct ones for bringing up the search results.</p>
+
+<p>Naturally, I will try Alt-Shift-R before Alt-Ctrl-R, figuring the bucky bits would be the same. And for two years, nothing has ever happened. Then one day last week, I&#8217;m sitting on an assignment statement like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='n'>Foo</span> <span class='o'>:=</span> <span class='n'>Bar</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>I hit Alt-Shift-R and all of the sudden I&#8217;ve got this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='n'>Bar</span> <span class='o'>:=</span> <span class='n'>Foo</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>&#8220;Whisky tango foxtrot,&#8221; I say, and hit again. It flips again. I try it on this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='bp'>Result</span> <span class='o'>:=</span> <span class='n'>Foo</span><span class='p'>(</span><span class='n'>Bar</span><span class='p'>)</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>And I get:</p>
+<div class='highlight'><pre><code class='delphi'><span class='n'>Foo</span><span class='p'>(</span><span class='n'>Bar</span><span class='p'>)</span> <span class='o'>:=</span> <span class='bp'>Result</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>Thanks, GExperts.</p>
+
+<p>Now, I couldn&#8217;t for the life of me figure out <em>why</em> anybody would want this feature. Until I read the documentation. It will also flip the direction of a for loop. That is actually neat and cool.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/07/a-to-do-list.html" rel="bookmark" title="Permanent Link to A To Do List">A To Do List</a></h3>
+  <p class="date">March 7th, 2006</p>
+  <div class="entry"><p>This will be the first of two posts today, as I forgot to post yesterday. Following in Erica&#8217;s <a href='http://www.sperari.com/archives/2006/03/06/to-dos/'>footsteps</a>, here is my to do list.</p>
+
+<p>Before Spring Break:</p>
+
+<ul>
+<li>
+<p>Graph Theory homework (due Thursday).</p>
+</li>
+
+<li>
+<p>Analysis homework (due Thursday).</p>
+</li>
+
+<li>
+<p>Review analysis material for exam on Thursday.</p>
+</li>
+
+<li>
+<p>Review graph theory material for quiz on Thursday.</p>
+</li>
+
+<li>
+<p>Work.</p>
+</li>
+
+<li>
+<p>Ben Folds concert.</p>
+</li>
+</ul>
+
+<p>During Spring Break:</p>
+
+<ul>
+<li>
+<p>Install the circuit I built.</p>
+</li>
+
+<li>
+<p>Narrow down the topic for my Graph Theory paper.</p>
+</li>
+
+<li>
+<p>Read the material for that paper.</p>
+</li>
+
+<li>
+<p>Write that paper.</p>
+</li>
+
+<li>
+<p>Prepare material for a Mage game that I may or may not run in the future.</p>
+</li>
+
+<li>
+<p>Crochet a few rows on my afghan.</p>
+</li>
+
+<li>
+<p>Sleep, and get up at 0500 every day.</p>
+</li>
+
+<li>
+<p>Blog every day.</p>
+</li>
+</ul></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/07/awesome-concert.html" rel="bookmark" title="Permanent Link to Awesome Concert">Awesome Concert</a></h3>
+  <p class="date">March 7th, 2006</p>
+  <div class="entry"><p>Ben was fantastic. This is actually the first time I&#8217;ve seen him play with anything resembling a band: a drummer and a bass player. Although I didn&#8217;t know he was going to have a band, it was a pleasant surprise. The previous three shows I&#8217;ve been to, he&#8217;s been solo. There are definitely some songs that were much better with the added guys, especially because of the extra vocals that Ben just can&#8217;t do on his own. That said, I still like him a lot on his own.</p>
+
+<p>I&#8217;ll let Erica post a set list because she knows all the titles. He did play his staple gig songs: Army, Philosophy, and Not The Same. He also did a cover of Dr. Dre&#8217;s Bitches Ain&#8217;t Shit, which was hilarious. He informed us all that he no longer Rocks This Bitch, nor does he Rock Out With His Cock Out, and he did it in the form of a folk song.</p>
+
+<p>Amusingly, he seemed to be up on the whole purchase of the Ranchbowl and planned Wal-Mart conversion. In his words, &#8221;I&#8217;ve played Wal-Mart now.&#8221;</p>
+
+<p>Ben continues to be my favorite concert performer, and about the only act I&#8217;ll always go see if I can. In fact, if I didn&#8217;t have an exam on Thursday, I&#8217;d go see him again at the show in Des Moines.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/05/of-grills-and-receptacles.html" rel="bookmark" title="Permanent Link to Of Grills and Receptacles">Of Grills and Receptacles</a></h3>
+  <p class="date">March 5th, 2006</p>
+  <div class="entry"><p>I got a lot done this weekend. Getting up at five in the morning really has a lot to be said for it. I really got a lot done.</p>
+
+<p>Tyler and I are planning to set up our servers in my basement, but there wasn&#8217;t any power for it. So, I&#8217;ve been planning to put in a circuit for a while. But, every weekend would come along and I would sleep in and I wouldn&#8217;t go get the hardware. So, I&#8217;d put it off again. Yesterday I finally went to Lowes, and I got all of the stuff I needed.</p>
+
+<p>Naturally, I ended up going back to Lowes today as I was wiring together the receptacles (that&#8217;s the fancy electrician&#8217;s word for an outlet), so that I could get a couple of things I hadn&#8217;t bought on the first trip. This time I brought Erica with me.</p>
+
+<p>When I take Erica to stores she can&#8217;t help but look around. She has to look at everything in the store. This time it was grills. Now, I can get behind that. I like grills. I want a grill. So, well, I <a href='http://www.sperari.com/archives/2006/03/05/more-domestic-bliss/'>bought one</a>. It was an adventure getting it home, but now it&#8217;s back on my deck. We just have to get MUD to come out and install the gas hookup for it, and then I&#8217;ll be grilling all the time.</p>
+
+<p>I&#8217;ve got the wiring project mostly done. All I have left to do is mount the board with the receptacles on the wall and then install the breaker in the load center (fancy word for a breaker box). Assuming I can follow instructions, I should have four shiny new outlets in my basement.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/04/on-roleplaying.html" rel="bookmark" title="Permanent Link to On Roleplaying">On Roleplaying</a></h3>
+  <p class="date">March 4th, 2006</p>
+  <div class="entry"><p>I&#8217;m a gamer. Mostly old-fashioned, pencil-and-paper, roleplaying games. I do play <a href='http://www.worldofwarcraft.com'>World of Warcraft</a>, but my favorites are table-top RPGs.</p>
+
+<p>I&#8217;ve played a lot of different games: AD&amp;D, d20 D&amp;D, Vampire, Werewolf, Changeling, Mage, Hunter, GURPS, 7th Sea, Shadowrun, Cyberpunk: 2020, Call of Cthulu, and some homebrew systems. Each has a different style. Each has a different mixture of rolling dice and playing roles. Sometimes these two facets are called roll-playing and role-playing.</p>
+
+<p>I&#8217;ll be honest, I prefer role-playing to the alternative. If I wanted to sit around and throw pieces of plastic the whole time, I wouldn&#8217;t need to come up with worlds and stories. Don&#8217;t get me wrong, I think dice have a place in a game, but I don&#8217;t think they should be at the forefront. Consequently, I don&#8217;t like games that are heavy on combat. It doesn&#8217;t matter which system you play in, combat is inevitably the least role-playing you do in a session.</p>
+
+<p>So of the games I&#8217;ve played, I tend to prefer the <a href='http://www.white-wolf.com'>White Wolf</a> World of Darkness games, my favorite being Mage (2nd Edition, in particular). It is very story heavy, and that&#8217;s what I like. The game is all about playing characters and solving problems. Sure, there&#8217;s combat, but it&#8217;s all very plot- driven. You don&#8217;t do a dungeon crawl in mage, you infiltrate the Syndicate front&#8217;s corporate headquarters to get the vitally important documents that explain the wave of mysterious drug-related deaths in the local area.</p>
+
+<p>My regular gaming group wasn&#8217;t getting into Mage. Erica and I suggested that we play D&amp;D. She and I knew that we could attempt to make D&amp;D fun for us (by making interesting characters and roleplaying them). We&#8217;ve played a couple of sessions as of tonight and, well, the game is about what D&amp;D usually is: a lot of rolling.</p>
+
+<p>I&#8217;m trying to have fun, but between throwing down dice and looking up rules, I can&#8217;t say that there&#8217;s much room for it.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/03/crochet-fun.html" rel="bookmark" title="Permanent Link to Crochet Fun">Crochet Fun</a></h3>
+  <p class="date">March 3rd, 2006</p>
+  <div class="entry"><p>Erica started <a href='http://www.sperari.com/archives/2006/02/21/mein-hut-der-hat-drei-ecken/'>crocheting</a> <a href='http://www.sperari.com/archives/2006/03/03/goals-and-humongous-pom-pons/'>again</a>. She&#8217;s pretty excited about her projects. I am too. She&#8217;s really starting to make some nice things. Aside from the hats, she&#8217;s working on an afghan pattern that came on the yarn we bought at Wal-Mart it&#8217;s really neat.</p>
+
+<p>I&#8217;ve known how to crochet since I was ten or so. Back then I pretty much just made hot pads and trivets. Lots of squares. But, it was fun and I felt crafty. Then, a few years back, when Erica and I both had phone jobs in Colorado, we both decided to crochet scarves for each other. We never finished them, but it was really fun. We&#8217;d be sitting there crocheting while we did internet tech support. It&#8217;s soothing.</p>
+
+<p>So, seeing Erica get all excited about making pretty things out of yarn, I decided I should pick up a project too. Naturally, I decided to start big: 36 square feet of afghan. I&#8217;m using a nice double-crochet chevron pattern and it&#8217;s looking quite nice. Right now it&#8217;s about six feet by eleven inches. I&#8217;ve only got 61 inches to go before it&#8217;s square. I should have it done by the time fall rolls around.</p>
+
+<p>I really enjoy crochet because it&#8217;s something I can do that requires skill but not a lot of thinking. When I come home from work and class, my brain can sometimes get pretty fried. So having an activity that I can do that is effectively brainless but that still lets me make pretty things, is awesome.</p>
+
+<p>I&#8217;ll be sure to get Erica to post pictures of my afghan when it&#8217;s done.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/02/a-post-should-go-here.html" rel="bookmark" title="Permanent Link to A Post Should Go Here">A Post Should Go Here</a></h3>
+  <p class="date">March 2nd, 2006</p>
+  <div class="entry"><p>It&#8217;s not until I set the goal to write a blog post every day that I realized I don&#8217;t always have a topic to write about. Were I to have a topic, this post would have been about it. Instead, you get this placeholder post where I talk about the post I would have written.</p>
+
+<p>Let me introduce you to the post I would have written. It is about a very deep, interesting, and intellectual topic. In this post I give the topic a brief survey and offer some witty insights and humorous anecdotes. I conclude the post with a thoughtful one-liner.</p>
+
+<p>Tomorrow I&#8217;ll make a list of topics.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/01/on-primitives.html" rel="bookmark" title="Permanent Link to On Primitives">On Primitives</a></h3>
+  <p class="date">March 1st, 2006</p>
+  <div class="entry"><p>Blaine has a <a href='http://www.blainebuxton.com/weblog/2006/02/string-how-i-loathe-thee.html'>post</a> about how strings are so frequently abused in object models. We heap extra meaning onto a string when we really should make a class. The reason we should make a new class is that each class represents a concept in our domain, and we can add behaviours and data to each class. You&#8217;ll be hard pressed to do that with a string. So, to stay agile it&#8217;s better to make new classes for new concepts.</p>
+
+<p>In Delphi, there&#8217;s a similarly abused syntax trick. It looks like this:</p>
+<div class='highlight'><pre><code class='delphi'><span class='k'>type</span> <span class='n'>TMyEnum</span> <span class='o'>=</span> <span class='p'>(</span><span class='n'>meOne</span><span class='o'>,</span> <span class='n'>meTwo</span><span class='o'>,</span> <span class='n'>meThree</span><span class='p'>)</span><span class='o'>;</span>
+<span class='k'>const</span> <span class='n'>MyEnumStrings</span><span class='o'>:</span> <span class='k'>array</span><span class='p'>[</span><span class='n'>TMyEnum</span><span class='p'>]</span> <span class='k'>of</span> <span class='k'>string</span> <span class='o'>=</span> <span class='p'>(</span><span class='s'>&#39;First&#39;</span><span class='o'>,</span> <span class='s'>&#39;Second&#39;</span><span class='o'>,</span> <span class='s'>&#39;Third&#39;</span><span class='p'>)</span><span class='o'>;</span>
+</code></pre>
+</div>
+<p>Then, wherever you want to get a string associated with one of the enum tokens, you can just index into that constant array <em>using the enum value</em>.</p>
+
+<p>This trick isn&#8217;t limited to arrays of strings, either. You could have arrays of integers, doubles, characters, or even objects, and you can make as many of these arrays as possible. So if you have some setting and there&#8217;s ten values that change with that setting, then you could have the setting be an enumeration and have ten constant arrays indexed on that.</p>
+
+<p>In a world of procedural programming, that&#8217;s a neat trick, and it can help a lot. But Delphi shed it&#8217;s procedural shackles years ago, and now it has the power of objects to help it out. Sadly, many programmers are tied to Delphi&#8217;s procedural roots, and can&#8217;t get away from this enumeration-indexed array trick.</p>
+
+<p>What&#8217;s so bad about the trick? For starters, you&#8217;re making global data. Sure, it&#8217;s constant data, but it&#8217;s global, which makes finding where the data is coming from that much harder for somebody new to the code (or somebody reading it months after they wrote it). Secondly, in order to vary behavior based on the enumeration, you have to have gnarly conditionals that branch based on the type code. This makes methods longer and harder to understand and follow. Lastly, it makes the types more resistant to change, especially if they&#8217;re serialized as integers: any change in order will change the ordinal (integer) value of the same enumerated value.</p>
+
+<p>What&#8217;s the alternative? Make a class. You can easily make a class that represents the type code, and you can make subclasses for each type. The class can have methods for each of the constant arrays and the subclasses can implement them to return the proper ordering. If there&#8217;s behavior specific to one type you can put it on this class hierarchy and polymorphically switch out behaviors, instead of making gnarly conditionals. Moreover, there&#8217;s no inherent ordering from one class to the next, so you can completely control how things are serialized and compared.</p>
+
+<p>As Joshua Kerievsky says in his book <a href='http://www.amazon.com/gp/product/0321213351/'>Refactoring to Patterns</a>, so many developers have an obsession with using language primitives such as strings, integers, or enumerations. Whether that&#8217;s because they think that it&#8217;s too much work to make a class, or it&#8217;ll take too many CPU cycles, or it&#8217;ll eat up too much memory, it doesn&#8217;t matter. The obsession with primitives is unhealthy and it leads to spaghetti code that is hard to refactor.</p>
+
+<p>We must resist the temptation and make supple, agile code. That means we must make classes.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/03/01/missed-a-day-already.html" rel="bookmark" title="Permanent Link to Missed a day already">Missed a day already</a></h3>
+  <p class="date">March 1st, 2006</p>
+  <div class="entry"><p>I set a goal for myself to blog every day, and I don&#8217;t even manage to do three days in a row. That&#8217;s embarrassing.</p>
+
+<p>Yesterday was a busy one. I went to work at 0730, as usual, and worked on some fun stuff until 1200, and then I came home. I ate some leftovers and tried to take a short nap. It only lasted 15 minutes. I did manage to doze off a little, as I recall having some dreams, but I think that I was a little awake at the same time.</p>
+
+<p>Then I ran off to South Campus for my graph theory class. I got my first exam back: 94%, yay! Class was interesting. We spent most of the time talking about some algorithms I already knew, but then we started talking about matching, and that should prove to be interesting. That class got out at 1445.</p>
+
+<p>After class I drove up to North Campus to hang with the physics TAs and piddle around on my computer. I looked at my budget (it&#8217;s still mostly blank) and my bank balance, and then I started a new programming project.</p>
+
+<p>My next class was at 1730. Analysis is a fun class. I like the instructor, and I like the topic. I didn&#8217;t think I&#8217;d like doing seemingly inane proofs of stuff that Just Makes Sense, but it actually is fun (for me). We talked about subsequences and then we talked about monotone sequences and the Monotone Convergence Theorem.</p>
+
+<p>After class, Erica and I grabbed a bite to eat and came home to take a real nap. This one lasted 45 minutes or so. I got up from the nap, and was still tired, so I just went back to bed.</p>
+
+<p>My alarm went off this morning at 0455 and then again at 0503 and 0505 (There&#8217;s two alarms, and it only waits 8 minutes). I was up and ready to go after the second one. I hopped in the shower, and that&#8217;s when I realized that I&#8217;d completely spaced blogging last night.</p>
+
+<p>Consider this yesterday&#8217;s post. I&#8217;ll post again later today.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/02/27/okay-so-maybe-not-so-drastic.html" rel="bookmark" title="Permanent Link to Okay, so maybe not so drastic">Okay, so maybe not so drastic</a></h3>
+  <p class="date">February 27th, 2006</p>
+  <div class="entry"><p>Having made my declaration of goals yesterday, I did some thinking. I&#8217;m really looking forward to my dietary changes. I&#8217;m also really looking forward to the regular blogging.</p>
+
+<p>As she always does, Erica found me some reading about polyphasic sleep. Now keep in mind, she&#8217;s the one that seeded the idea in my head to start with. Upon reading these articles, I am still incredibly curious to see how it would be. However, I think that it will be more practical for me to simply work on being an early riser and perhaps take a nap in the afternoon: biphasic sleep.</p>
+
+<p>I&#8217;m going to replace the polynapping goal with a different one, and I&#8217;ll start it the same day: get up at 5AM every morning.</p>
+
+<p>Now, there are a number of things that will contribute to this goal. First, I&#8217;m giving up caffeine. This is part of the Atkins diet, but it certainly won&#8217;t harm my sleep habits. In fact, I started going caffeine-free today, since I know I can do it whenever I choose (I&#8217;ve done it before, caffeine is always a conscious choice). I&#8217;m certainly feeling a little more weary tonight than I would had I had my coffee and cola today, but I will go to bed sooner and feel rested in the morning.</p>
+
+<p>I might revisit the polynapping again sometime in the future when I&#8217;m self- employed (that&#8217;s a goal of mine, you know).</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/02/26/my-belated-new-years-resolution.html" rel="bookmark" title="Permanent Link to My Belated New Year's Resolution">My Belated New Year's Resolution</a></h3>
+  <p class="date">February 26th, 2006</p>
+  <div class="entry"><p>Most people make their new year&#8217;s resolutions around January 1. This year I decided to see how things would shape up first, so now it&#8217;s nearly the end of February, and I&#8217;m finally getting around to setting some goals. (Actually, I just now set some goals, and I&#8217;ve decided to call them new year&#8217;s resolutions, but it&#8217;s all in how we frame it.)</p>
+
+<p>One of those goals is to blog every day. No matter what. So, in the spirit of achieving that goal, I&#8217;m going to blog about it. Right now.</p>
+
+<p>For the last few months, in many areas of my life, I&#8217;ve felt like I&#8217;m a kid playing at being a grown-up. Now, honestly, I think most people expect somebody who is 23 to be like that in most of these areas: personal finance, housework, time management, etc. But, I&#8217;ve never been normal. I&#8217;ve been married for five years and I just bought a house, clearly I&#8217;m out of the nest. I just feel like there&#8217;s a lot of skills I ought to have that I don&#8217;t. There&#8217;s a lot of things I feel that I ought to be doing that I&#8217;m not, and I know that I&#8217;m the only thing standing in my way.</p>
+
+<p>There&#8217;s a lot of areas that I think I can improve and grow in, but there&#8217;s three that I&#8217;ve selected to start with, and I&#8217;ll tell you, I decided to start with a bang. The three areas I&#8217;m going to start working on are my blog, my diet, and my sleep.</p>
+
+<p>My first goal is to look back on my archives at the end of 2006 and see one post for every day of the year between now and then, that&#8217;s 307 more posts after this one. This goal is to help me build some self-discipline. I expect to be blogging about my work on my other goals, but who knows?</p>
+
+<p>My second goal is to get back onto the Atkins diet. For those of you who read my blog a few years back, you&#8217;ll recall that I had a lot of success with that diet. The fact is, I&#8217;ve never felt better than when I was on that diet. I had more energy. I slept better. I had more focus. I felt healthier. The weight loss was just frosting on the cake of feeling altogether better. I want to feel that way again.</p>
+
+<p>I am going to start the diet again next Saturday, March 4th, and Erica is going to do it with me. Nate even said he&#8217;d go low-carb. During this coming week, we&#8217;re eating as many of the carby things we have in our pantry so as not to just waste the money we spent on them. On Saturday we&#8217;ll kick it off. Last time we (successfully) went Atkins, we gave away an entire grocery-shopping trip&#8217;s worth of groceries to my sister-in-law. We might do something crazy like that again.</p>
+
+<p>The third goal is to adapt to <a href='http://en.wikipedia.org/wiki/Polyphasic_sleep'>polyphasic sleep</a>. I almost wrote &#8220;or prove to myself that it&#8217;s not for me,&#8221; but I&#8217;m not going to give myself that option. It is for me, and I&#8217;m going to make it happen. I have an exam in my analysis class on March 9, but after that I don&#8217;t have class for an entire week. I&#8217;m going to have a full night&#8217;s rest on Wednesday night into Thursday, but then I&#8217;m going to start my napping schedule after I get up that morning. I should be plenty rested for the exam, and I should be through the worst of the adaptation by the time my next class rolls around. That also places the days which most people seem to have the most trouble with either on weekend days, or days that are very short for me at work. It&#8217;s a medium-risk, high-reward move for me, and I like those.</p>
+
+<p>Those are my three goals. I <em>am</em> going to attain all three.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/02/23/unit-testing-of-cocoa-apps.html" rel="bookmark" title="Permanent Link to Unit Testing of Cocoa Apps">Unit Testing of Cocoa Apps</a></h3>
+  <p class="date">February 23rd, 2006</p>
+  <div class="entry"><p>There&#8217;s plenty of articles out there telling you how to use <a href='http://www.sente.ch/software/ocunit/'>OCUnit</a>, especially now that it ships with XCode 2.0. They&#8217;re all excellent. You should read them, especially <a href='http://developer.apple.com/documentation/DeveloperTools/Conceptual/UnitTesting/Articles/CreatingTests.html#//apple_ref/doc/uid/TP40002171-BBCBGHCJ'>Apple&#8217;s</a>. This article is simply about a little trick that I&#8217;ve come up with to solve a minor annoyance I have with using Apple&#8217;s method of hooking up what they call a dependent test bundle.</p>
+
+<p>A dependent test bundle is a really neat idea, actually. It uses your actual application as a framework at link time and then uses some nifty magic to launch the test bundle from inside your application and run all of the tests. Why bother with all of that? It means you can keep your application code in one target and your test code in another target &#8211; completely separate. That&#8217;s a worthy goal.</p>
+
+<p>The only thing I don&#8217;t like about this, though, is that if you&#8217;re developing a GUI Cocoa application (and let&#8217;s face it, most people are) then the process of running the tests from within the application has the consequence of popping up the GUI and letting it sit there until you quit manually. That&#8217;s annoying.</p>
+
+<p>So I came up with a solution. It&#8217;s really nothing that fancy, but I thought I&#8217;d share. I make a Cocoa Shell Tool target, and I name it something like <code>stub</code>. I make a C file and name it <code>stub-main.m</code>. In that file I put the following three lines:</p>
+<div class='highlight'><pre><code class='c'><span class='kt'>int</span> <span class='nf'>main</span><span class='p'>(</span><span class='kt'>int</span> <span class='n'>argc</span><span class='p'>,</span> <span class='kt'>char</span> <span class='o'>*</span><span class='n'>argv</span><span class='p'>[])</span> <span class='p'>{</span>
+  <span class='k'>return</span> <span class='mi'>0</span><span class='p'>;</span>
+<span class='p'>}</span>
+</code></pre>
+</div>
+<p>Then I add all of the application source files that my tests are going to need to link to and make sure it all compiles. I just use that as the bundle loader for my tests, and it&#8217;s all good. No GUI popping up.</p>
+
+<p>For an example of how to do this, you can look at the source for <a href='http://ocfit.tigris.org/'>OCFit</a>.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/02/14/strings-arrays-and-duck-typing-goodness.html" rel="bookmark" title="Permanent Link to Strings, arrays, and duck typing goodness">Strings, arrays, and duck typing goodness</a></h3>
+  <p class="date">February 14th, 2006</p>
+  <div class="entry"><p>We use more and more ruby around my shop every day, and that just tickles me pink. One thing that we&#8217;ve been using it a lot for is managing our Subversion working copies. We have a script that will delete unversioned files. We have a script that will delete ignored files. I wanted to write a script that would do both of those things and also revert any modified files (thus returning the working copy to a pristine state, essentially).</p>
+
+<p>There was a <em>lot</em> of duplication between the two scripts. In fact, the only thing different was one character in a regex: it was &#8217;?&#8217; for the unversioned and &#8216;I&#8217; for the ignored. I went through and wrote a new class to represent these things and then I wanted to write a method named <code>delete_if_status</code> which would take a list of statuses and delete any items in the checkout that matched any of them.</p>
+
+<p>I thought it would be cool if I could call it like this:</p>
+<div class='highlight'><pre><code class='ruby'><span class='n'>list</span><span class='o'>.</span><span class='n'>delete_if_status</span><span class='p'>(</span><span class='o'>[</span><span class='s1'>&#39;?&#39;</span><span class='p'>,</span> <span class='s1'>&#39;I&#39;</span><span class='o'>]</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>But also call it like this:</p>
+<div class='highlight'><pre><code class='ruby'><span class='n'>list</span><span class='o'>.</span><span class='n'>delete_if_status</span><span class='p'>(</span><span class='s1'>&#39;?I&#39;</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>Naturally, I figured Ruby would have a duck-typing answer to this problem, but just the way it solved it surprised me (just a little&#8211;actually, now that I think about it, it&#8217;s unsurprising). Here is an IRB log that demonstrates just what I discovered.</p>
+<div class='highlight'><pre><code class='text'>irb(main):001:0&gt; &#39;I?&#39;.split
+=&gt; [&quot;I?&quot;]
+irb(main):002:0&gt; &#39;I?&#39;.split(&#39;&#39;)
+=&gt; [&quot;I&quot;, &quot;?&quot;]
+irb(main):003:0&gt; &#39;I?&#39;.to_a
+=&gt; [&quot;I?&quot;]
+irb(main):004:0&gt; [&#39;I&#39;,&#39;?&#39;].to_s
+=&gt; &quot;I?&quot;
+irb(main):005:0&gt; [&#39;I&#39;,&#39;?&#39;].to_s.split(&#39;&#39;)
+=&gt; [&quot;I&quot;, &quot;?&quot;]
+</code></pre>
+</div>
+<p>So what I ended up with was this method:</p>
+<div class='highlight'><pre><code class='ruby'><span class='k'>def</span> <span class='nf'>delete_if_status</span><span class='p'>(</span><span class='n'>spec</span><span class='p'>)</span>
+  <span class='n'>status_list</span> <span class='o'>=</span> <span class='n'>spec</span><span class='o'>.</span><span class='n'>to_s</span><span class='o'>.</span><span class='n'>split</span><span class='p'>(</span><span class='s1'>&#39;&#39;</span><span class='p'>)</span>
+  <span class='nb'>self</span><span class='o'>.</span><span class='n'>delete_if</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>item</span><span class='o'>|</span>
+    <span class='n'>status_list</span><span class='o'>.</span><span class='n'>include?</span> <span class='n'>item</span><span class='o'>.</span><span class='n'>status</span>
+  <span class='k'>end</span>
+<span class='k'>end</span>
+</code></pre>
+</div>
+<p>I love Ruby.</p>
+
+<p><em>Edited:</em> Fixed some formatting with code and output snippets.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/02/02/no-really-i-mean-copy-the-files.html" rel="bookmark" title="Permanent Link to No, really, I mean copy the files">No, really, I mean copy the files</a></h3>
+  <p class="date">February 2nd, 2006</p>
+  <div class="entry"><p>A couple of weeks ago, my department got a replacement for our linux server (well, that&#8217;s really giving the machine more credit than it deserves, it was hardly a server). Being the only guy here who really knows how to set up a linux server in any sort of efficient manner, I naturally took on the task of getting the new hardware up and running. There were, naturally, kinks (there always are) in the process, but I got the machine up and going. We got our wiki and our Subversion repository migrated over to it, and all was good.</p>
+
+<p>Or so we thought. We came in the next morning and nobody could check out from the repository. I combed through the Apache error logs and discovered that the repository didn&#8217;t think that some revisions existed, so naturally it wouldn&#8217;t let us check out code that had been last modified in that revision. So I tried <code>svnadmin verify /var/svn/repo</code> and sure enough, it blew up. It said that it couldn&#8217;t find a file under <code>/var/svn/repo/db/revprops</code> &#8211; very odd. When I copied the files from the old repository (with the server off, natch) <code>cp</code> had not given me any errors. So, I went and peeked in the old repository, and the file was there. I copied it over, and the verfiy moved on, but only to break on another revision, and then another, and then another. At that point, I wrote a simple shell script to copy all the files that were in the one directory but not in the other, and in the end I think I copied a total of about 120 files.</p>
+
+<p>Once all the files were copied, everything worked peachy. I&#8217;m just completely baffled as to why <code>cp</code> didn&#8217;t copy files and also didn&#8217;t give any errors. I wonder if it has something to do with one of the filesystems being Samba and the other being a local hard drive.</p></div>
+</div>
+
+<div class="post">
+  <h3><a href="/2006/01/20/waiting-for-the-build.html" rel="bookmark" title="Permanent Link to Waiting For the Build">Waiting For the Build</a></h3>
+  <p class="date">January 20th, 2006</p>
+  <div class="entry"><p>So we&#8217;ve been moving over to new computers at work and also upgrading our compiler and changing virus protection and all that jazz that makes work fun and enjoyable. One problem we ran into was that our slow build (that runs more tests) was breaking while our fast build wasn&#8217;t. Okay, sure, but what was weird was that it was breaking checking source out from Subversion.</p>
+
+<p>I tackled (along with Brian) this problem today. We had a lot of waiting to do. So, naturally, we took advantage of our new magnetic whiteboard to produce this:</p>
+
+<p><img src='http://blog.alieniloquent.com/images/pacman.jpg' alt='Pacman on a whiteboard with magnets and marker' /></p>
+
+<p>Enjoy.</p>
+
+<p><em>Edited:</em> resized image so it looked decent.</p></div>
+</div>
+
+
+       </div>
+     </div>
+     <div class="yui-b">
+       <div class="yui-u sidebar">
+         <h2 class="sectionheader first">Archives</h2>
+         <ul>
+           
+           <li><a href="/2011/">2011</a></li>
+           
+           <li><a href="/2010/">2010</a></li>
+           
+           <li><a href="/2009/">2009</a></li>
+           
+           <li><a href="/2008/">2008</a></li>
+           
+           <li><a href="/2007/">2007</a></li>
+           
+           <li><a href="/2006/">2006</a></li>
+           
+           <li><a href="/2005/">2005</a></li>
+           
+         </ul>
+       </div>
+     </div>
+   </div>
+   <div id="ft">
+     <p>Layout, design, graphics, photography and text all &copy; 2005-2010 Samuel Tesla unless otherwise noted.</p>
+     <p>Portions of the site layout use Yahoo! YUI Reset, Fonts &amp; Grids.</p>
+   </div>
+ </div>
+
+<!-- BEGIN GOOGLE ANALYTICS -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12538528-2");
+pageTracker._setDomainName(".alieniloquent.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- END GOOGLE ANALYTICS -->
+
+</body>
+</html>
