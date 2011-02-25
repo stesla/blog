@@ -27,6 +27,26 @@
        <div class="yui-b">
          
 <div class="post">
+  <h3><a href="/2011/02/25/now-powered-by-jekyll.html" rel="bookmark" title="Permanent Link to Now Powered By Jekyll">Now Powered By Jekyll</a></h3>
+  <p class="date">February 25th, 2011</p>
+  <div class="entry"><p>I know I promised more blogging. I know it&#8217;s been weeks. I <em>have</em> been working on my blog, just behind the scenes.</p>
+
+<p>I decided that if I was going to start blogging seriously, I did not want to be doing it in a web form. I&#8217;ve been using <a href='http://wordpress.org/'>WordPress</a> for a long time now, and the biggest thing that has always bugged me were my options for actually typing in my blog posts. Web forms suck for writing. I&#8217;d rather use Emacs.</p>
+
+<p>Now, I realize there&#8217;s ways to use Emacs to post to WordPress. I&#8217;m not interested. The second thing that bugged me about my old setup is the database. This is a blog. Except for comments and track-backs, it is essentially static content. There is no reason to bring a database into this transaction.</p>
+
+<p>So, I started considering doing something simple that would generate my content statically. I could store it in a Git repository and push it up to my server. That&#8217;s when I remembered <a href='http://jekyllrb.com'>Jekyll</a>. It was pretty much exactly what I wanted, and it&#8217;s written in Ruby, so I&#8217;ll be comfortable hacking on it when the need arises.</p>
+
+<p>The trouble was that Jekyll doesn&#8217;t have a lot of built-in generation options. It will generate a page for each post, and it will run any extra files through its template expansion, but for things like archive pages some extra code is needed. But, Jekyll provides a plugin mechanism that is more than adequate to allow for extension.</p>
+
+<p>As part of this migration, I&#8217;ve decided to remove the commenting and track-backing functionality from my blog. Experience has shown that I don&#8217;t really get much in the way of comments, and I believe there are better ways to facilitate discussion. If, later, I feel that I should have comments, I&#8217;ll probably use <a href='http://disqus.com'>Disqus</a>.</p>
+
+<p>I also made a little tweak so that only new posts should show up in the RSS feed. Since my scheme for determining GUIDs is new, I didn&#8217;t want to spam people with a bunch of posts that are quite old. Also quite easy with Jekyll.</p>
+
+<p>Ultimately, I&#8217;m quite happy with my new blog setup. It will help me blog more frequently.</p></div>
+</div>
+
+<div class="post">
   <h3><a href="/2011/02/01/yet-another-ltns-post.html" rel="bookmark" title="Permanent Link to Yet Another LTNS Post">Yet Another LTNS Post</a></h3>
   <p class="date">February 1st, 2011</p>
   <div class="entry"><p>Okay, so it seems like over the last few years, so many of my blog posts are &#8220;I am still alive&#8221; or &#8220;long time no see, I&#8217;m going to start blogging again.&#8221;</p>
@@ -133,32 +153,6 @@ combinations 4 3 =&gt; [[]]
         <span class='n'>prepend</span> <span class='n'>x</span> <span class='ow'>=</span> <span class='n'>map</span> <span class='p'>(</span><span class='nf'>\</span><span class='n'>xs</span> <span class='ow'>-&gt;</span> <span class='n'>x</span><span class='kt'>:</span><span class='n'>xs</span><span class='p'>)</span>
 </code></pre>
 </div></div>
-</div>
-
-<div class="post">
-  <h3><a href="/2010/01/27/you-would-like-fries-with-that.html" rel="bookmark" title="Permanent Link to <code>you.would? like(:fries).with(that)</code>"><code>you.would? like(:fries).with(that)</code></a></h3>
-  <p class="date">January 27th, 2010</p>
-  <div class="entry"><p>I was recently linked to an insightful article about how <a href='http://www.gamearchitect.net/Articles/SoftwareIsHard.html'>software is hard</a>. He makes several good points, but the one that sticks out most in my mind is the following:</p>
-
-<blockquote>
-<p>Every software engineer has a low opinion of the way we develop software. Even the term &#8220;software engineering,&#8221; Rosenberg writes, is a statement of hope, not fact. He quotes the 1968 NATO <a href='http://homepages.cs.ncl.ac.uk/brian.randell/NATO/NATOReports/index.html'>Software Engineering Conference</a> that coined the term: &#8220;We undoubtedly produce software by backward techniques.&#8221; &#8220;We build systems like the Wright brothers built airplanes&#8211;build the whole thing, push it off the cliff, let it crash, and start over again.&#8221; Certainly statements that could still be made forty years later.</p>
-</blockquote>
-
-<p>That is so true, especially when it comes to the programming languages we use. Most of the languages with widespread use in industry today are essentially thirty years old, and even those are just the latest in a long <a href='http://www.levenez.com/lang/'>lineage</a> that leads back to FORTRAN and Lisp in the late sixties. Languages in today&#8217;s generation don&#8217;t do anything for you that their ancestors didn&#8217;t do forty years ago.</p>
-
-<p>What&#8217;s worse is that more modern languages exist&#8211;they have existed for decades&#8211;yet they don&#8217;t find mainstream adoption. For the last twenty years the main thrust of innovation in the software industry has been focused on people and process rather than languages and tools. Modern languages are dismissed as academic, and industry experts are struggling to find new and better ways to build useful systems with ancient technology.</p>
-
-<p>We are rapidly approaching a singularity after which the descendants of FORTRAN and Lisp will be grossly inadequate for writing programs. The current rise of concurrent programming is just the beginning. As time plods on and concurrency and distributed programming become more commonplace, we are going to have to develop new ways of writing software.</p>
-
-<p>This really isn&#8217;t news. Software is hard. Concurrent software is harder. We know that. The solutions offered today are primitive, and not much different from the thinking over thirty years ago. Whether you use some shared-memory model or some message-passing model, writing concurrent programs is a mentally exhausting process with a lot of work centered around getting the parallelism right.</p>
-
-<p>Another problem we face is the increasing ubiquity of software. In the modern, Western world it is nearly impossible to take ten steps without walking past at least a hundred semiconductors. Many of those little bits of manufactured silicon are running some sort of program (whether it is firm or software). We passed the point in time where our lives are computerized a long time ago, and many people didn&#8217;t even notice. Your life relies on software in vehicles, hospitals and banks.</p>
-
-<p>With software becoming so commonplace, the burden to produce quality software is greater than ever. Software verification is a critical area of the development process that has been shit on and forgotten for over forty years. Today&#8217;s state of the art in quality assurance is a combination between exploratory testing and developer-written regression suites. In other words, if you don&#8217;t think about verification, then none happens at all.</p>
-
-<p>These problems are both huge. We must solve them, and wetware solutions will be woefully inadequate. We need to adopt and develop new languages and tools that directly address these issues. This is the area where we have <em>regressed</em> from forty years ago. Back then programmers quickly grew impatient with wetware solutions and would write software to automate things and introduce abstractions: programming languages, parser and scanner generators, build automation tools, build configuration tools, stream editors, and the list just goes on.</p>
-
-<p>Somewhere in the last forty years, we just gave up. As an industry, we decided that languages and tool-chains were fundamentally solved problems, and all we needed to do was evolve the syntax and libraries. We have eschewed the <a href='http://c2.com/cgi/wiki?LazinessImpatienceHubris'>virtuous</a> path of software development in favor of a naively pragmatic alternative. Rather than working smarter, we try to work faster. Rather than finding smarter people, we just find <em>more</em> people. These days, there&#8217;s an alternative to working in food service: <a href='http://steve.yegge.googlepages.com/choosing-languages'>programming</a>.</p></div>
 </div>
 
 
