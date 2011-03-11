@@ -5,7 +5,7 @@
     <title>Alieniloquent</title>
     <link>http://blog.alieniloquent.com</link>
     <language>en</language>
-    <pubDate>2011-02-25T18:59:25-08:00</pubDate>
+    <pubDate>2011-03-10T21:07:52-08:00</pubDate>
     <copyright>Copyright 2005-2011</copyright>
     <ttl>60</ttl>
     <description>off on a tangent</description>
@@ -30,6 +30,26 @@
 <p>I also made a little tweak so that only new posts should show up in the RSS feed. Since my scheme for determining GUIDs is new, I didn&#8217;t want to spam people with a bunch of posts that are quite old. Also quite easy with Jekyll.</p>
 
 <p>Ultimately, I&#8217;m quite happy with my new blog setup. It will help me blog more frequently.</p>]]></description>
+    </item>
+    
+    <item>
+      <title>Dear Son</title>
+      <link>http://blog.alieniloquent.com/2011/03/10/to-my-son.html</link>
+      <pubDate>Thu Mar 10 00:00:00 -0800 2011</pubDate>
+      <guid>http://blog.alieniloquent.com/2011/03/10/to-my-son.html</guid>
+      <description><![CDATA[<p>I write to you on your estimated due date. You haven&#8217;t been born just yet, but I know you will be here soon. I am filled with impatience, excitement and anxiety. Impatient for what will most certainly be one of the most joyous events of my life; excited to meet and hold the most amazing thing I have helped bring into this world; and anxious that I am not prepared.</p>
+
+<p>I want you to know that I love you. Mom loves you. We love you unconditionally. That means we love you no matter what, and when we say no matter what, we really mean it. We love you and we accept you for who you are, and who you want to be. We may not always understand you, we may not always agree with you, we may not always approve of your decisions, but we will always love you, and we will always accept you. Always. Unconditionally.</p>
+
+<p>There is so much that I want to share with you; so many amazing things. I can&#8217;t wait to teach you about anything you want to know. We&#8217;ll have years to learn everything we can imagine. But, there is something I think it&#8217;s so important that you learn, that I want to start teaching it to you before you&#8217;re even born.</p>
+
+<p>Always be respectful of people. Be respectful of those you agree with, and of those you disagree with. Be respectful of men, and of women. Be respectful of people like you, and of people unlike you. Be respectful of people regardless of their race, sex, gender, sexuality, beliefs, occupation, hobbies, habits, or other attributes. People deserve to be treated with respect. All people. Every single one.</p>
+
+<p>If you never listen to anything else I say, please listen to this.</p>
+
+<p>Love,</p>
+
+<p>Dad</p>]]></description>
     </item>
     
   </channel>

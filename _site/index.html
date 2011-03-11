@@ -27,6 +27,24 @@
        <div class="yui-b">
          
 <div class="post">
+  <h3><a href="/2011/03/10/to-my-son.html" rel="bookmark" title="Permanent Link to Dear Son">Dear Son</a></h3>
+  <p class="date">March 10th, 2011</p>
+  <div class="entry"><p>I write to you on your estimated due date. You haven&#8217;t been born just yet, but I know you will be here soon. I am filled with impatience, excitement and anxiety. Impatient for what will most certainly be one of the most joyous events of my life; excited to meet and hold the most amazing thing I have helped bring into this world; and anxious that I am not prepared.</p>
+
+<p>I want you to know that I love you. Mom loves you. We love you unconditionally. That means we love you no matter what, and when we say no matter what, we really mean it. We love you and we accept you for who you are, and who you want to be. We may not always understand you, we may not always agree with you, we may not always approve of your decisions, but we will always love you, and we will always accept you. Always. Unconditionally.</p>
+
+<p>There is so much that I want to share with you; so many amazing things. I can&#8217;t wait to teach you about anything you want to know. We&#8217;ll have years to learn everything we can imagine. But, there is something I think it&#8217;s so important that you learn, that I want to start teaching it to you before you&#8217;re even born.</p>
+
+<p>Always be respectful of people. Be respectful of those you agree with, and of those you disagree with. Be respectful of men, and of women. Be respectful of people like you, and of people unlike you. Be respectful of people regardless of their race, sex, gender, sexuality, beliefs, occupation, hobbies, habits, or other attributes. People deserve to be treated with respect. All people. Every single one.</p>
+
+<p>If you never listen to anything else I say, please listen to this.</p>
+
+<p>Love,</p>
+
+<p>Dad</p></div>
+</div>
+
+<div class="post">
   <h3><a href="/2011/02/25/now-powered-by-jekyll.html" rel="bookmark" title="Permanent Link to Now Powerd By Jekyll">Now Powerd By Jekyll</a></h3>
   <p class="date">February 25th, 2011</p>
   <div class="entry"><p>I know I promised more blogging. I know it&#8217;s been weeks. I <em>have</em> been working on my blog, just behind the scenes.</p>
@@ -109,50 +127,6 @@ Binary file ./svn/.caches/check_cherry_pick.db matches
 </code></pre>
 </div>
 <p>That pretty much confirmed my suspicion. I removed those files (they&#8217;re caches, right?), and then my fetch was able to proceed successfully.</p></div>
-</div>
-
-<div class="post">
-  <h3><a href="/2010/04/15/interview-question-combinations.html" rel="bookmark" title="Permanent Link to Interview Question: Combinations">Interview Question: Combinations</a></h3>
-  <p class="date">April 15th, 2010</p>
-  <div class="entry"><p>So I had a job interview yesterday with a great company, and I met a lot of awesome people. A question that was asked, presumably to test my approach to algorithm design, caught me off guard, and I didn&#8217;t give the best answer I feel I was capable of. It bugged me the whole flight home, so, I whipped up a better answer. It seemed like the perfect kind of thing to post here on my blog.</p>
-
-<p>The problem: generate all combinations (without repetiton) with length <code>len</code> of the numbers from 1 to <code>max</code>.</p>
-
-<p>Hearing that problem, my mind immediately jumped to all of my combinatorics background, and I started thinking about how to <em>count</em> all of those combinations. I really just could not get my mind out of that little rat hole, but my interviewers coaxed me out. By the time we were done with that part of the interview, we had come up with something that was on the right track, but still wouldn&#8217;t work.</p>
-
-<p>A few simplifying assumptions can be made. Since these are combinations, order doesn&#8217;t matter (e.g. <code>[1,2,3]</code> is the same as <code>[3,2,1]</code>). Also, since they do not have repetition, we can place an ordering constraint on the individual elements. So, for the 3-element combinations, we can say we want all combinations <code>[z,y,x]</code> where <code>1 ≤ x &lt; y &lt; z ≤ max</code> (the tuple is backwards for convenience of implementation, you could do it the other way just as easy).</p>
-
-<p>So with those two assumptions in mind, I stubbed out my function.</p>
-<div class='highlight'><pre><code class='haskell'><span class='nf'>combinations</span> <span class='ow'>::</span> <span class='kt'>Int</span> <span class='ow'>-&gt;</span> <span class='kt'>Int</span> <span class='ow'>-&gt;</span> <span class='p'>[[</span><span class='kt'>Int</span><span class='p'>]]</span>
-<span class='nf'>combinations</span> <span class='n'>len</span> <span class='n'>max</span> <span class='ow'>=</span> <span class='n'>undefined</span>
-</code></pre>
-</div>
-<p>I had gotten three-quarters of the way toward a working implementation during my interview, so I was already leaning toward a recursive solution here. But, when I keyed in what I&#8217;d come up with earlier, it wasn&#8217;t working right. I was getting things like <code>[2,2]</code> which should just not show up. I also could not do something like <code>combinations 3 3</code> and get anything back. I clearly had some boundary issues. So, I decided to actually write out the sets I was expecting and see if I saw any patterns.</p>
-<div class='highlight'><pre><code class='text'>combinations 0 3 =&gt; [[]]
-combinations 1 3 =&gt; [[1],[2],[3]]
-combinations 2 3 =&gt; [[2,1],[3,1],[3,2]]
-combinations 3 3 =&gt; [[3,2,1]]
-combinations 4 3 =&gt; [[]]
-</code></pre>
-</div>
-<p>The most obvious thing is that there&#8217;s a clear relationship between the length of the combination and the number of combinations available, which is pretty basic combinatorics. There&#8217;s only one way to choose 3 items from a set of 3 items. But looking at this, I&#8217;m trying to conceive of some way to devise a recursive algorithm to produce those lists. So I rewrite the output to show how I would expect those to get built recursively.</p>
-<div class='highlight'><pre><code class='text'>combinations 0 3 =&gt; [[]]
-combinations 1 3 =&gt; [1:[]] ++ [2:[]] ++ [3:[]]
-combinations 2 3 =&gt; [2:[1]] ++ [3:[1], 3:[2]]
-combinations 3 3 =&gt; [3:[2,1]]
-combinations 4 3 =&gt; [[]]
-</code></pre>
-</div>
-<p>Now it might be apparent why I chose the ordering constraint I did. It makes it easy to build these lists with conses. The most imporant observation to make from this data is what numbers actually get selected to be consed. At each level of recursion we&#8217;re selecting only the numbers between <code>len</code> and <code>max</code> to be added onto lists, and then we recurse with all the numbers <em>less than</em> those.</p>
-
-<p>Here is the final implementation:</p>
-<div class='highlight'><pre><code class='haskell'><span class='nf'>combinations</span> <span class='mi'>0</span> <span class='kr'>_</span> <span class='ow'>=</span> <span class='p'>[</span><span class='kt'>[]</span><span class='p'>]</span>
-<span class='nf'>combinations</span> <span class='n'>len</span> <span class='n'>max</span> <span class='ow'>=</span> <span class='n'>foldr</span> <span class='n'>reduce</span> <span class='kt'>[]</span> <span class='p'>[</span><span class='n'>len</span><span class='o'>..</span><span class='n'>max</span><span class='p'>]</span>
-  <span class='kr'>where</span> <span class='n'>reduce</span> <span class='n'>x</span> <span class='n'>ys</span> <span class='ow'>=</span> <span class='n'>recurse</span> <span class='n'>x</span> <span class='o'>++</span> <span class='n'>ys</span>
-        <span class='n'>recurse</span> <span class='n'>x</span> <span class='ow'>=</span> <span class='n'>prepend</span> <span class='n'>x</span> <span class='p'>(</span><span class='n'>combinations</span> <span class='p'>(</span><span class='n'>len</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>)</span> <span class='p'>(</span><span class='n'>x</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>))</span>
-        <span class='n'>prepend</span> <span class='n'>x</span> <span class='ow'>=</span> <span class='n'>map</span> <span class='p'>(</span><span class='nf'>\</span><span class='n'>xs</span> <span class='ow'>-&gt;</span> <span class='n'>x</span><span class='kt'>:</span><span class='n'>xs</span><span class='p'>)</span>
-</code></pre>
-</div></div>
 </div>
 
 
