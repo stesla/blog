@@ -38,7 +38,7 @@ and he is wearing 24m/2T clothes. My 8-month-old wears toddler
 clothes. Yeah. We (yes, Erica again) found a great deal on
 Craigslist. We're good on clothes. He just cut his seventh tooth, and
 will likely cut another before his age-in-months gets ahead of his
-tooth count. Being new parents is awesome, and I mean that the
+tooth count. Being new parents is awesome, and I mean that in the
 fear-and-wonder sense, not the Wayne's World sense.
 
 Only recently have I even remembered I *have* a blog, let alone
