@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 50
 title: On Roleplaying
-wordpress_url: http://www.alieniloquent.com/?p=50
 ---
 I'm a gamer. Mostly old-fashioned, pencil-and-paper, roleplaying games. I do
 play [World of Warcraft][1], but my favorites are table-top RPGs.

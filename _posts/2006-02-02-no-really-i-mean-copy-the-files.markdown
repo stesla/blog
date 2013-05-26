@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 41
 title: No, really, I mean copy the files
-wordpress_url: http://www.alieniloquent.com/2006/02/02/no-really-i-mean-copy-the-files/
 ---
 A couple of weeks ago, my department got a replacement for our linux server
 (well, that's really giving the machine more credit than it deserves, it was

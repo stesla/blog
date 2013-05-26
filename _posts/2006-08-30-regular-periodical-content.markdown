@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 88
 title: Regular Periodical Content
-wordpress_url: http://blog.alieniloquent.com/2006/08/30/regular-periodical-content/
 ---
 So I've been thinking about starting some sort of periodic content: perhaps a
 regular themed article here or a podcast. I would like to take advantage of

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 71
 title: New main page
-wordpress_url: http://blog.alieniloquent.com/?p=71
 ---
 Hey all. I have a story to tell you about [Subversion][1] and firewalls, but
 it will have to wait for tomorrow as I am dead tired.

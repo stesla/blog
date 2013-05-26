@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 25
 title: About Subversion
-wordpress_url: http://www.alieniloquent.com/2005/08/31/about-subversion/
 ---
 Around my office, I'm generally the guy who knows the most about the non-
 windows and open source worlds. That's where I come from, and that's what I

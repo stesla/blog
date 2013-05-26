@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 13
 title: Daylight-Savings Stupidity
-wordpress_url: http://www.alieniloquent.com/2005/07/24/daylight-savings-stupidity/
 ---
 I've posted about this in the past (although, the posts aren't around any
 more). I've always thought that DST was just silly, but apparently I'm in the

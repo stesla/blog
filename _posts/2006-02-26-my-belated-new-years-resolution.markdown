@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 44
 title: My Belated New Year's Resolution
-wordpress_url: http://www.alieniloquent.com/?p=44
 ---
 Most people make their new year's resolutions around January 1. This year I
 decided to see how things would shape up first, so now it's nearly the end of

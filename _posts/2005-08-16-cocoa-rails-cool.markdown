@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 23
 title: Cocoa + Rails = Cool!
-wordpress_url: http://www.alieniloquent.com/2005/08/16/cocoa-rails-cool/
 ---
 Apparently, the folks at VitalSource have used Rails in a [client
 application][1].

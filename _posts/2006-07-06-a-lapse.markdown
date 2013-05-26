@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 64
 title: A Lapse
-wordpress_url: http://www.alieniloquent.com/?p=64
 ---
 Oops.
 

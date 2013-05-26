@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 126
 title: "Broken Window in ActiveRecord: <code>ActiveRecord::StatementInvalid</code>"
-wordpress_url: http://blog.alieniloquent.com/2008/03/03/broken-window-in-activerecord-activerecordstatementinvalid/
 ---
 I love ruby, and I love Rails, but in some ways it really is a ghetto. It has
 a lot of [broken windows][1] that only serve to encourage bad coding from

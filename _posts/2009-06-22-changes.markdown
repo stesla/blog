@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 139
 title: Changes
-wordpress_url: http://blog.alieniloquent.com/?p=139
 ---
 I'm back!
 

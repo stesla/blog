@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 73
 title: The 51st State
-wordpress_url: http://blog.alieniloquent.com/2006/08/15/the-51st-state/
 ---
 So I was browsing a company's website today, and out of curiosity I clicked on
 their map to show where all their locations are. I was expecting to see lots

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 122
 title: Beauty is Important
-wordpress_url: http://blog.alieniloquent.com/2008/02/18/beauty-is-important/
 ---
 I was reminded of one of my favorite quotes today.
 

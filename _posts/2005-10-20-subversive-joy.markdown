@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 35
 title: Subversive Joy
-wordpress_url: http://www.alieniloquent.com/?p=35
 ---
 A year and a half ago, when I started working at my company, one of the first
 things I saw was the version control they used: Visual Source Safe. My

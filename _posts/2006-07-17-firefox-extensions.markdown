@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 66
 title: Firefox Extensions
-wordpress_url: http://blog.alieniloquent.com/2006/07/17/firefox-extensions/
 ---
 I recently decided to throw together simple little [Firefox][1] extension.
 It's pretty neat how [XUL][2] works. However, setting everything up can be a

@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Now Powerd By Jekyll
 ---
 I know I promised more blogging. I know it's been weeks. I *have* been

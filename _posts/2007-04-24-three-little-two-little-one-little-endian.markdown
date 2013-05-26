@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 100
 title: Three little, two little, one little-endian
-wordpress_url: http://blog.alieniloquent.com/2007/04/24/three-little-two-little-one-little-endian/
 ---
 I recently found myself wanting a Cocoa class that represents a set of 8-bit
 bytes. Cocoa has NSCharacterSet, but that is for `unichar`, not `uint8_t`. So

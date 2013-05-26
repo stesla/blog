@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 47
 title: On Primitives
-wordpress_url: http://www.alieniloquent.com/?p=47
 ---
 Blaine has a [post][1] about how strings are so frequently abused in object
 models. We heap extra meaning onto a string when we really should make a

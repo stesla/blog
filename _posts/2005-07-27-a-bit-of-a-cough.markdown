@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 15
 title: A bit of a cough
-wordpress_url: http://www.alieniloquent.com/2005/07/27/a-bit-of-a-cough/
 ---
 So for the last week and a half I've had this cough, and it just won't go
 away. I haven't had any sinus problems, and I really haven't had any breathing

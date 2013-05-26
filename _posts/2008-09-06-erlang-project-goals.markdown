@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 132
 title: "Erlang Project: Goals"
-wordpress_url: http://blog.alieniloquent.com/?p=132
 ---
 First off, I've decided on a name for my project: blogerl. I will be hosting
 the source code [here][1] on GitHub.

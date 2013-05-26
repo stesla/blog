@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 8
 title: Baby Stepping
-wordpress_url: http://www.alieniloquent.com/?p=8
 ---
 The product I work on is big. It has hundreds of thousands of lines of code.
 There are some objects in that code that are used all over the place. A lot of

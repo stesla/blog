@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 89
 title: Quirky Behavior in <code>String#gsub</code>
-wordpress_url: http://blog.alieniloquent.com/2006/08/31/quirky-behavior-in-stringgsub/
 ---
 At my office I develop in Delphi. We use Delphi 2006. As far as IDEs go, it's
 not that great. For example, when you tell the Delphi 2006 IDE to do a build

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 276
 title: "Interview Question: Combinations"
-wordpress_url: http://blog.alieniloquent.com/?p=276
 ---
 So I had a job interview yesterday with a great company, and I met a lot of
 awesome people. A question that was asked, presumably to test my approach to

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 4
 title: Takin' Care of Business
-wordpress_url: http://www.alieniloquent.com/?p=4
 ---
 So, [Erica][1] and I have both been feeling a little constrained in our
 apartment. It's a studio apartment, and we have a lot of stuff. Granted, the

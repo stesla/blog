@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 97
 title: Hooking up a Delphi progress event to a .NET object
-wordpress_url: http://blog.alieniloquent.com/2007/01/02/hooking-up-a-delphi-progress-event-to-a-net-object/
 ---
 So we know how to create a DLL in C++ that exposes .NET code to the Win32
 world. We also know how to consume that DLL from Delphi. We know how to

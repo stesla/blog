@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 137
 title: "Pet Paradise Part 1: Algorithms"
-wordpress_url: http://blog.alieniloquent.com/?p=137
 ---
 So [Jay Hannah][1] over at [ODynUG][2] has issued a [programming
 challenge][3]. Far be it from me to turn that kind of thing down. I am going

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 130
 title: "Erlang Project: Kickoff"
-wordpress_url: http://blog.alieniloquent.com/?p=130
 ---
 On October 14th, I will be giving a talk at [ODYNUG][1] about advanced
 [erlang][2]. Unlike my previous talks, this one is going to delve into the

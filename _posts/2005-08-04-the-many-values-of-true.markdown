@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 18
 title: The many values of True
-wordpress_url: http://www.alieniloquent.com/2005/08/04/the-many-values-of-true/
 ---
 So Brian and I are refactoring some code. One of the things we want to do is
 get rid of a property that exposes an implemenation-specific detail and

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 80
 title: New design
-wordpress_url: http://blog.alieniloquent.com/2006/08/23/new-design/
 ---
 Well, it only took me one night. I'll probably be tweaking for weeks now, but
 I got the main thrust of theming done.

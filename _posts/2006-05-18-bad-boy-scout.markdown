@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 62
 title: Bad Boy Scout
-wordpress_url: http://www.alieniloquent.com/?p=62
 ---
 I know I haven't been posting, and it's mostly been because I've been busy.
 Sometimes, it was because I just didn't know what I wanted to post.

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 105
 title: "Emacs on Mac: option key as meta"
-wordpress_url: http://blog.alieniloquent.com/2007/08/16/emacs-on-mac-option-key-as-meta/
 ---
 I'm an Emacs user, and I run on a Mac. I just use GNU Carbon Emacs out of CVS.
 

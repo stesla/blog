@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 9
 title: Interesting Times, Indeed
-wordpress_url: http://www.alieniloquent.com/2005/07/15/interesting-times-indeed/
 ---
 So, a couple weeks ago, my friend Joe got in a [car accident][1]. Erica and I
 went and helped him and his wife out that afternoon. Little did we know that

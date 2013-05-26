@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 95
 title: Exposing .NET code in a DLL via C++
-wordpress_url: http://blog.alieniloquent.com/2006/12/31/exposing-net-code-in-a-dll-via-c/
 ---
 At my work, we do both Delphi for Win32 and .NET. Most of our .NET coding is
 in C#, though, so we can't just cross-compile. We have a number of .NET

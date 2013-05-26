@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 135
 title: Not Dead Yet
-wordpress_url: http://blog.alieniloquent.com/?p=135
 ---
 I just wanted to poke my head in and say that I'm still around, and still
 working on/thinking about the erlang project. I am, after all, still giving

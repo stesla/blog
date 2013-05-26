@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 270
 title: <code>you.would? like(:fries).with(that)</code>
-wordpress_url: http://blog.alieniloquent.com/?p=270
 ---
 I was recently linked to an insightful article about how [software is
 hard][1]. He makes several good points, but the one that sticks out most in my

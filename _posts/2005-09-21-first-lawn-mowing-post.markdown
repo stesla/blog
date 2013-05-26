@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 31
 title: First Lawn Mowing Post!
-wordpress_url: http://www.alieniloquent.com/?p=31
 ---
 Well, I was going to do it Saturday morning (really early before it got hot).
 Then I thought, hey I can do it Thursday after I'm done with class but before

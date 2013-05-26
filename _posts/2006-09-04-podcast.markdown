@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 91
 title: Podcast
-wordpress_url: http://blog.alieniloquent.com/2006/09/04/podcast/
 ---
 So I decided to start a pod cast. Check it out: [The Agile Mac][1].
 

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 53
 title: Awesome Concert
-wordpress_url: http://www.alieniloquent.com/2006/03/07/awesome-concert/
 ---
 Ben was fantastic. This is actually the first time I've seen him play with
 anything resembling a band: a drummer and a bass player. Although I didn't

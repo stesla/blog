@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 124
 title: SVN + Git = Awesome
-wordpress_url: http://blog.alieniloquent.com/2008/02/20/svn-git-awesome/
 ---
 I've been a big fan of [SVN][1] for several years now. I even helped my former
 employer [migrate][2] from VSS a couple of years ago after I sold everybody on

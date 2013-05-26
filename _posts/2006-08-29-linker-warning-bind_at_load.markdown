@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 84
 title: "Linker warning: -bind_at_load"
-wordpress_url: http://blog.alieniloquent.com/2006/08/29/linker-warning-bind_at_load/
 ---
 Apple has had Intel machines for about a year. When they came out with the new
 architecture, they came up with the idea of a universal binary. It is a binary

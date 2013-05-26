@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 61
 title: Violin Siren
-wordpress_url: http://www.alieniloquent.com/2006/04/15/violin-siren/
 ---
 So we were at Jonesy's Dinner Den on Maple eating our food (which was very
 good) and watching the five o'clock news on their TV. The weather guy was

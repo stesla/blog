@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 96
 title: Calling into the C++ DLL from Delphi
-wordpress_url: http://blog.alieniloquent.com/2007/01/01/calling-into-the-c-dll-from-delphi/
 ---
 Before I get to the meat of this post, I want to make some ammendments and
 edits to the code from the last one. Today I was wrangling around and began to

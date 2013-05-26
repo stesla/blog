@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 2
 title: Back at long last
-wordpress_url: http://www.alieniloquent.com/?p=2
 ---
 I've been gone for quite some time. Well, not gone, but not blogging. The blog
 has, in fact, been gone.

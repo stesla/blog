@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 134
 title: "Erlang Project: Storage Choice"
-wordpress_url: http://blog.alieniloquent.com/?p=134
 ---
 It was [suggested][1] that I use [CouchDB][2] as the storage engine for
 blogerl. I'm not going to be using CouchDB for this project, and I would like

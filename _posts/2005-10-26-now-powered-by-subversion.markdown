@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 37
 title: Now powered by Subversion
-wordpress_url: http://www.alieniloquent.com/?p=37
 ---
 I [previously][1] [blogged][2] about Subversion at my workplace. I promised
 that I would write a blog post about how the conversion went. Many of you may

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 3
 title: In The Zone
-wordpress_url: http://www.alieniloquent.com/?p=3
 ---
 Tonight was amazing. I was amazing. Well, at least I amazed myself.
 

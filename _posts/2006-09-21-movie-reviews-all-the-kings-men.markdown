@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 94
 title: "Movie Reviews: All the King's Men"
-wordpress_url: http://blog.alieniloquent.com/2006/09/21/movie-reviews-all-the-kings-men/
 ---
 When I first saw the trailer for this movie, I didn't think I'd ever see it.
 The story didn't seem like the kind I tend to enjoy. But, when a friend of

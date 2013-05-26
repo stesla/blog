@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 72
 title: WordPress 2.0.4
-wordpress_url: http://blog.alieniloquent.com/2006/08/14/wordpress-204/
 ---
 I've been waffling about trying [Typo][1] as my blogging engine. But, I ended
 up coming to the same conclusion I came last time I switched away from

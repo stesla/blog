@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 128
 title: Don't Mandate Velocity
-wordpress_url: http://blog.alieniloquent.com/2008/03/31/dont-mandate-velocity/
 ---
 I came across this amusing (fictional) story about a [broken watch][1], and
 it's impact on the author's development process.

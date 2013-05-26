@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 21
 title: Core Data
-wordpress_url: http://www.alieniloquent.com/2005/08/06/core-data/
 ---
 A week ago I read [this presentation][1] by [Wil Shipley][2] (of Omni and
 Delicious Library fame). It has inspired me. I'm going to write a Cocoa

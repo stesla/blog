@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 30
 title: Division of Responsibility
-wordpress_url: http://www.alieniloquent.com/?p=30
 ---
 So I was looking at a C# class that looked something like this:
 

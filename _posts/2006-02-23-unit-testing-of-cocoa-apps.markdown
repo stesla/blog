@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 43
 title: Unit Testing of Cocoa Apps
-wordpress_url: http://www.alieniloquent.com/?p=43
 ---
 There's plenty of articles out there telling you how to use [OCUnit][1],
 especially now that it ships with XCode 2.0. They're all excellent. You should

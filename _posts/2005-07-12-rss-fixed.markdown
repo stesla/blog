@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 7
 title: RSS Fixed
-wordpress_url: http://www.alieniloquent.com/2005/07/12/rss-fixed/
 ---
 My feeds should be back up and running. An upgrade to the install of WordPress
 on our server tromped on my .htaccess file, and so my rewrite rules got

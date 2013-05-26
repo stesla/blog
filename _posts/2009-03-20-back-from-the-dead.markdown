@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 138
 title: Back From The Dead
-wordpress_url: http://blog.alieniloquent.com/?p=138
 ---
 Okay, so I died a little.
 

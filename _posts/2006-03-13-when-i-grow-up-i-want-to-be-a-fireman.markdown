@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 58
 title: When I Grow Up, I Want To Be A Fireman
-wordpress_url: http://www.alieniloquent.com/2006/03/13/when-i-grow-up-i-want-to-be-a-fireman/
 ---
 Life is full of tough decisions. It is, in fact, itself a series of decisions,
 and many of them are tough. So far, I've had a mix of them. The funny thing

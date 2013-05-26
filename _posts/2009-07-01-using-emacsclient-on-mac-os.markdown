@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 161
 title: Using <code>emacsclient</code> on Mac OS
-wordpress_url: http://blog.alieniloquent.com/?p=161
 ---
 There's this feature of [TextMate][1] that a lot of people like: the `mate`
 command. It opens up the file or directory you pass to it in your running

@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 111
 title: Blog Lift
-wordpress_url: http://blog.alieniloquent.com/2007/12/23/blog-lift/
 ---
 You may have noticed that my layout changed a little. I got rid of my Google
 ads.

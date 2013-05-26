@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 300
 title: Yet Another LTNS Post
-wordpress_url: http://blog.alieniloquent.com/?p=300
 ---
 Okay, so it seems like over the last few years, so many of my blog posts are
 "I am still alive" or "long time no see, I'm going to start blogging again."

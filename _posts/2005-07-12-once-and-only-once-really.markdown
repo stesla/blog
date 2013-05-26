@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 6
 title: Once and only once, really.
-wordpress_url: http://blog.alieniloquent.com/2005/07/12/once-and-only-once-really/
 ---
 The product that my company sells is very data intense. The data is stored in
 a database. Of course, from time to time we have to make schema changes to

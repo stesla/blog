@@ -1,8 +1,5 @@
 ---
-layout: post
-wordpress_id: 114
 title: A little more lambda
-wordpress_url: http://blog.alieniloquent.com/2007/12/23/a-little-more-lambda/
 ---
 [Alonzo Church][1] invented the lambda calculus. He also figured out how to
 encode many kinds of data as lambda expressions. Take your simple booleans,
