@@ -3,13 +3,12 @@
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Alieniloquent: {{ page.title }}</title>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-reset.css"/>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-fonts.css"/>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/yui-grids.css"/>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/simple-style.css"/>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/blog.css"/>
-  <link href="http://blog.alieniloquent.com/feed" rel="alternate" title="main feed" type="application/rss+xml"/>
+  <title>Alieniloquent: $title$</title>
+  <link rel="stylesheet" type="text/css" href="/css/yui-reset.css"/>
+  <link rel="stylesheet" type="text/css" href="/css/yui-fonts.css"/>
+  <link rel="stylesheet" type="text/css" href="/css/yui-grids.css"/>
+  <link rel="stylesheet" type="text/css" href="/css/simple-style.css"/>
+  <link rel="stylesheet" type="text/css" href="/css/blog.css"/>
 </head>
 <body>
  <div id="doc" class="yui-t4">
@@ -18,24 +17,20 @@
      <ul id="navigation">
        <li class="first"><a href="http://blog.alieniloquent.com">blog</a></li>
        <li><a href="http://github.com/stesla">code</a></li>
-       <li><a href="http://www.alieniloquent.com/resume.pdf">resum&eacute;</a></li>
+       <li><a href="http://www.alieniloquent.com/resume.pdf">resumé</a></li>
      </ul>
      <br/>
    </div>
    <div id="bd">
      <div id="yui-main">
        <div class="yui-b">
-         {{ content }}
+         $body$
        </div>
      </div>
      <div class="yui-b">
        <div class="yui-u sidebar">
          <h2 class="sectionheader first">Archives</h2>
-         <ul>
-           {% for archive in site.years %}
-           <li><a href="{{ archive.url }}">{{ archive.year }}</a></li>
-           {% endfor %}
-         </ul>
+         $archives$
        </div>
      </div>
    </div>
