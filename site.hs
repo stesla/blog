@@ -20,13 +20,13 @@ main = hakyll $ do
 
     match "posts/*" $ do
         route $ gsubRoute "posts/" (const "") `composeRoutes`
-                directorizeDate `composeRoutes`
+                directorizeDate               `composeRoutes`
                 setExtension "html"
-        compile $ do
-            compiled <- pandocCompiler
-            content <- loadAndApplyTemplate "templates/post.html" postCtx compiled
-            saveSnapshot "content" content
-            loadAndApplyTemplate "templates/default.html" postCtx content
+        compile $ pandocCompiler
+              >>= loadAndApplyTemplate "templates/post.html" postCtx
+              >>= saveSnapshot "content"
+              >>= loadAndApplyTemplate "templates/post-single.html" postCtx
+              >>= loadAndApplyTemplate "templates/default.html" postCtx
               >>= relativizeUrls
 
     match "index.html" $ do
