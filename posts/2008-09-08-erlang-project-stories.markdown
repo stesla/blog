@@ -86,7 +86,7 @@ The first six are going to be what I aim to complete before I tag an 0.1 and
 deploy to my webserver. That'll give me a means to share my blog posts with
 people as a stream or individually via their browsers or via RSS feeds.
 
-   [1]: http://blog.alieniloquent.com/2008/09/06/erlang-project-goals/
+   [1]: /2008/09/06/erlang-project-goals.html
 
    [2]: http://git.or.cz/
 

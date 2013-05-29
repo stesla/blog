@@ -11,9 +11,9 @@ You can visit the project page [here][3].
 
 You can download the release [here][4].
 
-   [1]: http://blog.alieniloquent.com/2007/06/05/base32-encoded-freedom/
+   [1]: /2007/06/05/base32-encoded-freedom.html
 
-   [2]: http://blog.alieniloquent.com/2007/06/07/for-those-about-to-base32/
+   [2]: /2007/06/07/for-those-about-to-base32.html
 
    [3]: http://rubyforge.org/projects/base32
 

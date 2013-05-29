@@ -10,7 +10,7 @@ Linux. I assume other Linuxes are probably fine, as are BSDs and other \*NIXes.
 
 To download it go [here][2].
 
-   [1]: http://blog.alieniloquent.com/2007/06/28/base32-010-released/
+   [1]: /2007/06/28/base32-010-released.html
 
    [2]: http://rubyforge.org/frs/?group_id=3938&release_id=12678
 

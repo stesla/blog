@@ -17,5 +17,5 @@ Enjoy.
 
 _Edited:_ resized image so it looked decent.
 
-   [1]: http://blog.alieniloquent.com/images/pacman.jpg
+   [1]: http://www.alieniloquent.com/images/pacman.jpg
 

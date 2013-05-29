@@ -78,6 +78,6 @@ So, I've got lots of posts rattling around in my brain, and now that
 I've hunkered down and actually written my I'm Back Post&trade;, I'll
 start writing them.
 
-[1]: http://blog.alieniloquent.com/2011/03/10/to-my-son.html
+[1]: /2011/03/10/to-my-son.html
 [2]: http://drwtrading.com
 [3]: http://sifudesignstudio.com

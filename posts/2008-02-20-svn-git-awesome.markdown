@@ -52,7 +52,7 @@ files, so they play together very nicely.
 
    [1]: http://subversion.tigris.org
 
-   [2]: http://blog.alieniloquent.com/2005/10/26/now-powered-by-subversion/
+   [2]: /2005/10/26/now-powered-by-subversion.html
 
    [3]: http://blog.excastle.com
 

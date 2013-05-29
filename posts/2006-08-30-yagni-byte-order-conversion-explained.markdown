@@ -28,5 +28,5 @@ byte order as `port` every time.
 
 I hope this explains things a little better.
 
-   [1]: http://blog.alieniloquent.com/2006/08/29/yagni-byte-order-conversion/
+   [1]: /2006/08/29/yagni-byte-order-conversion.html
 

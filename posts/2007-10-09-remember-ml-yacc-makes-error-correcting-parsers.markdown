@@ -47,8 +47,7 @@ unit tests) it will be relentless about grammar. On the other hand, if you are
 parsing a file, my interpreter will be forgiving. After all, why should it
 fail the whole file if all you're missing is `fn`?
 
-   [1]: http://blog.alieniloquent.com/2007/10/08/samuels-lambda-and-
-the-y-combinator/
+   [1]: /2007/10/08/samuels-lambda-and-the-y-combinator.html
 
    [2]: http://smlnj.org
 

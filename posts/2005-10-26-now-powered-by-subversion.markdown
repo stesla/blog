@@ -81,9 +81,9 @@ So, today we fixed up our buildscript (which was easyish) and our cruise
 control, and we got everybody switched over. Our shop is now powered by
 Subversion.
 
-   [1]: http://www.alieniloquent.com/2005/10/20/subversive-joy/
+   [1]: /2005/10/20/subversive-joy.html
 
-   [2]: http://www.alieniloquent.com/2005/10/20/subversion-apache-windows/
+   [2]: /2005/10/20/subversion-apache-windows.html
 
    [3]: http://vss2svn.tigris.org/
 

@@ -53,7 +53,7 @@ Resolve any conflicts from Git.
 Now you can continue with your changes using SVN, or commit them right away if
 they're already perfect.
 
-   [1]: http://blog.alieniloquent.com/2008/02/20/svn-git-awesome/
+   [1]: /2008/02/20/svn-git-awesome.html
 
    [2]: http://git.or.cz/
 

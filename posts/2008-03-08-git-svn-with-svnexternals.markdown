@@ -172,9 +172,9 @@ $ git svn dcommit
 
 It works well, and it allows me to do my work disconnected from the network.
 
-   [1]: http://blog.alieniloquent.com/2008/02/20/svn-git-awesome/
+   [1]: /2008/02/20/svn-git-awesome.html
 
-   [2]: http://blog.alieniloquent.com/2008/02/22/svn-git-1-still-awesome/
+   [2]: /2008/02/22/svn-git-1-still-awesome.html
 
    [3]: http://www.kernel.org/pub/software/scm/git/docs/git-svn.html
 
