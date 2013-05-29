@@ -17,6 +17,16 @@ import qualified Text.Blaze.Html5.Attributes     as A
 import           Hakyll
 
 --------------------------------------------------------------------------------
+feedConfiguration :: FeedConfiguration
+feedConfiguration = FeedConfiguration
+    { feedTitle       = "Alieniloquent: off on a tangent"
+    , feedDescription = "Samuel Tesla's thoughts on things"
+    , feedAuthorName  = "Samuel Tesla"
+    , feedAuthorEmail = "blog@alieniloquent.com"
+    , feedRoot        = "http://blog.alieniloquent.com"
+    }
+
+--------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
     match "images/*" $ do
@@ -34,6 +44,7 @@ main = hakyll $ do
                 directorizeDate               `composeRoutes`
                 setExtension "html"
         compile $ pandocCompiler
+              >>= saveSnapshot "feedContent"
               >>= loadAndApplyTemplate "templates/post.html" (postCtx years)
               >>= saveSnapshot "content"
               >>= loadAndApplyTemplate "templates/post-single.html" (postCtx years)
@@ -63,6 +74,13 @@ main = hakyll $ do
               >>= loadAndApplyTemplate "templates/default.html" (siteCtx years)
               >>= relativizeUrls
 
+    create ["rss.xml"] $ do
+        route idRoute
+        compile $ do
+            posts <- fmap (take 10) . recentFirst =<<
+                loadAllSnapshots "posts/*" "feedContent"
+            renderRss feedConfiguration feedCtx posts
+
 --------------------------------------------------------------------------------
 indexCtx :: Tags -> Context String
 indexCtx years =
@@ -79,6 +97,15 @@ postCtx years =
 siteCtx :: Tags -> Context String
 siteCtx years = mconcat
     [ field "archives" (\_ -> renderYears $ sortTagsBy descendingTags years)
+    , defaultContext
+    ]
+
+--------------------------------------------------------------------------------
+feedCtx :: Context String
+feedCtx = mconcat
+    [ bodyField "description"
+    , urlField "url"
+    , dateField "date" "%B %e, %Y"
     , defaultContext
     ]
 
