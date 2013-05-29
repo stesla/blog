@@ -49,14 +49,14 @@ main = hakyll $ do
               >>= saveSnapshot "content"
               >>= loadAndApplyTemplate "templates/post-single.html" (postCtx years)
               >>= loadAndApplyTemplate "templates/default.html" (siteCtx years)
-              >>= relativizeUrls
+              >>= normalizeUrls
 
     create ["index.html"] $ do
         route idRoute
         compile $ makeItem ""
               >>= loadAndApplyTemplate "templates/index.html" (indexCtx years)
               >>= loadAndApplyTemplate "templates/default.html" (siteCtx years)
-              >>= relativizeUrls
+              >>= normalizeUrls
 
     match "templates/*" $ compile templateCompiler
 
@@ -72,7 +72,7 @@ main = hakyll $ do
                     , siteCtx years
                     ])
               >>= loadAndApplyTemplate "templates/default.html" (siteCtx years)
-              >>= relativizeUrls
+              >>= normalizeUrls
 
     create ["rss.xml"] $ do
         route idRoute
@@ -153,3 +153,21 @@ renderYears = renderTags makeLink (intercalate "<br/>\n")
 --------------------------------------------------------------------------------
 descendingTags :: (String, [Identifier]) -> (String, [Identifier]) -> Ordering
 descendingTags x y = comparing fst y x
+
+--------------------------------------------------------------------------------
+normalizeUrls :: Item String -> Compiler (Item String)
+normalizeUrls item = return item
+                 >>= wordpressifyUrls
+                 >>= relativizeUrls
+
+wordpressifyUrls :: Item String -> Compiler (Item String)
+wordpressifyUrls item = do
+    route <- getRoute $ itemIdentifier item
+    return $ case route of
+        Nothing -> item
+        Just r  -> fmap wordpressifyUrlsWith item
+
+wordpressifyUrlsWith :: String -> String
+wordpressifyUrlsWith = withUrls convert
+  where
+    convert x = replaceAll "/index.html" (const "/") x 
