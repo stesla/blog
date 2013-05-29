@@ -4,7 +4,7 @@ title: J3Testing 1.0
 I decided to make my J3TestCase code into an actual framework. This way I
 don't have to copy the files each time I want to use the class.
 
-I've put up a disk image with [binaries][1] and one with [source][2].
+I've put up a disk image with binaries and one with source.
 
 The source is worth looking at, especially to see how I made targets to
 automatically build those disk images.
@@ -13,7 +13,5 @@ These replace the old J3TestCase code I had posted, and I've removed that
 tarball. So, sorry if I broke that link. This is a much better way to deploy
 anyway.
 
-   [1]: http://www.alieniloquent.com/code/J3Testing-1.0.dmg
-
-   [2]: http://www.alieniloquent.com/code/J3Testing-Source-1.0.dmg
-
+_Edited:_ I am no longer providing the disk images mentioned above, so
+I've removed the hyperlinks.
