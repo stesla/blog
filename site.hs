@@ -37,6 +37,8 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
+    match "templates/*" $ compile templateCompiler
+
     years <- buildYears "posts/*" (fromCapture "archive/*")
 
     match "posts/*" $ do
@@ -45,33 +47,17 @@ main = hakyll $ do
                 setExtension "html"
         compile $ pandocCompiler
               >>= saveSnapshot "feedContent"
-              >>= loadAndApplyTemplate "templates/post.html" (postCtx years)
+              >>= loadAndApplyTemplate "templates/post.html" postContext
               >>= saveSnapshot "content"
-              >>= loadAndApplyTemplate "templates/post-single.html" (postCtx years)
-              >>= loadAndApplyTemplate "templates/default.html" (siteCtx years)
+              >>= loadAndApplyTemplate "templates/post-single.html" postContext
+              >>= loadAndApplyTemplate "templates/default.html" (siteContext years)
               >>= normalizeUrls
 
     create ["index.html"] $ do
         route idRoute
         compile $ makeItem ""
-              >>= loadAndApplyTemplate "templates/index.html" (indexCtx years)
-              >>= loadAndApplyTemplate "templates/default.html" (siteCtx years)
-              >>= normalizeUrls
-
-    match "templates/*" $ compile templateCompiler
-
-    tagsRules years $ \year pattern -> do
-        route $ gsubRoute "archive/" (const "") `composeRoutes`
-                customRoute (\i -> (toFilePath i) ++ "/index.html")
-        compile $ do
-            posts <- itemBodies =<< recentFirst =<< loadAllSnapshots pattern "content"
-            makeItem ""
-              >>= loadAndApplyTemplate "templates/index.html"
-                    (mconcat
-                    [ constField "posts" posts
-                    , siteCtx years
-                    ])
-              >>= loadAndApplyTemplate "templates/default.html" (siteCtx years)
+              >>= loadAndApplyTemplate "templates/index.html" indexContext
+              >>= loadAndApplyTemplate "templates/default.html" (siteContext years)
               >>= normalizeUrls
 
     create ["rss.xml"] $ do
@@ -79,35 +65,48 @@ main = hakyll $ do
         compile $ loadAllSnapshots "posts/*" "feedContent"
               >>= recentFirst
               >>= return . take 10
-              >>= renderRss feedConfiguration feedCtx
+              >>= renderRss feedConfiguration feedContext
+
+    tagsRules years $ \year pattern -> do
+        route $ gsubRoute "archive/" (const "") `composeRoutes`
+                customRoute (\i -> (toFilePath i) ++ "/index.html")
+        compile $ do
+            posts <- itemBodies =<< recentFirst =<< loadAllSnapshots pattern "content"
+            makeItem ""
+              >>= loadAndApplyTemplate "templates/index.html" (mconcat
+                    [ constField "posts" posts
+                    , siteContext years
+                    ])
+              >>= loadAndApplyTemplate "templates/default.html" (siteContext years)
+              >>= normalizeUrls
 
 --------------------------------------------------------------------------------
-indexCtx :: Tags -> Context String
-indexCtx years = mconcat
-    [ field "posts" (\_ -> postList $ fmap (take 5) . recentFirst)
-    , siteCtx years
-    ]
-
---------------------------------------------------------------------------------
-postCtx :: Tags -> Context String
-postCtx years = mconcat
-    [ dateField "date" "%B %e, %Y"
-    , siteCtx years
-    ]
-
---------------------------------------------------------------------------------
-siteCtx :: Tags -> Context String
-siteCtx years = mconcat
-    [ field "archives" (\_ -> renderYears $ sortTagsBy descendingTags years)
+feedContext :: Context String
+feedContext = mconcat
+    [ bodyField "description"
+    , urlField "url"
+    , dateField "date" "%B %e, %Y"
     , defaultContext
     ]
 
 --------------------------------------------------------------------------------
-feedCtx :: Context String
-feedCtx = mconcat
-    [ bodyField "description"
-    , urlField "url"
-    , dateField "date" "%B %e, %Y"
+indexContext :: Context String
+indexContext = mconcat
+    [ field "posts" (\_ -> postList $ fmap (take 5) . recentFirst)
+    , defaultContext
+    ]
+
+--------------------------------------------------------------------------------
+postContext :: Context String
+postContext = mconcat
+    [ dateField "date" "%B %e, %Y"
+    , defaultContext
+    ]
+
+--------------------------------------------------------------------------------
+siteContext :: Tags -> Context String
+siteContext years = mconcat
+    [ field "archives" (\_ -> renderYears $ sortTagsBy descendingTags years)
     , defaultContext
     ]
 
@@ -138,10 +137,9 @@ buildYears = buildTagsWith getYear
 --------------------------------------------------------------------------------
 getYear :: MonadMetadata m => Identifier -> m [String]
 getYear = return . return . takeYear . takeBaseName . toFilePath
-
-takeYear :: FilePath -> String
-takeYear path = concat year
-  where (year, _) = splitAt 1 $ splitOn "-" path
+  where
+    takeYear path = concat year
+      where (year, _) = splitAt 1 $ splitOn "-" path
 
 --------------------------------------------------------------------------------
 renderYears :: Tags -> Compiler String
@@ -160,6 +158,7 @@ normalizeUrls item = return item
                  >>= wordpressifyUrls
                  >>= relativizeUrls
 
+--------------------------------------------------------------------------------
 wordpressifyUrls :: Item String -> Compiler (Item String)
 wordpressifyUrls item = do
     route <- getRoute $ itemIdentifier item
@@ -170,4 +169,4 @@ wordpressifyUrls item = do
 wordpressifyUrlsWith :: String -> String
 wordpressifyUrlsWith = withUrls convert
   where
-    convert x = replaceAll "/index.html" (const "/") x 
+    convert x = replaceAll "/index.html" (const "/") x
