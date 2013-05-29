@@ -5,7 +5,7 @@ import           Data.Char                       (toLower)
 import           Data.List                       (intercalate, intersperse)
 import           Data.List.Split                 (splitOn)
 import qualified Data.Map                        as M
-import           Data.Monoid                     (mappend, mconcat)
+import           Data.Monoid                     (mconcat)
 import           Data.Ord                        (comparing)
 import           System.FilePath                 (takeBaseName)
 import           Text.Blaze.Html                 (toHtml, toValue, (!))
@@ -76,22 +76,24 @@ main = hakyll $ do
 
     create ["rss.xml"] $ do
         route idRoute
-        compile $ do
-            posts <- fmap (take 10) . recentFirst =<<
-                loadAllSnapshots "posts/*" "feedContent"
-            renderRss feedConfiguration feedCtx posts
+        compile $ loadAllSnapshots "posts/*" "feedContent"
+              >>= recentFirst
+              >>= return . take 10
+              >>= renderRss feedConfiguration feedCtx
 
 --------------------------------------------------------------------------------
 indexCtx :: Tags -> Context String
-indexCtx years =
-    field "posts" (\_ -> postList $ fmap (take 5) . recentFirst) `mappend`
-    siteCtx years
+indexCtx years = mconcat
+    [ field "posts" (\_ -> postList $ fmap (take 5) . recentFirst)
+    , siteCtx years
+    ]
 
 --------------------------------------------------------------------------------
 postCtx :: Tags -> Context String
-postCtx years =
-    dateField "date" "%B %e, %Y" `mappend`
-    siteCtx years
+postCtx years = mconcat
+    [ dateField "date" "%B %e, %Y"
+    , siteCtx years
+    ]
 
 --------------------------------------------------------------------------------
 siteCtx :: Tags -> Context String
@@ -136,10 +138,10 @@ buildYears = buildTagsWith getYear
 --------------------------------------------------------------------------------
 getYear :: MonadMetadata m => Identifier -> m [String]
 getYear = return . return . takeYear . takeBaseName . toFilePath
-  where
-    takeYear path = concat year
-      where
-        (year, _) = splitAt 1 $ splitOn "-" path
+
+takeYear :: FilePath -> String
+takeYear path = concat year
+  where (year, _) = splitAt 1 $ splitOn "-" path
 
 --------------------------------------------------------------------------------
 renderYears :: Tags -> Compiler String
