@@ -62,4 +62,4 @@ the semester, that's for sure!
 
    [4]: http://www.lsv.ens-cachan.fr/~gastin/gastex/gastex.html
 
-   [5]: http://www.alieniloquent.com/images/gastex-example.jpg
+   [5]: /images/gastex-example.jpg

@@ -24,5 +24,5 @@ acres of whiteboard, complete with a headstone.
 
 ![They had really long names][1]
 
-   [1]: http://www.alieniloquent.com/images/riptests.jpg
+   [1]: /images/riptests.jpg
 
