@@ -22,7 +22,7 @@ Library." I'll give it a name "Example" and hit go. This makes most of the
 files that you need. Delete the class that it creates ("Class1") and make a
 new one like this:
 
-{% highlight c++ %}
+~~~~ {.code}
 // Example.h
 #include <vcclr.h>
 
@@ -51,7 +51,7 @@ namespace Example {
     gcroot<String ^> _name;
   };
 }
-{% endhighlight %}
+~~~~
 
 A couple things to note about the above code. The `Example1` class is an
 _unmanaged_ class, but the `_name` field is a managed object. The `gcroot`
@@ -61,19 +61,19 @@ object.
 Next, we need to export some DLL functions so that we can call them from
 Delphi:
 
-{% highlight c++ %}
+~~~~ {.code}
 // Exports.h
 #define DLLAPI extern "C" __declspec(dllexport)
 DLLAPI void * Example1Create(const char * name);
 DLLAPI void Example1Delete(void * example);
 DLLAPI void Example1ShowName(void * example);
-{% endhighlight %}
+~~~~
 
 The important thing to notice here is the `DLLAPI` define. You need to put it
 before each function you want to export. We have to extern the functions as
 C-style functions so that their names don't get mangled in the symbol table.
 
-{% highlight c++ %}
+~~~~ {.code}
 // Exports.cpp
 #include "stdafx.h"
 #include "Example.h"
@@ -97,7 +97,7 @@ DLLAPI void Example1ShowName(void * example)
 {
   E1(example)->ShowName();
 }
-{% endhighlight %}
+~~~~
 
 Note the macro defined to do the cast. We only have to do the cast in one
 place right now, but as you expose more methods on the object, you'll have to

@@ -36,7 +36,7 @@ I do want to call him out on his hate of the condition initializer. That new
 syntax, along with multiple return values allows programmers to replace C code
 like this:
 
-{% highlight c %}
+~~~~ {.code}
 int result = someCall();
 if result < 0 {
   /* Handle Error */
@@ -51,17 +51,17 @@ if (result = someCall()) < 0 {
 } else {
   /* Do something with result */
 }
-{% endhighlight %}
+~~~~
 
 With Go code like this:
 
-{% highlight go %}
+~~~~ {.code}
 if result, err := someCall(); if err != nil {
   /* Handle Error */
 } else {
   /* Do something with result */
 }
-{% endhighlight %}
+~~~~
 
 Notably, in the Go code, both `result` and `err` are scoped to just inside the
 if statement. They don't clutter the surrounding block. I'll talk more about
@@ -101,14 +101,14 @@ decent error reporting facility can be created without exceptions.
 
 Here is an example:
 
-{% highlight go %}
+~~~~ {.code}
 func magic() (result int, err io.Error) {
   if err = moreMagic(); err != nil {
     /* Calculate result */
   }
   return;
 }
-{% endhighlight %}
+~~~~
 
 This allows the error from `moreMagic` to propagate up without reserving an
 out-of-band result value. It provides no more syntactic overhead than explicit
@@ -118,12 +118,12 @@ The argument was made that people can fail to check return codes. People can
 be just as stupid in languages with exceptions. I've lost count how many times
 I've seen this in Java:
 
-{% highlight java %}
+~~~~ {.code}
 try {
   /* Do something that might blow up */
 } catch {
 }
-{% endhighlight %}
+~~~~
 
 The catch block is empty on purpose. People do that. They catch _all_
 exceptions and then _do nothing_ with them _on purpose_. You can be an idiot

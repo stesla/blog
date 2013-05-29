@@ -6,7 +6,7 @@ edits to the code from the last one. Today I was wrangling around and began to
 recall more of my C++, initializers in particular, so I've updated the
 `Example1` class to use them.
 
-{% highlight c++ %}
+~~~~ {.code}
 public class Example1
 {
  public:
@@ -19,12 +19,12 @@ public class Example1
 
   gcroot<String ^> _name;
 };
-{% endhighlight %}
+~~~~
 
 I also realize that I forgot to show the implementation side of that class, so
 here it is:
 
-{% highlight c++ %}
+~~~~ {.code}
 // Example.cpp
 #include "stdafx.h"
 #include "Example.h"
@@ -35,7 +35,7 @@ void Example::Example1::ShowName()
 {
   MessageBox::Show(_name);
 }
-{% endhighlight %}
+~~~~
 
 So there's our DLL. Now, let's use it from Delphi! I'm using Turbo Delphi for
 Win32 to do this. Go to File > New > "VCL Forms Application" and make your
@@ -48,7 +48,7 @@ that when we click the button it creates an `Example1`, shows it, and then
 deletes it. Here is the implementation section from the main unit in the
 delphi program:
 
-{% highlight delphi %}
+~~~~ {.code}
 function Example1Create(AName: PChar): Pointer;
 cdecl; external 'Example';
 
@@ -69,7 +69,7 @@ begin
      Example1Delete(Example);
   end;
 end;
-{% endhighlight %}
+~~~~
 
 The button handler is straight-forward and normal. The only interesting thing
 there is to see how the calls from the DLL get used. The lifetime management
@@ -79,16 +79,16 @@ you would for most things.
 The interesting part is at the top where we import from the DLL, let's look at
 one of those lines again:
 
-{% highlight delphi %}
+~~~~ {.code}
 function Example1Create(AName: PChar): Pointer;
 cdecl; external 'Example';
-{% endhighlight %}
+~~~~
 
 Now this corresponds to the following line from `Exports.h`:
 
-{% highlight c++ %}
+~~~~ {.code}
 DLLAPI void * Example1Create(const char * name);
-{% endhighlight %}
+~~~~
 
 Since it has a return type that is not void, it becomes a function (the others
 became procedures). The `void *` becomes `Pointer`, and the `const char *

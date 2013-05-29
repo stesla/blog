@@ -14,40 +14,40 @@ So what is the lambda calculus, you might ask?
 
 There are three basic concepts in lambda calculus. There are variables:
 
-{% highlight text %}
+~~~~ {.code}
 x
-{% endhighlight %}
+~~~~
 
 There are abstractions:
 
-{% highlight text %}
+~~~~ {.code}
 fn x. x
-{% endhighlight %}
+~~~~
 
 And there are applications:
 
-{% highlight text %}
+~~~~ {.code}
 f x
-{% endhighlight %}
+~~~~
 
 Applications are left associative so:
 
-{% highlight text %}
+~~~~ {.code}
 f x y
-{% endhighlight %}
+~~~~
 
 is the same as:
 
-{% highlight text %}
+~~~~ {.code}
 (f x) y
-{% endhighlight %}
+~~~~
 
 So for a more complicated example from the REPL:
 
-{% highlight text %}
+~~~~ {.code}
 > (fn f. fn x. f x) (fn y. y) z;
 z
-{% endhighlight %}
+~~~~
 
 The first part declares a function which binds `f` and returns a function
 which binds `x` and returns the application of `f` to `x`. We pass to that the

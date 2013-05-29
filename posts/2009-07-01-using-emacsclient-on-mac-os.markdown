@@ -8,9 +8,9 @@ TextMate instance.
 This sort of feature isn't anything new. Emacs has had this feature for a long
 time. You just add this snippet to your to your `init.el`:
 
-{% highlight text %}
+~~~~ {.code}
 (emacs-server)
-{% endhighlight %}
+~~~~
 
 Then you can use `emacsclient` to send files to it the same way. However, on
 my mac this wasn't working. The trick, it seems, is making sure you use the
@@ -23,7 +23,7 @@ the application bundle.
 
 You can write a little shell script, we'll call it `eopen`:
 
-{% highlight bash %}
+~~~~ {.code}
 #!/bin/sh
 
 # Send the file to our running Emacs and bring it to the foreground.
@@ -35,7 +35,7 @@ You can write a little shell script, we'll call it `eopen`:
 if [ $? -ne 0 ]; then
   EOPEN_DIR="${PWD}" EOPEN_FILE="${1}" open -a Emacs
 fi
-{% endhighlight %}
+~~~~
 
 Now, you'll notice that in the failure case, my script sets some environment
 variables and just opens Emacs. Those environment variables aren't anything
@@ -44,14 +44,14 @@ a fresh Emacs open to whatever default buffer you usually see.
 
 So, add the following to your `init.el`:
 
-{% highlight text %}
+~~~~ {.code}
 (let ((dir (getenv "EOPEN_DIR"))
       (file (getenv "EOPEN_FILE")))
   (if dir
       (cd dir))
   (if file
       (find-file file)))
-{% endhighlight %}
+~~~~
 
 Then, when you have those environment variables set (such as in the shell
 script), emacs will open up a buffer on the file or directory passed in as an

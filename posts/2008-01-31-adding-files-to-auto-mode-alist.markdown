@@ -17,7 +17,7 @@ long.
 Yesterday I finally took the time to find the trouble, shoot it, and replace
 it with better code. In my `.emacs` I had this:
 
-{% highlight text %}
+~~~~ {.code}
 (setq auto-mode-alist
       (append
        '(("\\.dtd$" . xml-mode)
@@ -26,7 +26,7 @@ it with better code. In my `.emacs` I had this:
          ("bash_profile$" . sh-mode)
          ("bashrc$" . sh-mode))
        auto-mode-alist))
-{% endhighlight %}
+~~~~
 
 I've seen that same code all over the internet, and it used to work just fine.
 But for some reason, now it does something to my `auto-mode-alist` and makes
@@ -35,14 +35,14 @@ put stuff in an alist like that is `ADD-TO-LIST`.
 
 So the above code becomes this:
 
-{% highlight text %}
+~~~~ {.code}
 (mapcar (lambda (mapping) (add-to-list 'auto-mode-alist mapping))
         '(("\\.dtd$" . xml-mode)
           ("\\.xml$" . xml-mode)
           ("\\.yml$" . conf-mode)
           ("bash_profile$" . sh-mode)
           ("bashrc$" . sh-mode)))
-{% endhighlight %}
+~~~~
 
 Putting that code in fixed my problems, and now all of my modes load
 correctly.

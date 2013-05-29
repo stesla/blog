@@ -5,9 +5,9 @@ So I'm in my web directory, doing some stuff, and I notice the twiddle backup
 files that Emacs leaves when I edit remotely. They bug me. So I did the
 following command to remove them.
 
-{% highlight text %}
+~~~~ {.code}
 find . -name *.~?~ -print -o -exec rm {} \;
-{% endhighlight %}
+~~~~
 
 Some of you probably think that's just greek. But others are cringing just as
 I did when I saw it remove all of the files in my directory. Sooooo, the other

@@ -11,7 +11,7 @@ we could just run queries to get 99% of what we wanted done. To take this a
 step further, we could just write a SQL script that does all the work and not
 have to recompile any code for the schema updater to do the right thing.
 
-{% highlight text %}
+~~~~ {.code}
 [2.1]
 ALTER TABLE ...
 
@@ -21,7 +21,7 @@ CREATE TABLE ...
 
 [2.7]
 INSERT INTO ...
-{% endhighlight %}
+~~~~
 
 You get the idea. The program would then check the database to see if it was
 on the latest version and it would run any relevant SQL snippets on it in

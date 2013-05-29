@@ -4,32 +4,32 @@ title: Remember ML-Yacc makes error-correcting parsers
 So I got my language [working][1]. But there are still some things I want to
 add to it. One thing that was bothering me was that both this code:
 
-{% highlight text %}
+~~~~ {.code}
 fn x => x
-{% endhighlight %}
+~~~~
 
 and this code:
 
-{% highlight text %}
+~~~~ {.code}
 x => x
-{% endhighlight %}
+~~~~
 
 parsed to the _same thing_.
 
 I banged my head against this. My grammar had the production right:
 
-{% highlight text %}
+~~~~ {.code}
 expr : ...
      | FN ident RARROW expr (T.FnDef (ident,expr))
      ...
-{% endhighlight %}
+~~~~
 
 and my lexer produced the tokens just fine:
 
-{% highlight text %}
+~~~~ {.code}
 <INITIAL> "fn" => (Tokens.FN(!pos, !pos));
 <INITIAL> "=>" => (Tokens.RARROW(!pos, !pos));
-{% endhighlight %}
+~~~~
 
 So, I was confused. I downloaded the source for [SML/NJ][2] in hopes that
 their grammar and lexer would shed insight on what I was (obviously) doing

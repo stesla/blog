@@ -20,38 +20,38 @@ So first, go into your SLIME directory and copy `swank-loader.lisp` to `swank-
 loader-original.lisp`. Then make `swank-loader.lisp` look like this (changing
 `slime-dir` to be wherever your SLIME is, of course):
 
-{% highlight text %}
+~~~~ {.code}
 (if (not (find-package 'swank-loader))
     ;; Edit SLIME-DIR to be where you have SLIME installed.
     (let ((slime-dir (merge-pathnames ".elisp/slime/" (user-homedir-pathname))))
       (load (merge-pathnames "swank-loader-original" slime-dir))))
-{% endhighlight %}
+~~~~
 
 Then, make a file called `bootstrap.lisp` with the following content:
 
-{% highlight text %}
+~~~~ {.code}
 ;; Load Swank
 (load (merge-pathnames ".elisp/slime/swank-loader" (user-homedir-pathname)))
 
 ;; Save image
 (sb-ext:save-lisp-and-die "sbcl-with-slime.core")
-{% endhighlight %}
+~~~~
 
 And run this command:
 
-{% highlight text %}
+~~~~ {.code}
 $ sbcl --load bootstrap.lisp
-{% endhighlight %}
+~~~~
 
 Then copy `sbcl-with-slime.core` somewhere safe, I put mine in with my slime
 code to keep it all together. Then you just have to add the following to your
 `.emacs`:
 
-{% highlight text %}
+~~~~ {.code}
 (let* ((slime-dir (concat elisp-dir "/slime"))
        (core-file (concat slime-dir "/sbcl-with-slime.core")))
   (setq inferior-lisp-program (concat "sbcl --core " core-file)))
-{% endhighlight %}
+~~~~
 
 Then you can `M-x slime` and it will be super fast.
 

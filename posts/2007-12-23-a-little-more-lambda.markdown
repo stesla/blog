@@ -7,35 +7,35 @@ for example.
 
 This is true:
 
-{% highlight text %}
+~~~~ {.code}
 fn x y. x
-{% endhighlight %}
+~~~~
 
 And this is false:
 
-{% highlight text %}
+~~~~ {.code}
 fn x y. y
-{% endhighlight%}
+~~~~
 
 That makes the identity function the if then else construct:
 
-{% highlight text %}
+~~~~ {.code}
 > (fn p. p) (fn x y. x) a b;
 a
 > (fn p. p) (fn x y. y) a b;
 b
-{% endhighlight %}
+~~~~
 
 And similarly you can get a logical and:
 
-{% highlight text %}
+~~~~ {.code}
 > (fn p. p) ((fn p q. p q p) (fn x y. x) (fn x y. x)) a b;
 a
 > (fn p. p) ((fn p q. p q p) (fn x y. x) (fn x y. y)) a b;
 b
 > (fn p. p) ((fn p q. p q p) (fn x y. y) (fn x y. x)) a b;
 b
-{% endhighlight %}
+~~~~
 
 Fiddling around with these church booleans revealed several bugs in my code,
 which I've fixed. I've additionally added a new node to the parse tree to

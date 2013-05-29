@@ -17,22 +17,22 @@ matched any of them.
 
 I thought it would be cool if I could call it like this:
 
-{% highlight ruby %}
+~~~~ {.code}
 list.delete_if_status(['?', 'I'])
-{% endhighlight %}
+~~~~
 
 But also call it like this:
 
-{% highlight ruby %}
+~~~~ {.code}
 list.delete_if_status('?I')
-{% endhighlight %}
+~~~~
 
 Naturally, I figured Ruby would have a duck-typing answer to this problem, but
 just the way it solved it surprised me (just a little--actually, now that I
 think about it, it's unsurprising). Here is an IRB log that demonstrates just
 what I discovered.
 
-{% highlight text %}
+~~~~ {.code}
 irb(main):001:0> 'I?'.split
 => ["I?"]
 irb(main):002:0> 'I?'.split('')
@@ -43,18 +43,18 @@ irb(main):004:0> ['I','?'].to_s
 => "I?"
 irb(main):005:0> ['I','?'].to_s.split('')
 => ["I", "?"]
-{% endhighlight %}
+~~~~
 
 So what I ended up with was this method:
 
-{% highlight ruby %}
+~~~~ {.code}
 def delete_if_status(spec)
   status_list = spec.to_s.split('')
   self.delete_if do |item|
     status_list.include? item.status
   end
 end
-{% endhighlight %}
+~~~~
 
 I love Ruby.
 

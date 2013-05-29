@@ -11,7 +11,7 @@ We'll make an object that runs for a number of cycles and calls our event
 handler each cycle after sleeping for a little bit. Here's the code for
 `Clock`:
 
-{% highlight c++ %}
+~~~~ {.code}
 // Example.h
 
 public ref class Clock
@@ -45,7 +45,7 @@ void Example::Clock::Run(int cycles)
       _progressCallback->Execute(i, cycles);
     }
 }
-{% endhighlight %}
+~~~~
 
 Now the first thing to notice there is the `ref` keyword. This is how you let
 the compiler know this is a managed class. Next, you're all probably wondering
@@ -55,13 +55,13 @@ behind simulating method pointers from Delphi.
 A brief aside to talk about just what method pointers are. In C and C++ you
 can declare a pointer type like this:
 
-{% highlight c++ %}
+~~~~ {.code}
 typedef int (* CALLBACK)(int x, int y);
-{% endhighlight %}
+~~~~
 
 Then you can use that type like this:
 
-{% highlight c++ %}
+~~~~ {.code}
 int Apply(CALLBACK cb, int x, int y)
 {
   return cb == NULL ? 0 : cb(x, y);
@@ -73,20 +73,20 @@ int Multiply(int x, int y)
 }
 
 Apply(Multiply, 6, 7); // returns 42
-{% endhighlight %}
+~~~~
 
 You can do the exact same thing in Delphi like this:
 
-{% highlight delphi %}
+~~~~ {.code}
 type TCallback = function(X, Y: Integer): Integer;
-{% endhighlight %}
+~~~~
 
 But Delphi also offers another kind of function pointer called a method
 pointer. You declare it like this:
 
-{% highlight delphi %}
+~~~~ {.code}
 type TMethodCallback = function(X, Y: Integer): Integer of object;
-{% endhighlight %}
+~~~~
 
 Those two words `of object` make all the difference. What this does is it lets
 you use a pointer to a method on a specific instance of an object. When you
@@ -95,7 +95,7 @@ can access the state on the object. It is really powerful. This is typically
 how progress bars are driven in VCL applications. You just do something like
 this:
 
-{% highlight delphi %}
+~~~~ {.code}
 type TProgressEvent = procedure(ACurrent, AMax: Integer) of object;
 // ...
 
@@ -113,7 +113,7 @@ begin
   FThingWithProgressEvent.OnProgress := Progress;
   // ... Initialize more things ...
 end;
-{% endhighlight %}
+~~~~
 
 And then that method can do something such as adjust a progress bar or log to
 a file. It's really slick.
@@ -130,7 +130,7 @@ with the rest of the parameters.
 So now that we have the basic strategy in mind. Let me show you the code that
 encapsulates this method pointer idea:
 
-{% highlight c++ %}
+~~~~ {.code}
 // Example.h
 
 public ref class ProcedureOfObject
@@ -186,7 +186,7 @@ void Example::ProgressCallback::Execute(int current, int max)
     return;
   ((Example::PROGRESSEVENT) ProcedurePointer)(this->ObjectPointer, current, max);
 }
-{% endhighlight %}
+~~~~
 
 Note that I store the pointers as `IntPtr` references. This is the type that
 all of the methods on `System::Runtime::InteropServices::Marshal` return
@@ -199,7 +199,7 @@ can't send a pointer to a managed object out of the DLL, but we can send a
 pointer to an unmanaged object that has a reference to our managed object. So
 we make this wrapper:
 
-{% highlight c++ %}
+~~~~ {.code}
 // Example.h
 
 public class ClockWrapper
@@ -224,13 +224,13 @@ public class ClockWrapper
 
   gcroot<Clock ^> _clock;
 };
-{% endhighlight %}
+~~~~
 
 So all that's left is to export the DLL functions like before. Just to keep
 them separate I'll make another delete method, even though it's identical in
 every way except the name.
 
-{% highlight c++t %}
+~~~~ {.code}
 // Exports.h
 
 DLLAPI void * ClockCreate();
@@ -261,11 +261,11 @@ DLLAPI void ClockSetProgressCallback(void * clock, void * object, PROGRESSEVENT 
 {
   C(clock)->SetProgressCallback(object, callback);
 }
-{% endhighlight %}
+~~~~
 
 Then on the Delphi side:
 
-{% highlight delphi %}
+~~~~ {.code}
 // interface
 type TForm1 = class(TForm)
    edtCycles: TEdit;
@@ -318,7 +318,7 @@ begin
    ProgressBar1.Max := AMax;
    ProgressBar1.Position := ACurrent;
 end;
-{% endhighlight %}
+~~~~
 
 Some things to note. First off, the `Progress` method on `TForm1` is
 `private`, and yet I call it from `ProgressCallback`. This is because of how

@@ -19,7 +19,7 @@ something designed for drawing finite state-machines, even. What I found was
 
 The following source code from their samples page:
 
-{% highlight text %}
+~~~~ {.code}
 \begin{figure}[H]
   \begin{center}
     \unitlength=4pt
@@ -41,7 +41,7 @@ The following source code from their samples page:
   \end{center}
   \caption{La complétion de l'automate.}
 \end{figure}
-{% endhighlight %}
+~~~~
 
 Generates this graph (which I have scaled down):
 

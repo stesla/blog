@@ -3,7 +3,7 @@ title: Division of Responsibility
 ---
 So I was looking at a C# class that looked something like this:
 
-{% highlight c# %}
+~~~~ {.code}
 class FooFactory
 {
   private BazCollection _bazzen;
@@ -18,7 +18,7 @@ class FooFactory
 
   // ...more stuff...
 }
-{% endhighlight %}
+~~~~
 
 Now that smells to me. Take a moment and see if you can sniff it out. I'll
 wait.
@@ -39,12 +39,12 @@ spread onto two objects, and only should be in one.
 Now, one refactor that we could do would be to just pass the collection in for
 the Qux as well:
 
-{% highlight c# %}
+~~~~ {.code}
 public Foo BuildFoo(Bar bar)
 {
   return new Foo(bar, _bazzen, _quxxen);
 }
-{% endhighlight %}
+~~~~
 
 This refactor is not the one I would choose, though, as now it is even more
 complicated to construct a Foo. Specifically if I want to test my Foo (which I
@@ -52,12 +52,12 @@ do, of course). The foo is only ever interested in a single Baz and a single
 Qux, so it's just extra overhead to have to create a collection for each. That
 brings me to the next refactoring that I might try:
 
-{% highlight c# %}
+~~~~ {.code}
 public Foo BuildFoo(Bar bar)
 {
   return new Foo(bar, _bazzen.FindBazForBar(bar), _quxxen.FindQuxForBar(bar));
 }
-{% endhighlight %}
+~~~~
 
 This has the advantage of making Foo's responsibility very clear. It is meant
 to bring the bar, baz, and qux together. But, that call-site still stinks. In
@@ -65,12 +65,12 @@ fact, it reeks more with that original odor. At this point, it would be
 worthwhile to see what Foo actually needs the Bar for and further factor that
 out. Maybe we can have something like this:
 
-{% highlight c# %}
+~~~~ {.code}
 public Foo BuildFoo(Bar bar)
 {
   return new Foo(bar.name, bar.id, _bazzen.FindBazForBar(bar), _quxxen.FindQuxForBar(bar));
 }
-{% endhighlight %}
+~~~~
 
 That way we remove the dependence on Bar completely from the Foo, and push it
 into the FooFactory. Maybe we will create an object that encapsulates those

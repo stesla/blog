@@ -16,13 +16,13 @@ themselves. I also had to twiddle some build options. It was all well
 documented, and easy enough. But then I ran into a weird error that I couldn't
 figure out:
 
-{% highlight text %}
+~~~~ {.code}
 /usr/bin/ld: warning suggest use of -bind_at_load, as lazy binding may result in errors or different symbols being used
 
 symbol _atan2f used from dynamic library
 
 /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/../../../libSystem.dylib(floating.o) not from earlier dynamic library /usr/lib/libmx.A.dylib(single module)
-{% endhighlight %}
+~~~~
 
 After much searching, I finally found an [article][1], and it explained what I
 needed to do. All I had to do was add `-lSystem` to my linking flags.

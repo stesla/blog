@@ -10,22 +10,22 @@ stupid mistake.
 
 Before our refactor:
 
-{% highlight c# %}
+~~~~ {.code}
 Assert.Equals(1, object.Detail, "Details don't match")
-{% endhighlight %}
+~~~~
 
 After our refactor:
 
-{% highlight c# %}
+~~~~ {.code}
 Assert.Equals(object.hasDetail(1), "Details don't match")
-{% endhighlight %}
+~~~~
 
 That is a perfectly valid test...syntactically. However it results in the
 following error message:
 
-{% highlight text %}
+~~~~ {.code}
 "True" does not equal "Details don't match"
-{% endhighlight %}
+~~~~
 
 Now, those error messages are there for a reason: for us to ignore them. Brian
 and I spent at least five minutes scratching our head and stepping through the

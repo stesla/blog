@@ -17,7 +17,7 @@ write.
 When the database connection disappears, the database driver throws an
 exception. `ActiveRecord::Base` catches that exception and does this:
 
-{% highlight ruby %}
+~~~~ {.code}
 # Find this in Rails 2.0.2
 # active_record/connection_adapter/abstract_adapter.rb:121
 
@@ -30,7 +30,7 @@ rescue Exception => e
   log_info(message, name, 0)
   raise ActiveRecord::StatementInvalid, message
 end
-{% endhighlight %}
+~~~~
 
 This is the exception handler that catches all exceptions raised during a
 query run by ActiveRecord. As you can see, it snags the class name, and the
@@ -44,7 +44,7 @@ key violations to database connection errors, and the only way to distinguish
 them is by inspecting the message. Surely, that can't be true, right? I dig
 further and find this:
 
-{% highlight text %}
+~~~~ {.code}
 # Find this in Rails 2.0.2
 # active_record/connection_adapters/mysql_adapter.rb:244
 #
@@ -57,7 +57,7 @@ rescue ActiveRecord::StatementInvalid => exception
     raise
   end
 end
-{% endhighlight %}
+~~~~
 
 That is just completely unacceptable. I can find it in my heart to forgive the
 abstract adapter for doing something that throws away implementation-specific

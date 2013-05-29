@@ -15,28 +15,28 @@ Naturally, I will try Alt-Shift-R before Alt-Ctrl-R, figuring the bucky bits
 would be the same. And for two years, nothing has ever happened. Then one day
 last week, I'm sitting on an assignment statement like this:
 
-{% highlight delphi %}
+~~~~ {.code}
 Foo := Bar;
-{% endhighlight %}
+~~~~
 
 I hit Alt-Shift-R and all of the sudden I've got this:
 
-{% highlight delphi %}
+~~~~ {.code}
 Bar := Foo;
-{% endhighlight %}
+~~~~
 
 "Whisky tango foxtrot," I say, and hit again. It flips again. I try it on
 this:
 
-{% highlight delphi %}
+~~~~ {.code}
 Result := Foo(Bar);
-{% endhighlight %}
+~~~~
 
 And I get:
 
-{% highlight delphi %}
+~~~~ {.code}
 Foo(Bar) := Result;
-{% endhighlight %}
+~~~~
 
 Thanks, GExperts.
 

@@ -16,7 +16,7 @@ The first four tests were easy. Really short strings, but they worked out most
 of the kinks. But, I wanted something that would boost my confidence further.
 So I wrote the following test which ended up being quite patriotic.
 
-{% highlight text %}
+~~~~ {.code}
 def test_constitution_preamble
   plaintext =<<-EOT
     We the people of the United States, in order to form a more perfect union,
@@ -37,7 +37,7 @@ def test_constitution_preamble
   assert_equal(encoded, Base32.encode(plaintext))
 end
 
-{% endhighlight %}
+~~~~
 
    [1]: http://www.rubyonrails.com
 

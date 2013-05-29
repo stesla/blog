@@ -16,10 +16,10 @@ remainder of the session.
 Some of you may be guessing what I was calling `htons` on already: the port to
 be serialized. Here are the two offending lines of code:
 
-{% highlight objc %}
+~~~~ {.code}
 [buffer append:(0xFF00 & htons(port)) >> 8];
 [buffer append:(0x00FF & htons(port))];
-{% endhighlight %}
+~~~~
 
 That `buffer` was then, in turn, written out across the socket to the server
 (or inspected by unit tests). But, since I was extracting each byte

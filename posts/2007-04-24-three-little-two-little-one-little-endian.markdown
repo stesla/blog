@@ -15,7 +15,7 @@ useful.
 
 So I wrote this:
 
-{% highlight objc %}
+~~~~ {.code}
 
 - (NSData *) dataValue
 {
@@ -27,7 +27,7 @@ So I wrote this:
     }
   return result;
 }
-{% endhighlight %}
+~~~~
 
 I had unit tests that proved it worked, and they all passed, so I checked in.
 All was good in the world.
@@ -85,9 +85,9 @@ leaving the other three bytes all zero.
 
 The line of code where I do this:
 
-{% highlight objc %}
+~~~~ {.code}
 [data appendBytes: &i length: 1]
-{% endhighlight %}
+~~~~
 
 Is a clever little trick I've used to avoid having to actually declare a one-
 byte array when I want to append just one byte. It works great if `i` is
@@ -100,7 +100,7 @@ be zero.
 
 So now the code looks like this:
 
-{% highlight objc %}
+~~~~ {.code}
 - (NSData *) dataValue
 {
   NSMutableData *result = [NSMutableData data];
@@ -115,7 +115,7 @@ So now the code looks like this:
     }
   return result;
 }
-{% endhighlight %}
+~~~~
 
 The compiler knows to do the _correct_ conversion between the 32-bit and 8-bit
 types when assigning from one to another, so the new code now works on both of

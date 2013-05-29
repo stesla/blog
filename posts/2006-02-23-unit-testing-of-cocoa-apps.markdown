@@ -24,11 +24,11 @@ I'd share. I make a Cocoa Shell Tool target, and I name it something like
 `stub`. I make a C file and name it `stub-main.m`. In that file I put the
 following three lines:
 
-{% highlight c %}
+~~~~ {.code}
 int main(int argc, char *argv[]) {
   return 0;
 }
-{% endhighlight %}
+~~~~
 
 Then I add all of the application source files that my tests are going to need
 to link to and make sure it all compiles. I just use that as the bundle loader

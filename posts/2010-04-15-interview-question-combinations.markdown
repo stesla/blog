@@ -27,10 +27,10 @@ convenience of implementation, you could do it the other way just as easy).
 
 So with those two assumptions in mind, I stubbed out my function.
 
-{% highlight haskell %}
+~~~~ {.code}
 combinations :: Int -> Int -> [[Int]]
 combinations len max = undefined
-{% endhighlight %}
+~~~~
 
 I had gotten three-quarters of the way toward a working implementation during
 my interview, so I was already leaning toward a recursive solution here. But,
@@ -40,13 +40,13 @@ something like `combinations 3 3` and get anything back. I clearly had some
 boundary issues. So, I decided to actually write out the sets I was expecting
 and see if I saw any patterns.
 
-{% highlight text %}
+~~~~ {.code}
 combinations 0 3 => [[]]
 combinations 1 3 => [[1],[2],[3]]
 combinations 2 3 => [[2,1],[3,1],[3,2]]
 combinations 3 3 => [[3,2,1]]
 combinations 4 3 => [[]]
-{% endhighlight %}
+~~~~
 
 The most obvious thing is that there's a clear relationship between the length
 of the combination and the number of combinations available, which is pretty
@@ -55,13 +55,13 @@ items. But looking at this, I'm trying to conceive of some way to devise a
 recursive algorithm to produce those lists. So I rewrite the output to show
 how I would expect those to get built recursively.
 
-{% highlight text %}
+~~~~ {.code}
 combinations 0 3 => [[]]
 combinations 1 3 => [1:[]] ++ [2:[]] ++ [3:[]]
 combinations 2 3 => [2:[1]] ++ [3:[1], 3:[2]]
 combinations 3 3 => [3:[2,1]]
 combinations 4 3 => [[]]
-{% endhighlight %}
+~~~~
 
 Now it might be apparent why I chose the ordering constraint I did. It makes
 it easy to build these lists with conses. The most imporant observation to
@@ -72,10 +72,10 @@ than_ those.
 
 Here is the final implementation:
 
-{% highlight haskell %}
+~~~~ {.code}
 combinations 0 _ = [[]]
 combinations len max = foldr reduce [] [len..max]
   where reduce x ys = recurse x ++ ys
         recurse x = prepend x (combinations (len - 1) (x - 1))
         prepend x = map (\xs -> x:xs)
-{% endhighlight %}
+~~~~

@@ -17,7 +17,7 @@ _recommended_ naming for the generic types:
 > distinguish formal type parameters from ordinary classes and interfaces. Many
 > container types use E, for element, as in the examples above.
 
-{% highlight java %}
+~~~~ {.code}
 public interface List<E>
 {
   void add(E x);
@@ -29,7 +29,7 @@ public interface Iterator<E>
   E next();
   boolean hasNext();
 }
-{% endhighlight %}
+~~~~
 
 In the comments over on Blaine's blog, this guy named Issac (who's mission it
 appears to be to disagree with everything Blaine says) said:
@@ -48,13 +48,13 @@ generic class."
 The cognitive dissonance only becomes worse when you want to make a class
 generic on more than one axis. When you have something like:
 
-{% highlight java %}
+~~~~ {.code}
 public interface Matrix<E, F>
 {
   add(E x, F y);
   //... more methods in E and F ...
 }
-{% endhighlight %}
+~~~~
 
 When does it stop? How are we supposed to make "evocative" names when we only
 have one letter to choose from? Sure, we can take the class name we would've

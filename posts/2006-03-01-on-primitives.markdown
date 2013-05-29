@@ -10,10 +10,10 @@ to make new classes for new concepts.
 
 In Delphi, there's a similarly abused syntax trick. It looks like this:
 
-{% highlight delphi %}
+~~~~ {.code}
 type TMyEnum = (meOne, meTwo, meThree);
 const MyEnumStrings: array[TMyEnum] of string = ('First', 'Second', 'Third');
-{% endhighlight %}
+~~~~
 
 Then, wherever you want to get a string associated with one of the enum
 tokens, you can just index into that constant array _using the enum value_.
