@@ -1,0 +1,63 @@
+----
+title: It's Alive!
+----
+
+It's been a long time since I [last][1] posted.  A lot has happened
+since then, and I haven't given much thought at all to blogging. I
+missed 2012 entirely. I even considered shutting the site down. But, I
+have found a renewed interest.
+
+The biggest thing that's happened in the last 18 months is that we had
+another son. On Liam's first birthday, we found out Erica was
+pregnant, and on November 4th, 2012, Elijah Rowan Tesla came into this
+world. He is just like his brother in most of the ways we expected
+(e.g. he's huge), and not like his brother at all in ways we didn't
+expect. He's wonderful, and I love him. Needless to say, I haven't had
+a lot of brain for blogging.
+
+I spent most of my free time over the last year roleplaying. I enjoy
+playing table-top roleplaying games online on [MUSHes][2]. I know,
+it's very 1980s of me. One of the nice things about this hobby is I
+can do it from both my laptop and my phone, so I can do it when I'm
+stuck in a bedroom with a boy. Of course, this hobby expanded to fill
+all of my available time and brainspace. That's another reason I
+haven't been blogging much.
+
+So why the sudden inspiration to start blogging again? Well, for one,
+I'd like to work on developing a writing habit that's a bit longer
+than 140 characters. I was also reminded that sometimes I have good
+things to say. Back in February, I was reading my news when I came
+across an [article][3] that had a quote attributed to me right across
+the top.
+
+> "Go is not meant to innovate programming theory. It’s meant to
+> innovate programming practice." — Samuel Tesla
+
+It was a bit surreal to see my own words quoted on somebody else's
+blog. Especially when I didn't remember when exactly I'd said them. I
+dug around and finally unearthed the [rant][4] here on my blog where
+I'd said that. Kudos to Carl for extracting the best two sentences of
+that entire post. Since then, I've seen it crop up in a [few][5]
+[places][6]. I even had a coworker ask me if I was the same Samuel
+Tesla that has the quote about Go.
+
+Aside from stroking my ego, seeing that quote out there made me want
+to keep the site up and start posting again. But, the final barrier to
+my blogging was that I was unhappy with my [tools][7]. I have fallen
+out of love with Ruby over the last few years, and besides, Jekyll is
+just slow on my site. Cue the inevitable migration, because setting up
+my blog is way more fun than actually blogging, and here I am. My site
+is now powered by [Hakyll][8], which is very similar, and yet much
+more suited to my needs.
+
+Let's see if I can at least put as much work into writing new content
+for the site as I did porting it over to a new tool.
+
+   [1]: /2011/11/22/so-thats-eight-months.html
+   [2]: http://en.wikipedia.org/wiki/MUSH
+   [3]: http://blog.carlsensei.com/post/42828735125
+   [4]: /2009/12/15/newsflash-go-is-experimental.html
+   [5]: http://go-lang.cat-v.org/
+   [6]: http://www.oscon.com/oscon2013/public/schedule/detail/28478
+   [7]: http://jekyllrb.com/
+   [8]: http://jaspervdj.be/hakyll/
