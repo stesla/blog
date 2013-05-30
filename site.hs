@@ -13,6 +13,12 @@ import           Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as A
 
+mainConfiguration :: Configuration
+mainConfiguration = defaultConfiguration
+    { deployCommand = "rsync -avze 'ssh' _site/* cardamom:www/blog"
+    }
+
+
 feedConfiguration :: FeedConfiguration
 feedConfiguration = FeedConfiguration
     { feedTitle       = "Alieniloquent: off on a tangent"
@@ -23,7 +29,7 @@ feedConfiguration = FeedConfiguration
     }
 
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith mainConfiguration $ do
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
