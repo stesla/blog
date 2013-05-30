@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import           Control.Applicative             (liftA)
 import           Data.Char                       (toLower)
-import           Data.List                       (intercalate, intersperse)
+import           Data.List                       (intercalate, intersperse, isSuffixOf)
 import           Data.List.Split                 (splitOn)
 import qualified Data.Map                        as M
 import           Data.Monoid                     (mconcat)
@@ -138,17 +138,16 @@ descendingTags x y = comparing fst y x
 
 normalizeUrls :: Item String -> Compiler (Item String)
 normalizeUrls item = return item
-                 >>= wordpressifyUrls
+                 >>= deIndexUrls
                  >>= relativizeUrls
 
-wordpressifyUrls :: Item String -> Compiler (Item String)
-wordpressifyUrls item = do
+deIndexUrls :: Item String -> Compiler (Item String)
+deIndexUrls item = do
     route <- getRoute $ itemIdentifier item
     return $ case route of
         Nothing -> item
-        Just r  -> fmap wordpressifyUrlsWith item
+        Just r  -> fmap (withUrls stripIndex) item
 
-wordpressifyUrlsWith :: String -> String
-wordpressifyUrlsWith = withUrls convert
-  where
-    convert x = replaceAll "/index.html" (const "/") x
+stripIndex :: String -> String
+stripIndex url = if "index.html" `isSuffixOf` url && elem (head url) "/."
+    then take (length url - 10) url else url
