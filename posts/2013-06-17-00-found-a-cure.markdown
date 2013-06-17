@@ -1,0 +1,9 @@
+----
+title: I Found a Cure
+----
+Nearly two weeks ago I posted about [my illness][1]. Well, I've found [a cure][2]. I tried it out on my iPhone last night, and today I installed the chrome app on both of my machines. It's pretty great, and completely destroyed any desire I had to finish writing my own feed reader.
+
+So, if you're still looking for a replacement for Google Reader, I recommend [feedly][2].
+
+   [1]: /2013/06/05/its-an-illness.html
+   [2]: http://www.feedly.com
